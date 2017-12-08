@@ -257,43 +257,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	this->x_ = 0;
 	CreateSolidCaret(1, this->fontSize);
-	/*//상태바 생성
-	this->statusBar.Create(this, WS_CLIPCHILDREN | WS_VISIBLE | CBRS_BOTTOM);
-	this->statusBar.SetIndicators(ID_INDICATOR, 2);
-	this->statusBar.SetPaneInfo(0, ID_INDICATOR, SBPS_NOBORDERS, this->screenWidth - 200);
-	this->statusBar.SetPaneInfo(1, ID_INDICATOR, SBPS_NORMAL, 200);
-	//상태표시줄 크기 변경
-	//상태표시줄 생성
-	CRect rect;
-	rect.left = 0;
-	rect.right =25;
-	rect.bottom= 25;
-	//페이지 생성 버튼
-	HICON hIcon = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_ADDICON), IMAGE_ICON, 16, 16, 0);
-	this->addPageButton.Create(_T(""), WS_CHILD | WS_VISIBLE | BS_ICON | BS_PUSHBUTTON, rect, &this->statusBar, IDI_ADDICON);
-	this->addPageButton.SetIcon(hIcon);
 	
-	//페이지 삭제 버튼
-	
-	rect.right = this->screenWidth - 200;
-	rect.left = rect.right - 25;
-
-	hIcon = (HICON)LoadImage(AfxGetInstanceHandle(), MAKEINTRESOURCE(IDI_TRASHICON), IMAGE_ICON, 16, 16, 0);
-	this->trashPageButton.Create(_T(""), WS_CHILD | WS_VISIBLE | BS_ICON | BS_PUSHBUTTON, rect, &this->statusBar, IDI_TRASHICON);
-	this->trashPageButton.SetIcon(hIcon);
-	//왼쪽으로 이동버튼
-
-	//페이지 버튼
-	CStatusButton *pageButton = new CStatusButton;
-	pageButton->Create(_T("page"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW, CRect(75  , 0, 75 +100, 25), &this->statusBar, 105 );
-	this->pageButtons = new Array<CStatusButton*>(16);
-	this->pageButtons->Store(0, pageButton);*/
-	//캐럿
-	//SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-	//ShowCaret();
-	
-	//((CStatusBarCtrl&)this->statusBar.GetStatusBarCtrl()).SetIcon(2, hIcon);
-
 	return 0;
 }
 void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
@@ -333,15 +297,18 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				//현재 위치를 원 상태로 돌린다
 				this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
 				this->row->Move(rowCurrent);
+
+				InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+				UpdateWindow();
 			}
 		}break;
 			//CTRL+C
 		case 0x43: {
 			CString copiedStr = "";
-			if (this->selectedText != NULL) { 
-			copiedStr = CString(this->selectedText->GetBuffer().c_str());
+			if (this->selectedText != NULL) {
+				copiedStr = CString(this->selectedText->GetBuffer().c_str());
 			}
-			HGLOBAL hGloBal = GlobalAlloc(GHND | GMEM_SHARE,(lstrlen(copiedStr) + 1) * sizeof(TCHAR));
+			HGLOBAL hGloBal = GlobalAlloc(GHND | GMEM_SHARE, (lstrlen(copiedStr) + 1) * sizeof(TCHAR));
 
 			PSTR pStr = (PSTR)GlobalLock(hGloBal);
 			if (pStr != NULL) {
@@ -357,12 +324,10 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				EmptyClipboard();
 
 				// 클립보드에 복사
-				SetClipboardData(CF_TEXT,pStr);
+				SetClipboardData(CF_TEXT, pStr);
 
 				// 클립보드 클로즈
 				CloseClipboard();
-
-				
 			}
 		}break;
 			//CTRL+X
@@ -876,9 +841,9 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 	CClientDC dc(this);
 	CSize size_;
 	
-	this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
 	if (nFlags == MK_LBUTTON) {
-		
+		this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
+
 		//캐럿 이동
 		CClientDC dc(this);
 		this->caret->MoveToPoint(this, &dc, point);
@@ -886,11 +851,8 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		//현재 위치 저장
 		Long startRow;
 		Long startColumn;
-		
 		Long endRow;
 		Long endColumn;
-		
-		//
 		//마우스가 더블클릭된곳보다 상단에 있을때
 		if (this->text->GetCurrent() < this->firstClickedRow) {
 
@@ -922,15 +884,17 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		}
 		//선택될곳 셋팅
 		this->selectedText->SetTextPosition(startRow, startColumn, endRow, endColumn);
-		//선택하기
+
+		if (startRow>=endRow&&startColumn>=endColumn){
+			delete this->selectedText;
+			this->selectedText = NULL;
+		}
+		// 택 기
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), false);
 		UpdateWindow();
 		
 		//this->selectedText->Visit(this->text);
-		if (this->selectedText->GetStartRow() == this->selectedText->GetEndRow() && this->selectedText->GetStartColumn() == this->selectedText->GetEndColumn()) {
-			delete this->selectedText;
-			this->selectedText = NULL;
-		}
+		
 	}
 	
 }
