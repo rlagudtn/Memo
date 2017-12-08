@@ -561,7 +561,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		this->row->Add(lineFeed);
 		this->row->Move(rowCurrent);
 		//캐럿 위치  여기서만 변경
-		this->caret->Move(0, this->caret->GetY() + this->fontSize);
+		//this->caret->Move(0, this->caret->GetY() + this->fontSize);
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//UpdateWindow();
 	}
@@ -801,8 +801,6 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	
  	//새로운 위치 설정
 	this->scrollInfo.nPos = this->scrollInfo.nPos + yInc;
-	//ScrollWindow(0, -yInc, 0, 0);
-	//UpdateWindow();
 	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 	SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 	SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
@@ -818,29 +816,20 @@ void MemoForm::OnPaint()
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
+	//캐럿
+	this->caret->MoveToCurrent(this, &dc);
 	
-	//캐럿을 설정한다.
-	CSize size_;
-	Character *character;
-	if (this->text->GetLength() > 0) {
-
-		GetString getString(0, this->row->GetCurrent());
-		this->row->Accept(&getString);
-		size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-		this->caret->Move(size_.cx, (this->text->GetCurrent())*(this->fontSize) - this->paper->GetY());
-
-	}
 	//출력영역 안이라면
-	if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
-		CreateSolidCaret(1, this->fontSize);
-		SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-		ShowCaret();
+	//if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
+		//CreateSolidCaret(1, this->fontSize);
+		//SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
+		//ShowCaret();
 		
-	}
+	//}
 	//출력영역 밖이라면
-	else {
-		HideCaret();
-	}
+	//else {
+	//	HideCaret();
+	//}
 	//스크롤 갱신/
 	if (this->text->GetLength()*this->fontSize > this->screenHeight) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
@@ -1277,91 +1266,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 	
 	return 0;
 }
-//버튼/
-/*void MemoForm::OnButtonCliked(UINT uiID) {
-	switch (uiID)
-	{
-	case IDI_ADDICON :{
-		//기존 페이지에 '\f'추가
-		Row *row_ = dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1));
-		SingleByteCharacter *formFeed = new SingleByteCharacter('\f');
-		row_->Add(formFeed);
-		//새로운 페이지 추가
-		Row *row = new Row;
-		Text *text = new Text;
-		text->Add(row);
-		this->page->Add(text);
-		this->text = dynamic_cast<Text*>(this->page->GetAt(this->page->GetCurrent()));
-		this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-		//\r\n추가
-		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter('\r');
-		SingleByteCharacter *singleBytecharacter_ = new SingleByteCharacter('\n');
-		this->row->Add(singleByteCharacter);
-		this->row->Add(singleBytecharacter_);
-		this->row->Move(-1);
-		this->caret->Move(0, 0);
-		this->paper->MoveToY(0);
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
-		SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-		ShowCaret();
-		
-		//페이지 버튼 생성
-		Long i = this->page->GetCurrent();
-		CStatusButton *pageButton= new CStatusButton;
-		pageButton->Create(_T("page"), WS_CHILD | WS_VISIBLE | BS_PUSHBUTTON | BS_OWNERDRAW, CRect(75+i*100, 0, 75+(i+1)*100, 25), &this->statusBar, 123+i);
-		if (this->pageButtons->GetLength() < this->pageButtons->GetCapacity()) {
-			this->pageButtons->Store(i, pageButton);
-		}
-		else {
-			this->pageButtons->Insert(i,pageButton);
-		}
-		
-		//UpdateWindow();
-	}break;
-	case IDI_TRASHICON: {
-		//메세지 박스.
-		int ret=0;//페이지에 아무거도 없을때
-		if (this->text->GetLength() > 1 || this->row->GetLength() > 2) {
-			ret=MessageBox(_T("현재 페이지가 메모장에서 영구적으로 삭제됩니다.계속 하시겠습니까?"), _T("메모장"), MB_YESNO | MB_ICONWARNING | MB_DEFBUTTON1);
-		}//페이지가 1보다 클때 페이지 삭제
-		if (ret==0||ret==IDYES) {
-			Long current = this->page->GetCurrent();
-			this->page->Delete(current);
-			if (this->page->GetCurrent() < this->page->GetLength() - 1) {
-				this->page->Move(this->page->GetCurrent() + 1);
-			}
-			this->pageButtons->Delete(current);
-			
-		}
-		//페이지 없을때
-		if (this->page->GetLength() == 0) {
-			//int ret_ = MessageBox(_T("현재 페이지가 하나밖에 없습니다. 지우시겠습니까?"), _T("메모장"), MB_YESNO | MB_DEFBUTTON1);
-			//if (ret_ == IDYES) {
-				Text *text = new Text;
-				Row *row = new Row;
-				SingleByteCharacter *singleByteCharacter = new SingleByteCharacter('\r');
-				SingleByteCharacter *singleByteCharacter_ = new SingleByteCharacter('\n');
-				row->Add(singleByteCharacter);
-				row->Add(singleByteCharacter_);
-				row->Move(-1);
-				text->Add(row);
-				this->page->Add(text);
-			//}
-		}
-		this->text = dynamic_cast<Text*>(this->page->GetAt(this->page->GetCurrent()));
-		this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
-	}
-	case 105: {
-		HDC hdc = ::GetDC(GetSafeHwnd());
-		TextOut(hdc, 100, 100, _T("그"),3);
-	}
-	default:
-		break;
-	}
-	//RepositionBars(ID_INDICATOR, 0xFFFF, AFX_IDW_PANE_FIRST, reposDefault, NULL, NULL, TRUE);
-	SetFocus();
-}*/
+
 void MemoForm::OnSize(UINT nType, int cx, int cy) {
 
 	this->screenWidth = cx;
@@ -1372,13 +1277,7 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nMax = this->paper->GetHeight();
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
-	/*//상태표시줄 생성
-	this->statusBar.SetIndicators(ID_INDICATOR, 2);
-	this->statusBar.SetPaneInfo(0, ID_INDICATOR, SBPS_NOBORDERS, cx - 200);
-	this->statusBar.SetPaneInfo(1, ID_INDICATOR, SBPS_NORMAL, 200);
-	RepositionBars(ID_INDICATOR, 0xFFFF, AFX_IDW_PANE_FIRST, reposDefault, NULL, NULL, TRUE);
-	CRect rect;
-	this->statusBar.GetItemRect(0, rect);*/
+
 	
 	
 }
@@ -1416,15 +1315,11 @@ void MemoForm::OnSysCommand(UINT nID, LPARAM lParam) {
 								file.WriteString("\f\n");
 							}
 							i++;
-
 						}
 						file.Close();
 					}
-
-
 				}
 				CFrameWnd::OnClose();
-
 			}
 			else if (ret == IDNO) {
 				if (this->page != NULL) {
