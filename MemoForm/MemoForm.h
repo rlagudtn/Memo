@@ -4,8 +4,8 @@
 #include <afxwin.h>
 #include < afxdlgs.h>
 #include < afxext.h>
-#include "CStatusButton.h"
-#include "Array.h"
+//#include "CStatusButton.h"
+//#include "Array.h"
 class Page;
 class Text;
 class Character;
@@ -50,18 +50,21 @@ protected:
 	//afx_msg void OnButtonCliked(UINT uiID);//버튼 클릭시
 
 	DECLARE_MESSAGE_MAP()
-private:
-	CFindReplaceDialog *pDlg;
-	CStatusBar statusBar;
+public:
 	Page *page;
 	Text *text;
 	Row *row;
-	Caret *caret;
 	Paper *paper;
+	int fontSize;//글자 세로 길이
+
+private:
+	CFindReplaceDialog *pDlg;
+	CStatusBar statusBar;
+	
+	Caret *caret;
 	//CClientDC pdc;
 	SelectedText *selectedText;
 	char wszComp[2];
-	int y_;//글자 세로 길이
 	Long screenHeight;
 	Long screenWidth;
 	SCROLLINFO scrollInfo;
@@ -74,7 +77,6 @@ private:
 	Long x_;
 
 	CString currentPath;
-private:
 	/*CButton addPageButton;
 	CButton trashPageButton;
 	CButton previousButton;

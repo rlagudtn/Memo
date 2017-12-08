@@ -1,41 +1,64 @@
 //Caret.cpp
 #include "Caret.h"
 #include "MemoForm.h"
-
+#include "Row.h"
+#include "Text.h"
+#include "Paper.h"
+#include "GetString.h"
+#include "MoveColumnByStringLength.h"
 Caret::Caret() {
-	this->x = 0;
-	this->y = 0;
+	this->caretX = 0;
+	this->caretY = 0;
 }
 
 Caret::Caret(const Caret& source) {
-	this->x = source.x;
-	this->y = source.y;
+	this->caretX = source.caretX;
+	this->caretY= source.caretY;
 }
 
 Caret::~Caret() {}
 
 void Caret::Move(Long x, Long y) {
 
-	this->x = x;
-	this->y = y;
+	this->caretX = x;
+	this->caretY = y;
 }
 void Caret::MoveX(Long x) {
-	this->x = x;
+	this->caretY = x;
 }
 void Caret::MoveY(Long y) {
-	this->y = y;
+	this->caretY = y;
 }
-/*
-Long Caret::Delete(Long index) {
-if (this != 0) {
-this->x = -1;
-this->y = -1;
+void Caret::MoveToCurrent(MemoForm *memoForm, CDC *dc) {
+	
 }
-return
-}*/
+
+void Caret::MoveToPoint(MemoForm *memoForm, CDC *dc, CPoint point) {
+	//행의 위치를 찾는다.
+	Long textCurrent = (memoForm->paper->GetY() + point.y) / memoForm->fontSize;
+	if (textCurrent >= memoForm->text->GetLength()) {
+		textCurrent = memoForm->text->GetLength() - 1;
+	}
+	this->caretY = (textCurrent*memoForm->fontSize-memoForm->paper->GetY());
+
+	//이동
+	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
+	//x축이동
+	MoveColumnByStringLength temp;
+	temp.MoveColumn(memoForm->row, dc, point.x);
+	//caretX좌표 구하기
+	GetString getStr(0, memoForm->row->GetCurrent());
+	memoForm->row->Accept(&getStr);
+	this->caretX = dc->GetTextExtent(CString(getStr.GetStr().c_str())).cx;
+	//캐럿 보여주기
+	memoForm->CreateSolidCaret(1, memoForm->fontSize);
+	memoForm->SetCaretPos(CPoint(this->caretX, this->caretY));
+	memoForm->ShowCaret();
+
+}
 
 Caret& Caret::operator=(const Caret& source) {
-	this->x = source.x;
-	this->y = source.y;
+	this->caretX = source.caretX;
+	this->caretY = source.caretY;
 	return *this;
 }

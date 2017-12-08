@@ -1,8 +1,10 @@
 //Caret.h
 #ifndef _CARET_H
 #define _CARET_H
-
+#include <afxwin.h>
 typedef signed long int Long;
+class MemoForm;
+class CDC;
 class Caret {
 public:
 	Caret();
@@ -11,21 +13,22 @@ public:
 	void Move(Long x, Long y);
 	void MoveX(Long x);
 	void MoveY(Long y);
-	//Long Delete(Long index);
+	void MoveToCurrent(MemoForm *memoForm,CDC *dc);
+	void MoveToPoint(MemoForm *memoForm, CDC *dc,CPoint point);
 	Caret& operator=(const Caret& source);
 	Long GetX() const;
 	Long GetY() const;
 private:
-	Long x;
-	Long y;
+	Long caretX;
+	Long caretY;
 };
 
 inline Long Caret::GetX() const {
-return this->x;
+return this->caretX;
 }
 
 inline Long Caret::GetY() const {
-return this->y;
+return this->caretY;
 }
 
 #endif //CARET_H

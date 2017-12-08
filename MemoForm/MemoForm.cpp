@@ -68,7 +68,7 @@ MemoForm::MemoForm() {
 	this->row = NULL;
 	this->caret = NULL;
 	this->selectedText = NULL;
-	this->y_ = 16;
+	this->fontSize = 16;
 	this->paper = NULL;
 	this->pDlg = NULL;
 	//this->pageButtons = NULL;
@@ -108,7 +108,7 @@ BOOL MemoForm::PreTranslateMessage(MSG* pMsg) {
 				
 				GetString getString(0, this->text->GetCurrent());
 				size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-				this->caret->Move(size_.cx, this->caret->GetY() -this->y_);
+				this->caret->Move(size_.cx, this->caret->GetY() -this->fontSize);
 				SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));    //위치 설정
 				ShowCaret();
 			}
@@ -256,7 +256,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	//스크롤 포지션 초기화
 	
 	this->x_ = 0;
-	CreateSolidCaret(1, this->y_);
+	CreateSolidCaret(1, this->fontSize);
 	/*//상태바 생성
 	this->statusBar.Create(this, WS_CLIPCHILDREN | WS_VISIBLE | CBRS_BOTTOM);
 	this->statusBar.SetIndicators(ID_INDICATOR, 2);
@@ -416,7 +416,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 				pDlg->Create(TRUE, _T(""), _T(""), FR_HIDEUPDOWN | FR_HIDEWHOLEWORD, this);
 				HideCaret();
-				pDlg->CreateSolidCaret(1,this->y_);
+				pDlg->CreateSolidCaret(1,this->fontSize);
 				pDlg->ShowCaret();
 				pDlg->SetFocus();
 			}
@@ -561,7 +561,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		this->row->Add(lineFeed);
 		this->row->Move(rowCurrent);
 		//캐럿 위치  여기서만 변경
-		this->caret->Move(0, this->caret->GetY() + this->y_);
+		this->caret->Move(0, this->caret->GetY() + this->fontSize);
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//UpdateWindow();
 	}
@@ -725,14 +725,14 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 	//스크롤 관련
 	//마지막줄에서 한줄 내리기
-	if (this->caret->GetY()  >= this->screenHeight / this->y_*this->y_) {
-		this->paper->MoveToY(this->paper->GetY()+ this->y_);
+	if (this->caret->GetY()  >= this->screenHeight / this->fontSize*this->fontSize) {
+		this->paper->MoveToY(this->paper->GetY()+ this->fontSize);
 		this->scrollInfo.nPos =this->paper->GetY();
 		SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 	}
 	//캐럿의 위치가 화면 밖일때
-	if (this->caret->GetY() < 0 || this->caret->GetY() > this->screenHeight / this->y_*this->y_) {
-		this->paper->MoveToY(this->y_*this->text->GetCurrent());
+	if (this->caret->GetY() < 0 || this->caret->GetY() > this->screenHeight / this->fontSize*this->fontSize) {
+		this->paper->MoveToY(this->fontSize*this->text->GetCurrent());
 		if (this->paper->GetY() + this->screenHeight > this->paper->GetHeight()) {
 			this->paper->MoveToY(this->paper->GetHeight() - this->screenHeight);
 			this->scrollInfo.nPos = this->paper->GetY();
@@ -750,33 +750,33 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	switch (LOWORD(nSBCode))
 	{
 	case SB_LINEUP: {
-		yInc = i*this->y_;
+		yInc = i*this->fontSize;
 		this->paper->MoveToY(this->paper->GetY() +yInc);
 		this->caret->MoveY(this->caret->GetY() - yInc);
 
 	}break;
 	case SB_LINEDOWN: {
-		yInc = this->y_;
+		yInc = this->fontSize;
 		this->paper->MoveToY(this->paper->GetY() + yInc);
 		this->caret->MoveY(this->caret->GetY() -yInc);
 	}break;
 	case SB_PAGEUP:
 	{	
-		yInc = i*(this->scrollInfo.nPage/this->y_*this->y_);
+		yInc = i*(this->scrollInfo.nPage/this->fontSize*this->fontSize);
 		this->paper->MoveToY(this->paper->GetY() +yInc );
 		this->caret->MoveY(this->caret->GetY() - yInc);
 
 	}break;
 	case SB_PAGEDOWN:
 	{
-		yInc = this->scrollInfo.nPage / this->y_*this->y_;
+		yInc = this->scrollInfo.nPage / this->fontSize*this->fontSize;
 		this->paper->MoveToY(this->paper->GetY() +yInc );
 		this->caret->MoveY(this->caret->GetY() - yInc);
 	}break;
 	case SB_THUMBTRACK:
 	{	
 		GetScrollInfo(SB_VERT, &this->scrollInfo);
-		yInc = (this->scrollInfo.nTrackPos - this->scrollInfo.nPos) / this->y_*this->y_;
+		yInc = (this->scrollInfo.nTrackPos - this->scrollInfo.nPos) / this->fontSize*this->fontSize;
 		this->paper->MoveToY(this->paper->GetY() + yInc );
 		this->caret->MoveY(this->caret->GetY() - yInc);
 	}break;
@@ -791,8 +791,8 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	}
 	if (this->scrollInfo.nPos + yInc > this->scrollInfo.nMax||this->paper->GetY()+this->screenHeight>this->paper->GetHeight()) {
 		Long previous = this->paper->GetY();
-		yInc = (this->scrollInfo.nMax - this->scrollInfo.nPos-this->scrollInfo.nPage) / this->y_*this->y_;
-		this->paper->MoveToY(this->paper->GetHeight()-this->screenHeight / this->y_*this->y_);
+		yInc = (this->scrollInfo.nMax - this->scrollInfo.nPos-this->scrollInfo.nPage) / this->fontSize*this->fontSize;
+		this->paper->MoveToY(this->paper->GetHeight()-this->screenHeight / this->fontSize*this->fontSize);
 		Long distance = previous - this->paper->GetY();
 		if (LOWORD(nSBCode) != SB_THUMBTRACK) {
 			this->caret->MoveY(this->caret->GetY()+distance);
@@ -817,7 +817,7 @@ void MemoForm::OnPaint()
 	//화면에 적는다.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
-	this->y_ = paintVisitor.GetFontSize();
+	this->fontSize = paintVisitor.GetFontSize();
 	
 	//캐럿을 설정한다.
 	CSize size_;
@@ -827,12 +827,12 @@ void MemoForm::OnPaint()
 		GetString getString(0, this->row->GetCurrent());
 		this->row->Accept(&getString);
 		size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-		this->caret->Move(size_.cx, (this->text->GetCurrent())*(this->y_) - this->paper->GetY());
+		this->caret->Move(size_.cx, (this->text->GetCurrent())*(this->fontSize) - this->paper->GetY());
 
 	}
 	//출력영역 안이라면
-	if (this->caret->GetY() < this->screenHeight / this->y_*this->y_) {
-		CreateSolidCaret(1, this->y_);
+	if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
+		CreateSolidCaret(1, this->fontSize);
 		SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
 		ShowCaret();
 		
@@ -842,14 +842,14 @@ void MemoForm::OnPaint()
 		HideCaret();
 	}
 	//스크롤 갱신/
-	if (this->text->GetLength()*this->y_ > this->screenHeight) {
-		this->paper->ModifyHeight(this->text->GetLength()*this->y_);
+	if (this->text->GetLength()*this->fontSize > this->screenHeight) {
+		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
 		
 	}
 	else {
 		this->paper->ModifyPaper(this->screenWidth, this->screenHeight);
 	}
-	this->scrollInfo.nMax = this->paper->GetHeight()+this->y_;
+	this->scrollInfo.nMax = this->paper->GetHeight()+this->fontSize;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//스크롤 위치 저장
 	this->scrollPositions[this->page->GetCurrent()] = this->scrollInfo.nPos;
@@ -873,76 +873,7 @@ void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 	}
 	
 	CClientDC dc(this);
-	//this->selectedText = new SelectedText(&dc);
-	CSize size_;
-	CString str_;
-	//클릭된 곳 좌표 받음
-	Long x = point.x;
-	Long y = point.y;
-	Long y_;//글자의 세로 길이
-	Character *character;
-	Long height;
-	//캐럿과 마우스 클릭된 곳의 y좌표 거리
-	height = this->caret->GetY() - y;
-	
-	//캐럿보다 위에 있을때
-	if (height >= 0) {
-		while (height > 0) {
-			this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() - 1));//this->text->current--;
-			this->caret->MoveY(this->caret->GetY() - this->y_);
-			height = this->caret->GetY() - y;
-		}
-	}
-
-	//캐럿보다 아래에 있을때
-	else if (height < 0) {
-		height = -height;
-		while (height > this->y_&&this->text->GetCurrent() < this->text->GetLength() - 1)
-		{
-			this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() + 1));
-			this->caret->MoveY(this->caret->GetY() + this->y_);
-			height = y - this->caret->GetY();
-		}
-		Long test = this->paper->GetHeight() - this->paper->GetY();
-		if (y > this->screenHeight / this->y_*this->y_&&test>y) {
-			this->paper->MoveToY(this->paper->GetY() + this->y_);
-			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-		}
-
-	}
-	
-	//x축시작
-	//text 가 있으면
-	Long tempX = 0;
-	Long previousX = 0;
-	
-	this->row->Move(-1);
-	while (tempX < x&&this->row->GetCurrent() < this->row->GetLength()-3) {//-3인 이유는 \r\n때문
-
-		GetString getString(0, this->row->GetCurrent()+1);
-		this->row->Accept(&getString);
-		size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-		previousX = tempX;
-		tempX = size_.cx;
-
-		this->row->Move(this->row->GetCurrent() + 1);
-	}
-	float mid = (tempX + previousX) / 2.0F;
-	if (x < mid) {
-		this->row->Move(this->row->GetCurrent() - 1);
-		this->caret->MoveX( previousX);
-	}
-	else if (x >= mid&&mid != 0) {
-		this->caret->MoveX(tempX);
-	}
-	else {
-		this->caret->MoveX(0);
-	}
-	SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-	ShowCaret();
-	this->x = this->caret->GetX();
-	this->y = this->caret->GetY();
-
+	this->caret->MoveToPoint(this, &dc, point);
 	this->firstClickedRow= this->text->GetCurrent();
 	this->firstClickedColumn = this->row->GetCurrent();
 	
@@ -959,54 +890,9 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 	this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
 	if (nFlags == MK_LBUTTON) {
 		
-
-		//**************************캐럿이동************************
-		Long height;
-		//캐럿과 마우스 클릭된 곳의 y좌표 거리
-		height = this->caret->GetY() - y;
-
-		//캐럿보다 위에 있을때
-		if (height >= 0) {
-			while (height > 0) {
-				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() - 1));//this->text->current--;
-				this->caret->MoveY(this->caret->GetY() - this->y_);
-				height = this->caret->GetY() - y;
-			}
-		}
-
-		//캐럿보다 아래에 있을때
-		else if (height < 0) {
-			height = -height;
-			while (height > this->y_&&this->text->GetCurrent() < this->text->GetLength() - 1)
-			{
-				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() + 1));
-				this->caret->MoveY(this->caret->GetY() + this->y_);
-				height = y - this->caret->GetY();
-			}
-		}
-
-		//x축시작
-		//text 가 있으면
-		Long tempX = 0;
-		Long previousX = 0;
-
-		this->row->Move(-1);
-		while (tempX < x  &&this->row->GetCurrent() < this->row->GetLength() - 3) {
-
-			GetString getString(0, this->row->GetCurrent() + 1);
-			this->row->Accept(&getString);
-			size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-			previousX = tempX;
-			tempX = size_.cx;
-
-			this->row->Move(this->row->GetCurrent() + 1);
-		}
-		float mid = (tempX + previousX) / 2.0F;
-		if (x < mid) {
-			this->row->Move(this->row->GetCurrent() - 1);
-		}
-		
-		//****************************캐럿이동끝**************************************
+		//캐럿 이동
+		CClientDC dc(this);
+		this->caret->MoveToPoint(this, &dc, point);
 		//텍스트 선택시작.************************************************
 		//현재 위치 저장
 		Long startRow;
@@ -1052,7 +938,10 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		UpdateWindow();
 		
 		//this->selectedText->Visit(this->text);
-	
+		if (this->selectedText->GetStartRow() == this->selectedText->GetEndRow() && this->selectedText->GetStartColumn() == this->selectedText->GetEndColumn()) {
+			delete this->selectedText;
+			this->selectedText = NULL;
+		}
 	}
 	
 }
@@ -1186,9 +1075,9 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					this->row->Move(currentRow + findStringLength - 1);
 
 					//스크롤 관련
-					Long paperLocation = this->y_*(this->text->GetCurrent() + 2) - this->screenHeight;
+					Long paperLocation = this->fontSize*(this->text->GetCurrent() + 2) - this->screenHeight;
 					if (paperLocation > this->paper->GetHeight() - this->screenHeight) {
-						paperLocation = this->paper->GetHeight() - this->screenHeight/this->y_*this->y_;
+						paperLocation = this->paper->GetHeight() - this->screenHeight/this->fontSize*this->fontSize;
 					}
 					if (paperLocation < 0) {
 						paperLocation = 0;
@@ -1206,12 +1095,12 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					dynamic_cast<Row*>(this->text->GetAt(currentText))->Accept(&getStart);
 					size_ = dc.GetTextExtent(CString(getStart.GetStr().c_str()));
 					startX = size_.cx;
-					startY = currentText*this->y_ - paperLocation;
+					startY = currentText*this->fontSize - paperLocation;
 					GetString getEnd(0, endColumn);
 					dynamic_cast<Row*>(this->text->GetAt(currentText))->Accept(&getEnd);
 					size_ = dc.GetTextExtent(CString(getEnd.GetStr().c_str()));
 					endX = size_.cx;
-					endY = currentText*this->y_ - paperLocation;
+					endY = currentText*this->fontSize - paperLocation;
 					//마크한다.
 					this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
 					this->selectedText->SetTextPosition(currentText, currentRow, currentText, currentRow + findStringLength - 1);
@@ -1374,7 +1263,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 
 
 		}
-		/*CreateSolidCaret(1, this->y_);
+		/*CreateSolidCaret(1, this->fontSize);
 		*/
 		//끌때
 		if (dlg->IsTerminating()) {

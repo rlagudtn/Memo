@@ -102,5 +102,5 @@ void EraseSelectedText::Visit(Row *row){
 		this->ifEraseRow = true;
 	}
 }
-void EraseSelectedText::Visit(SingleByteCharacter *singleBytecharacter) { Long i = 0; }
-void EraseSelectedText::Visit(DoubleByteCharacter *doubleBytecharacter) { Long i = 0; }
+void EraseSelectedText::Visit(SingleByteCharacter *singleBytecharacter) { }
+void EraseSelectedText::Visit(DoubleByteCharacter *doubleBytecharacter) { }

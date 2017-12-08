@@ -163,6 +163,7 @@
     <ClInclude Include="GetString.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="MoveColumnByStringLength.h" />
     <ClInclude Include="Page.h" />
     <ClInclude Include="PaintVisitor.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
@@ -188,6 +189,7 @@
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoForm.cpp" />
     <ClCompile Include="GetString.cpp" />
+    <ClCompile Include="MoveColumnByStringLength.cpp" />
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PaintVisitor.cpp" />
     <ClCompile Include="Paper.cpp" />

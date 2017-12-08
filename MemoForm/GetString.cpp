@@ -26,11 +26,7 @@ GetString::GetString(CDC *pdc):str(""){
 GetString::~GetString() {}
 
 void GetString::Visit(Text *text) {
-	Long i = 0;
-	while (i < text->GetLength()) {
-		text->GetAt(i)->Accept(this);
-		i++;
-	}
+
 }
 void GetString::Visit(Row *row) {
 	Long i = this->start;
