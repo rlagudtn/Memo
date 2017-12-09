@@ -4,6 +4,7 @@
 #include "Page.h"
 #include "Text.h"  
 #include "Row.h"
+#include "LineInfo.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
 #include <string.h>
@@ -71,6 +72,7 @@ MemoForm::MemoForm() {
 	this->fontSize = 16;
 	this->paper = NULL;
 	this->pDlg = NULL;
+	this->lineInfo = NULL;
 	//this->pageButtons = NULL;
 	
 
@@ -204,6 +206,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->text = new Text;
 	this->page->Add(this->text);
 	this->caret = new Caret;
+	this->lineInfo = new LineInfo;
 	this->selectedText = NULL;
 	CRect clientRect;
 	GetClientRect(&clientRect);
@@ -211,6 +214,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->screenHeight = clientRect.Height();
 	this->paper = new Paper(this->screenWidth, this->screenHeight);
 	this->scrollPositions = new Long[32];
+	
 	//배열 초기화
 	Long k = 0;
 	while (k < 32) {
@@ -776,7 +780,21 @@ void MemoForm::OnPaint()
 	
 	CString str;
 	CPaintDC dc(this);
-	
+	//적혀있는 글자들의 정보들을 저장한다.
+	Long i = 0;
+	while (i < this->text->GetLength()) {
+		Row* temp = dynamic_cast<Row*>(this->text->GetAt(i));
+		GetString getString(0, temp->GetLength() - 1);
+		temp->Accept(&getString);
+		Long stringLength = dc.GetTextExtent(CString(getString.GetStr().c_str())).cx;
+		//넘었다면
+		bool isOver = false;
+		if (stringLength > this->screenWidth) {
+			isOver = true;
+		}
+		this->lineInfo->Add(isOver);
+		i++;
+	}
 	//화면에 적는다.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
@@ -855,12 +873,10 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		Long endColumn;
 		//마우스가 더블클릭된곳보다 상단에 있을때
 		if (this->text->GetCurrent() < this->firstClickedRow) {
-
 			startRow = this->text->GetCurrent();
 			endRow = this->firstClickedRow;
 			startColumn = this->row->GetCurrent()+1;
 			endColumn = this->firstClickedColumn;
-
 		}
 		else if (this->text->GetCurrent() > this->firstClickedRow) {
 			startRow = this->firstClickedRow;
@@ -892,11 +908,7 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		// 택 기
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), false);
 		UpdateWindow();
-		
-		//this->selectedText->Visit(this->text);
-		
 	}
-	
 }
 
 //찾기 

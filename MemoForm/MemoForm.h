@@ -4,8 +4,6 @@
 #include <afxwin.h>
 #include < afxdlgs.h>
 #include < afxext.h>
-//#include "CStatusButton.h"
-//#include "Array.h"
 class Page;
 class Text;
 class Character;
@@ -15,6 +13,7 @@ class Row;
 class Text;
 class Paper;
 class Caret;
+class LineInfo;
 //class GetString;
 class SelectedText;
 typedef signed long int Long;
@@ -56,7 +55,7 @@ public:
 	Row *row;
 	Paper *paper;
 	int fontSize;//글자 세로 길이
-
+	LineInfo *lineInfo;
 private:
 	CFindReplaceDialog *pDlg;
 	CStatusBar statusBar;

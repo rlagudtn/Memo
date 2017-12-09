@@ -158,6 +158,8 @@
     <ClInclude Include="DoubleByteCharacter.h" />
     <ClInclude Include="EraseSelectedText.h" />
     <ClInclude Include="Glyph.h" />
+    <ClInclude Include="ConnectedInfo.h" />
+    <ClInclude Include="LineInfo.h" />
     <ClInclude Include="Load.h" />
     <ClInclude Include="MemoForm.h" />
     <ClInclude Include="GetString.h">
@@ -180,11 +182,13 @@
     <ClCompile Include="Caret.cpp" />
     <ClCompile Include="Character.cpp" />
     <ClCompile Include="Composite.cpp" />
+    <ClCompile Include="ConnectedInfo.cpp" />
     <ClCompile Include="CopyToMemo.cpp" />
     <ClCompile Include="CStatusButton.cpp" />
     <ClCompile Include="DoubleByteCharacter.cpp" />
     <ClCompile Include="EraseSelectedText.cpp" />
     <ClCompile Include="Glyph.cpp" />
+    <ClCompile Include="LineInfo.cpp" />
     <ClCompile Include="Load.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MemoForm.cpp" />
