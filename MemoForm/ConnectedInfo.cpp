@@ -7,29 +7,27 @@
 #include "SingleByteCharacter.h"
 ConnectedInfo::ConnectedInfo(){}
 ConnectedInfo::ConnectedInfo(const ConnectedInfo& source) {
-	this->IsConnected = source.IsConnected;
 	this->lastConnectedRow = source.lastConnectedRow;
 }
 ConnectedInfo::~ConnectedInfo() {}
 
 ConnectedInfo& ConnectedInfo::operator=(const ConnectedInfo& source) {
-	this->IsConnected = source.IsConnected;
 	this->lastConnectedRow = source.lastConnectedRow;
 
 	return *this;
 }
-ConnectedInfo& ConnectedInfo::GetConnectedInfo(Text *text) {
-	this->IsConnected = false;
-	Row *currentLine = dynamic_cast<Row*>(text->GetAt(text->GetCurrent()));
+Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
+	bool isConnected = false;
+	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
 	this->lastConnectedRow =currentLine->GetCurrent();
 	//현재줄의 마지막글자를 받는다.
 	Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
 	if (dynamic_cast<SingleByteCharacter*>(lastCharacter)->GetAlphabet()!='\n') {
-		this->IsConnected = true;
+		isConnected = true;
 	}
 	//연결되져 있는 줄이 있다면.
-	if (this->IsConnected == true) {
-		Long i =text->GetCurrent();
+	if (isConnected == true) {
+		Long i =index;
 		bool isLineFeed = false;
 		Row *row;
 		Character *character;
@@ -45,5 +43,5 @@ ConnectedInfo& ConnectedInfo::GetConnectedInfo(Text *text) {
 		//저장한다.
 		this->lastConnectedRow=i-1;
 	}
-	return *this;
+	return this->lastConnectedRow;
 }

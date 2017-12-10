@@ -16,6 +16,10 @@ LineInfo& LineInfo::operator=(const LineInfo& source) {
 	this->capacity = source.capacity;
 	this->length = source.length;
 	return *this;
+
+}
+bool LineInfo::GetAt(Long index) {
+	return this->isOverScreen.GetAt(index);
 }
 Long LineInfo::Add(bool isOver) {
 	Long index;
@@ -29,4 +33,7 @@ Long LineInfo::Add(bool isOver) {
 	this->length++;
 
 	return index;
+}
+bool LineInfo::operator[](Long index) {
+	return this->isOverScreen[index];
 }

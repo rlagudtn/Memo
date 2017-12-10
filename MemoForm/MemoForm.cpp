@@ -19,6 +19,7 @@
 #include "CopyToMemo.h"
 #include "PaintVisitor.h"
 #include "EraseSelectedText.h"
+#include "LineController.h"
 #include "resource.h"
 #include <afxcmn.h>	//cstatusbarctrl
 #include < afxstatusbar.h>
@@ -780,21 +781,23 @@ void MemoForm::OnPaint()
 	
 	CString str;
 	CPaintDC dc(this);
-	//적혀있는 글자들의 정보들을 저장한다.
+	/*//적혀있는 글자들의 정보들을 저장한다.
 	Long i = 0;
 	while (i < this->text->GetLength()) {
 		Row* temp = dynamic_cast<Row*>(this->text->GetAt(i));
 		GetString getString(0, temp->GetLength() - 1);
 		temp->Accept(&getString);
 		Long stringLength = dc.GetTextExtent(CString(getString.GetStr().c_str())).cx;
-		//넘었다면
+		//화면 영역 안넘을때
 		bool isOver = false;
+		//넘을때
 		if (stringLength > this->screenWidth) {
 			isOver = true;
 		}
 		this->lineInfo->Add(isOver);
 		i++;
-	}
+	}*/
+	
 	//화면에 적는다.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
@@ -1244,7 +1247,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 }
 
 void MemoForm::OnSize(UINT nType, int cx, int cy) {
-
+	Long temp = this->screenWidth;
 	this->screenWidth = cx;
 	this->screenHeight = cy;
 	this->scrollInfo.cbSize = sizeof(this->scrollInfo);
@@ -1253,7 +1256,12 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nMax = this->paper->GetHeight();
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
-
+	//자동 줄바꿈
+	if (temp != this->screenWidth) {
+		LineController lineController;
+		CClientDC dc(this);
+		lineController.SetLineInfo(this, &dc);
+	}
 	
 	
 }

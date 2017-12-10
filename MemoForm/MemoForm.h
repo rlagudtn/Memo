@@ -56,6 +56,8 @@ public:
 	Paper *paper;
 	int fontSize;//글자 세로 길이
 	LineInfo *lineInfo;
+	Long screenWidth;
+	Long screenHeight;
 private:
 	CFindReplaceDialog *pDlg;
 	CStatusBar statusBar;
@@ -64,8 +66,6 @@ private:
 	//CClientDC pdc;
 	SelectedText *selectedText;
 	char wszComp[2];
-	Long screenHeight;
-	Long screenWidth;
 	SCROLLINFO scrollInfo;
 	Long(*scrollPositions); //페이지들의 스크롤 포지션
 	//텍스트 선택 관련

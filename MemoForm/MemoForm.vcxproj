@@ -159,6 +159,7 @@
     <ClInclude Include="EraseSelectedText.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="ConnectedInfo.h" />
+    <ClInclude Include="LineController.h" />
     <ClInclude Include="LineInfo.h" />
     <ClInclude Include="Load.h" />
     <ClInclude Include="MemoForm.h" />
@@ -188,6 +189,7 @@
     <ClCompile Include="DoubleByteCharacter.cpp" />
     <ClCompile Include="EraseSelectedText.cpp" />
     <ClCompile Include="Glyph.cpp" />
+    <ClCompile Include="LineController.cpp" />
     <ClCompile Include="LineInfo.cpp" />
     <ClCompile Include="Load.cpp" />
     <ClCompile Include="main.cpp" />

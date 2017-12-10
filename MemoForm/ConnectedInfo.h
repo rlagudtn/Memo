@@ -10,16 +10,11 @@ public:
 	ConnectedInfo(const ConnectedInfo& source);
 	~ConnectedInfo();
 	ConnectedInfo& operator=(const ConnectedInfo& source);
-	ConnectedInfo& GetConnectedInfo(Text *text);
-	bool GetIsConnected() const;
+	Long GetEndOfConnected(Text *text,Long index);
 	Long GetLastConnectedRow() const;
 private:
-	bool IsConnected;
 	Long lastConnectedRow;
 };
-inline bool ConnectedInfo::GetIsConnected() const {
-	return this->IsConnected;
-}
 inline Long ConnectedInfo::GetLastConnectedRow() const {
 	return this->lastConnectedRow;
 }
