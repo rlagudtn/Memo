@@ -20,6 +20,8 @@
 #include "PaintVisitor.h"
 #include "EraseSelectedText.h"
 #include "MoveConnectedText.h"
+#include "ConnectedInfo.h"
+#include "CutString.h"
 #include "LineController.h"
 #include "resource.h"
 #include <afxcmn.h>	//cstatusbarctrl
@@ -278,13 +280,11 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				CString *str=(CString*)GlobalLock(hClipboardData);
 				GlobalUnlock(hClipboardData);
 				//붙여넣기 하기 전의 선택된줄 뒤의 텍스트들을 복사한다
-				
-				SelectedText selectedText;
-				selectedText.SetTextPosition(this->text->GetCurrent(), this->row->GetCurrent() + 1, this->text->GetCurrent(), this->row->GetLength()-1 );//-2인 이유는 뒤의 \n을 인위적으로 빼줌..여기서만
-				this->text->Accept(&selectedText);
-				//뒤의 텍스트를 지운다.
-				EraseSelectedText eraseSelectedText(this->text->GetCurrent(), this->row->GetCurrent() + 1, this->text->GetCurrent(), this->row->GetLength() - 1);
-				this->text->Accept(&eraseSelectedText);
+				ConnectedInfo connectedInfo;
+				Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
+				//자른다.
+				CutString cutString;
+				CString cuttedText = CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
 				CClientDC dc(this);
 				CopyToMemo copyToMemo(&dc,this->screenWidth,(LPCTSTR)str);
 				this->text->Accept(&copyToMemo);
@@ -293,13 +293,12 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				Long textCurrent = this->text->GetCurrent();
 				Long rowCurrent = this->row->GetCurrent();
 				//임시저장한 텍스트를 다시 적는다.
-				CString remainText = CString(selectedText.GetBuffer().c_str());
-				remainText.Replace("\r\n", "\r");
-				CopyToMemo copyAgain(&dc, this->screenWidth, (LPCTSTR)remainText);
+				cuttedText.Replace("\r\n", "");
+				CopyToMemo copyAgain(&dc, this->screenWidth, (LPCTSTR)cuttedText);
 				this->text->Accept(&copyAgain);
 				//마지막에 \n 추가
-				SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-				dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()))->Add(lineFeed);
+				LineController lineController;
+				lineController.SetLineFeed(this->row);
 				//현재 위치를 원 상태로 돌린다
 				this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
 				this->row->Move(rowCurrent);
@@ -370,10 +369,14 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				
 				//현재 위치를 원 상태로 돌린다.
 				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent()));
+				MoveConnectedText moveConnectedText;
+				CClientDC dc(this);
+				moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
 				if (this->selectedText != NULL) {
 					delete this->selectedText;
 					this->selectedText = NULL;
 				}
+
 
 				InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 				UpdateWindow();
@@ -464,7 +467,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			if (this->page->GetCurrent() > 0) {
 				this->text=dynamic_cast<Text*>(this->page->Move(this->page->GetCurrent() - 1));
 				this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-				//스크롤 위치 변경
+				//스크롤 위치 변경f
 				this->paper->MoveToY(this->scrollPositions[this->page->GetCurrent()]);
 				this->scrollInfo.nPos = this->scrollPositions[this->page->GetCurrent()];
 				SetScrollPos(SB_VERT, this->scrollInfo.nPos);
@@ -486,58 +489,37 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		}
 		Invalidate(true);
 	}
-	
-}
-void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	
-
-	if (nChar == VK_RETURN) {
+	else if (nChar == VK_RETURN) {
 		//캐럿을 숨긴다
 		HideCaret();
-		//현재 위치 이후의 텍스트를 옮긴다.
-		SelectedText selectedText;
-		selectedText.SetTextPosition(this->text->GetCurrent(), this->row->GetCurrent() + 1, this->text->GetCurrent(), this->row->GetLength()-1 );
-		this->text->Accept(&selectedText);
-
-		//옮긴텍스트를 기존 종이에서 삭제한다.
-		EraseSelectedText eraseSelectedText(this->text->GetCurrent(), this->row->GetCurrent() + 1, this->text->GetCurrent(), this->row->GetLength() - 1);
-		this->text->Accept(&eraseSelectedText);
-		//\r,\n추가
-		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter('\r');
-		this->row->Add(singleByteCharacter);
-		SingleByteCharacter *singleByteCharacter_ = new SingleByteCharacter('\n');
-		this->row->Add(singleByteCharacter_);
-
+		//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
+		ConnectedInfo connectedInfo;
+		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
+		//자른다.
+		CutString cutString;
+		CString cuttedText=CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
+		//개행문자 추가
+		LineController lineController;
+		lineController.SetLineFeed(this->row);
 		//새로운 줄 생성
-		this->row = new Row;
-		//text에 저장
-		if (this->text->GetCurrent() < this->text->GetLength() - 1) {
-			this->text->TakeIn(this->text->GetCurrent() + 1, this->row);
-		}
-		else if (this->text->GetCurrent() >= this->text->GetLength() - 1) {
-			this->text->Add(this->row);
-		}
+		lineController.MakeNewLine(this, this->text->GetCurrent() + 1);
 		//current저장
 		Long textCurrent = this->text->GetCurrent();
 		Long rowCurrent = this->row->GetCurrent();
 		//삭제했던 텍스트를 다시 적는다.
 		CClientDC dc(this);
-		CString tempString = CString(selectedText.GetBuffer().c_str());
-		tempString.Replace("\r\n", "\r");
-		CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)tempString);
+		cuttedText.Replace("\r\n", "");
+		CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)cuttedText);
 		this->text->Accept(&copyToMemo);
+		//개행추가
+		lineController.SetLineFeed(dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent())));
 		//현재위치 변경
 		this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
-		SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-		this->row->Add(lineFeed);
 		this->row->Move(rowCurrent);
-		//캐럿 위치  여기서만 변경
-		//this->caret->Move(0, this->caret->GetY() + this->fontSize);
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-		//UpdateWindow();
 	}
 	else if (nChar == VK_BACK) {
-		if (this->text->GetCurrent() != 0 ||this->row->GetCurrent() != -1) {
+		if (this->text->GetCurrent() != 0 || this->row->GetCurrent() != -1) {
 			Long currentText;
 			Long currentRow;
 			if (this->row->GetCurrent() >= 0) {
@@ -555,61 +537,19 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				currentText = this->text->GetCurrent() - 1;
 				currentRow = previousRow->GetLength() - 1;
 			}
-			//연결되어져있는줄이 있는지 확인한다.
-			bool isConnected = false;
-			Row *currentTemp = dynamic_cast<Row*>(this->text->GetAt(currentText));
-			Character *character = dynamic_cast<Character*>(currentTemp->GetAt(currentTemp->GetLength() - 1));
-			if (dynamic_cast<SingleByteCharacter*>(character)) {
-				if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() != '\n') {
-					isConnected = true;
-				}
-			}
-			if (isConnected == true) {
-				CClientDC dc(this);
+			MoveConnectedText moveConnectedText;
+			CClientDC dc(this);
+			moveConnectedText.ChangeLine(this, &dc, currentText);
+			//현재줄로 다시 이동
+			this->row = dynamic_cast<Row*>(this->text->Move(currentText));
+			this->row->Move(currentRow);
 
-				bool isLineFeed = false;
-				Long k = this->text->GetCurrent();
-				Row *row;
-				Character *character;
-				char alphabet;
-				while (isLineFeed != true) {
-					row = dynamic_cast<Row*>(this->text->GetAt(k));
-					character = dynamic_cast<Character*>(row->GetAt(row->GetLength() - 1));
-					if (dynamic_cast<SingleByteCharacter*>(character)) {
-						alphabet = dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
-						if (alphabet == '\n') {
-							isLineFeed = true;
-						}
-					}
-					k++;
-				}
-				Long endRow = k - 1;
-				//이어진줄까지 선택한다.
-				SelectedText selectedText(&dc, this->paper->GetX(), this->paper->GetY());
-				selectedText.SetTextPosition(currentText, currentRow, endRow, dynamic_cast<Row*>(this->text->GetAt(endRow))->GetLength() - 1);
-				this->text->Accept(&selectedText);
-				//지운다.
-				EraseSelectedText eraseText(currentText, currentRow, endRow, dynamic_cast<Row*>(this->text->GetAt(endRow))->GetLength() - 1);
-				this->text->Accept(&eraseText);
-				//다시 쓴다.
-				CString writeAgain = CString(selectedText.GetBuffer().c_str());
-				writeAgain.Replace("\r\n", "\r");
-				CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)writeAgain);
-				this->text->Accept(&copyToMemo);
-				//마지막줄에 \n추가
-				row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-				SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-				row->Add(lineFeed);
-				//현재줄로 다시 이동
-				this->row = dynamic_cast<Row*>(this->text->Move(currentText));
-				this->row->Move(currentRow);
-
-			}
 			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		}
 	}
-	else if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0){
-		Long index = 0;
+}
+void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
+	if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_RETURN&&nChar!=VK_BACK){
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어
@@ -630,70 +570,11 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		this->row->Accept(&getString);
 		CClientDC dc(this);
 		CSize size = dc.GetTextExtent(CString(getString.GetStr().c_str()));
-		//넘는다면
+		//넘는다면 자동줄바꿈 시켜준다.
 		if (size.cx > this->screenWidth) {
 			MoveConnectedText moveConnectedText;
 			moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
-			/*//현재줄 저장
-			Long currentText = this->text->GetCurrent();;
-			Long currentRow = this->row->GetCurrent();;
-			GetString currentString(0, this->row->GetCurrent());
-			this->row->Accept(&currentString);
-			size = dc.GetTextExtent(CString(currentString.GetStr().c_str()));
-			if (size.cx > this->screenWidth) {
-				currentText = this->text->GetCurrent() + 1;
-				currentRow = 0;
-			}
-			//else {
-				//currentText = this->text->GetCurrent() + 1;
-				//currentRow = 0;
-			//}
-
-			//연결되어져 있는 줄까지.
-			bool isLineFeed = false;
-			Long k = this->text->GetCurrent();
-			Row *row;
-			Character *character;
-			char alphabet;
-			while (isLineFeed != true) {
-				row = dynamic_cast<Row*>(this->text->GetAt(k));
-				character = dynamic_cast<Character*>(row->GetAt(row->GetLength() - 1));
-				if (dynamic_cast<SingleByteCharacter*>(character)) {
-					alphabet = dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
-					if (alphabet == '\n') {
-						isLineFeed = true;
-					}
-				}
-				k++;
-			}
-			Long endRow = k - 1;
-			//이어진줄까지 선택한다.
-			SelectedText selectedText(&dc, this->paper->GetX(), this->paper->GetY());
-			selectedText.SetTextPosition(this->text->GetCurrent(), this->row->GetCurrent(), endRow, dynamic_cast<Row*>(this->text->GetAt(endRow))->GetLength() - 1);
-			this->text->Accept(&selectedText);
-			//지운다.
-			EraseSelectedText eraseText(this->text->GetCurrent(), this->row->GetCurrent(), endRow, dynamic_cast<Row*>(this->text->GetAt(endRow))->GetLength() - 1);
-			this->text->Accept(&eraseText);
-			//새줄을 추가한다.
-			/*Row *newRow = new Row;
-			if (text->GetCurrent() < text->GetLength() - 1) {
-				text->TakeIn(text->GetCurrent() + 1, newRow);
-			}
-			else if (text->GetCurrent() >= text->GetLength() - 1) {
-				text->Add(newRow);
-			}		//다시 쓴다.
-			CString writeAgain = CString(selectedText.GetBuffer().c_str());
-			writeAgain.Replace("\r\n", "\r");
-			CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)writeAgain);
-			this->text->Accept(&copyToMemo);
-			//마지막줄에 \n추가
-			row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-			SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-			row->Add(lineFeed);
-
-			//현재줄로 다시 이동
-			this->row = dynamic_cast<Row*>(this->text->Move(currentText));
-			this->row->Move(currentRow);*/
+			
 		}
 	}
 	//스크롤 관련
@@ -1046,7 +927,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					this->row->Move(currentRow + findStringLength - 1);
 
 					//스크롤 관련
-					Long paperLocation = this->fontSize*(this->text->GetCurrent() + 2) - this->screenHeight;
+					Long paperLocation = this->fontSize*(this->text->GetCurrent() + 2) - this->screenHeight/this->fontSize*this->fontSize;
 					if (paperLocation > this->paper->GetHeight() - this->screenHeight) {
 						paperLocation = this->paper->GetHeight() - this->screenHeight/this->fontSize*this->fontSize;
 					}

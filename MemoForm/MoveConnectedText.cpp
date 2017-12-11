@@ -13,11 +13,11 @@
 MoveConnectedText::MoveConnectedText(){}
 MoveConnectedText::MoveConnectedText(const MoveConnectedText& source) {}
 MoveConnectedText::~MoveConnectedText(){}
-void MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long index) {
+void MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Long rowIndex) {
 	//현재줄 임시 저장
 	Long currentText = memoForm->text->GetCurrent();
 	Long currentRow = memoForm->row->GetCurrent();
-	if (currentText == index) {
+	if (currentText == textIndex) {
 		GetString currentString(0, memoForm->row->GetCurrent());
 		memoForm->row->Accept(&currentString);
 		CSize size = dc->GetTextExtent(CString(currentString.GetStr().c_str()));
@@ -28,15 +28,15 @@ void MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long index) {
 	}
 	
 
-	//어디 까지 이어져있는지 구한다.
+	//어디까지 이어져있는지 구한다.
 	ConnectedInfo connectedInfo;
-	Long endRow=connectedInfo.GetEndOfConnected(memoForm->text, index);
+	Long endRow=connectedInfo.GetEndOfConnected(memoForm->text, textIndex);
 	//이어진줄까지 선택한다.
 	SelectedText selectedText(dc, memoForm->paper->GetX(),memoForm->paper->GetY());
-	selectedText.SetTextPosition(index, 0, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1);
+	selectedText.SetTextPosition(textIndex, rowIndex, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1);
 	memoForm->text->Accept(&selectedText);
 	//지운다.
-	EraseSelectedText eraseText(index, 0, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1);
+	EraseSelectedText eraseText(textIndex, rowIndex, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1);
 	memoForm->text->Accept(&eraseText);
 	
 	CString writeAgain = CString(selectedText.GetBuffer().c_str());

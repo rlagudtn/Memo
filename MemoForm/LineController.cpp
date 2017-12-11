@@ -34,11 +34,6 @@ LineController::~LineController(){}
 }*/
 void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 	Row *newRow = new Row;
-	SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
-	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-	newRow->Add(carriageReturn);
-	newRow->Add(lineFeed);
-	newRow->Move(-1);
 	if (index < memoForm->text->GetLength() - 1) {
 		memoForm->text->TakeIn(index, newRow);
 	}
@@ -78,9 +73,11 @@ void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 	}
 }
 */
-/*void LineController::SetLineFeed(Row *row) {
+void LineController::SetLineFeed(Row *row) {
+	Long rowIndex = row->GetCurrent();
 	SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
 	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
 	row->Add(carriageReturn);
 	row->Add(lineFeed);
-}*/
+	row->Move(rowIndex);
+}

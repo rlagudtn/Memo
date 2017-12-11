@@ -155,6 +155,7 @@
     <ClInclude Include="Composite.h" />
     <ClInclude Include="CopyToMemo.h" />
     <ClInclude Include="CStatusButton.h" />
+    <ClInclude Include="CutString.h" />
     <ClInclude Include="DoubleByteCharacter.h" />
     <ClInclude Include="EraseSelectedText.h" />
     <ClInclude Include="Glyph.h" />
@@ -187,6 +188,7 @@
     <ClCompile Include="ConnectedInfo.cpp" />
     <ClCompile Include="CopyToMemo.cpp" />
     <ClCompile Include="CStatusButton.cpp" />
+    <ClCompile Include="CutString.cpp" />
     <ClCompile Include="DoubleByteCharacter.cpp" />
     <ClCompile Include="EraseSelectedText.cpp" />
     <ClCompile Include="Glyph.cpp" />

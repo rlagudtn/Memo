@@ -9,7 +9,7 @@ public :
 	MoveConnectedText();
 	MoveConnectedText(const MoveConnectedText& source);
 	~MoveConnectedText();
-	void ChangeLine(MemoForm *memoForm,CDC *dc,Long index);
+	void ChangeLine(MemoForm *memoForm,CDC *dc,Long textIndex,Long rowIndex=0);
 
 };
-#endif // !_MOVECONNECTEDTEXT_H
+#endif // _CUTSTRING_H
