@@ -14,7 +14,7 @@
 LineController::LineController(){}
 LineController::LineController(const LineController& source) {}
 LineController::~LineController(){}
-void LineController::SetLineInfo(MemoForm *memoForm,CDC *dc) {
+/*void LineController::SetLineInfo(MemoForm *memoForm,CDC *dc) {
 	//적혀있는 글자들의 정보들을 저장한다.
 	Long i = 0;
 	while (i < memoForm->text->GetLength()) {
@@ -31,9 +31,14 @@ void LineController::SetLineInfo(MemoForm *memoForm,CDC *dc) {
 		memoForm->lineInfo->Add(isOver);
 		i++;
 	}
-}
+}*/
 void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 	Row *newRow = new Row;
+	SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
+	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
+	newRow->Add(carriageReturn);
+	newRow->Add(lineFeed);
+	newRow->Move(-1);
 	if (index < memoForm->text->GetLength() - 1) {
 		memoForm->text->TakeIn(index, newRow);
 	}
@@ -43,7 +48,7 @@ void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
 }
 
-void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
+/*void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	//lineInfo에 length만큼 반복하낟.
 	Long i = memoForm->lineInfo->GetLength()-1;
 	while (i >= 0) {
@@ -72,10 +77,10 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		i++;
 	}
 }
-
-void LineController::SetLineFeed(Row *row) {
+*/
+/*void LineController::SetLineFeed(Row *row) {
 	SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
 	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
 	row->Add(carriageReturn);
 	row->Add(lineFeed);
-}
+}*/

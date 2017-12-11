@@ -19,7 +19,7 @@ ConnectedInfo& ConnectedInfo::operator=(const ConnectedInfo& source) {
 Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 	bool isConnected = false;
 	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
-	this->lastConnectedRow =currentLine->GetCurrent();
+	this->lastConnectedRow =index;
 	//현재줄의 마지막글자를 받는다.
 	Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
 	if (dynamic_cast<SingleByteCharacter*>(lastCharacter)->GetAlphabet()!='\n') {

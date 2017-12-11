@@ -19,6 +19,7 @@
 #include "CopyToMemo.h"
 #include "PaintVisitor.h"
 #include "EraseSelectedText.h"
+#include "MoveConnectedText.h"
 #include "LineController.h"
 #include "resource.h"
 #include <afxcmn.h>	//cstatusbarctrl
@@ -631,7 +632,9 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		CSize size = dc.GetTextExtent(CString(getString.GetStr().c_str()));
 		//넘는다면
 		if (size.cx > this->screenWidth) {
-			//현재줄 저장
+			MoveConnectedText moveConnectedText;
+			moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
+			/*//현재줄 저장
 			Long currentText = this->text->GetCurrent();;
 			Long currentRow = this->row->GetCurrent();;
 			GetString currentString(0, this->row->GetCurrent());
@@ -678,7 +681,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			}
 			else if (text->GetCurrent() >= text->GetLength() - 1) {
 				text->Add(newRow);
-			}*/			//다시 쓴다.
+			}		//다시 쓴다.
 			CString writeAgain = CString(selectedText.GetBuffer().c_str());
 			writeAgain.Replace("\r\n", "\r");
 			CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)writeAgain);
@@ -690,7 +693,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 
 			//현재줄로 다시 이동
 			this->row = dynamic_cast<Row*>(this->text->Move(currentText));
-			this->row->Move(currentRow);
+			this->row->Move(currentRow);*/
 		}
 	}
 	//스크롤 관련
@@ -1257,11 +1260,11 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//자동 줄바꿈
-	if (temp != this->screenWidth) {
+	/*if (temp != this->screenWidth) {
 		LineController lineController;
 		CClientDC dc(this);
 		lineController.SetLineInfo(this, &dc);
-	}
+	}*/
 	
 	
 }
