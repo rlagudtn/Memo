@@ -64,7 +64,7 @@ BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	//ON_COMMAND_RANGE(IDI_ADDICON,200,MemoForm::OnButtonCliked)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
-	ON_WM_SYSCOMMAND()
+	//ON_WM_SYSCOMMAND()
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 MemoForm::MemoForm() {
@@ -112,8 +112,8 @@ BOOL MemoForm::PreTranslateMessage(MSG* pMsg) {
 				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() - 1));
 				this->row->Move(this->row->GetLength() - 1);
 				
-				GetString getString(0, this->text->GetCurrent());
-				size_ = dc.GetTextExtent(CString(getString.GetStr().c_str()));
+				GetString getString;
+				size_ = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->text->GetCurrent()).c_str()));
 				this->caret->Move(size_.cx, this->caret->GetY() -this->fontSize);
 				SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));    //위치 설정
 				ShowCaret();
@@ -566,10 +566,9 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//화면 넘는지.
-		GetString getString(0, this->row->GetLength() - 1);
-		this->row->Accept(&getString);
+		GetString getString;
 		CClientDC dc(this);
-		CSize size = dc.GetTextExtent(CString(getString.GetStr().c_str()));
+		CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
 		//넘는다면 자동줄바꿈 시켜준다.
 		if (size.cx > this->screenWidth) {
 			MoveConnectedText moveConnectedText;
@@ -687,19 +686,19 @@ void MemoForm::OnPaint()
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
 	//캐럿
-	this->caret->MoveToCurrent(this, &dc);
+	//this->caret->MoveToCurrent(this, &dc);
 	
 	//출력영역 안이라면
-	//if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
-		//CreateSolidCaret(1, this->fontSize);
-		//SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-		//ShowCaret();
+	if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
+		CreateSolidCaret(1, this->fontSize);
+		SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
+		ShowCaret();
 		
-	//}
+	}
 	//출력영역 밖이라면
-	//else {
-	//	HideCaret();
-	//}
+	else {
+		HideCaret();
+	}
 	//스크롤 갱신/
 	if (this->text->GetLength()*this->fontSize > this->screenHeight) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
@@ -859,9 +858,8 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					startColumn = row->GetCurrent() + 1;
 				}
 				endColumn = row->GetLength() - 1;
-				GetString getString(startColumn, endColumn);
-				row->Accept(&getString);
-				text += CString(getString.GetStr().c_str());
+				GetString getString;
+				text += CString(getString.SubString(row, startColumn, endColumn).c_str());
 				text += "\r\n";
 				afterTextRow++;
 			}
@@ -938,21 +936,6 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 
 					this->scrollInfo.nPos = paperLocation;
 					SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-					//Invalidate();
-					//마크
-
-					//마크할 위치 
-
-					GetString getStart(0, startColumn - 1);
-					dynamic_cast<Row*>(this->text->GetAt(currentText))->Accept(&getStart);
-					size_ = dc.GetTextExtent(CString(getStart.GetStr().c_str()));
-					startX = size_.cx;
-					startY = currentText*this->fontSize - paperLocation;
-					GetString getEnd(0, endColumn);
-					dynamic_cast<Row*>(this->text->GetAt(currentText))->Accept(&getEnd);
-					size_ = dc.GetTextExtent(CString(getEnd.GetStr().c_str()));
-					endX = size_.cx;
-					endY = currentText*this->fontSize - paperLocation;
 					//마크한다.
 					this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
 					this->selectedText->SetTextPosition(currentText, currentRow, currentText, currentRow + findStringLength - 1);
@@ -960,8 +943,6 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
 					UpdateWindow();
 					this->selectedText->Visit(this->text);
-					//SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-					//ShowCaret();
 				}
 
 				//\n을 만난다면.
@@ -1016,8 +997,6 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					this->row->Move(rowCurrent);
 				}
 			}
-
-
 		}
 		//모두 바꾸기
 		else if (dlg->ReplaceAll() != 0 && !dlg->IsTerminating()) {
@@ -1141,71 +1120,62 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//자동 줄바꿈
-	/*if (temp != this->screenWidth) {
+	if (temp != this->screenWidth) {
 		LineController lineController;
-		CClientDC dc(this);
-		lineController.SetLineInfo(this, &dc);
-	}*/
-	
+		CDC *dc = GetDC();
+		lineController.AutomaticLineChange(this, dc);
+		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+		UpdateWindow();
+	}
 	
 }
-void MemoForm::OnSysCommand(UINT nID, LPARAM lParam) {
-	if (nID == SC_CLOSE) {
-		if (this->page != NULL) {
-			//저장하기
-			//메세지박스 출력
-			int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
-			if (ret == IDYES) {
-				CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY|OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
-				if (dlg.DoModal() == IDOK) {
-					CStdioFile file;
-					CString str;
-					//TCHAR pathName[128];//파일경로
-					//GetModuleFileName(NULL, pathName, 128);
 
-					if (file.Open(dlg.GetPathName(), CFile::modeCreate|CFile::modeWrite | CFile::typeText)) {
-						Long i = 0;
-						Text *text;
-						Row *row;
-						CString str;
-						while (i < this->page->GetLength()) {
-							text = dynamic_cast<Text*>(this->page->GetAt(i));
-							Long j = 0;
-							while (j <text->GetLength()) {
-								row = dynamic_cast<Row*>(text->GetAt(j));
-								GetString getString(0, row->GetLength() -1);
-								row->Accept(&getString);
-								str = CString(getString.GetStr().c_str());
-								file.WriteString(str+"\n");
-								j++;
-							}
-							if (i <this->page->GetLength()-1) {
-								file.WriteString("\f\n");
-							}
-							i++;
-						}
-						file.Close();
-					}
-				}
-				CFrameWnd::OnClose();
-			}
-			else if (ret == IDNO) {
-				if (this->page != NULL) {
-					delete this->page;
-				}
-				CFrameWnd::OnClose();
-			}
-		}
-	
-
-	}
-	else {
-		
-		CFrameWnd::OnSysCommand(nID, lParam);
-		
-	}
-}
 void MemoForm::OnClose() {
-	
+	CWnd::EnableWindow(false);
+	if (this->page != NULL) {
+		//저장하기
+		//메세지박스 출력
+		int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
+		if (ret == IDYES) {
+			CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
+			if (dlg.DoModal() == IDOK) {
+				CStdioFile file;
+				CString str;
+				//TCHAR pathName[128];//파일경로
+				//GetModuleFileName(NULL, pathName, 128);
+
+				if (file.Open(dlg.GetPathName(), CFile::modeCreate | CFile::modeWrite | CFile::typeText)) {
+					Long i = 0;
+					Text *text;
+					Row *row;
+					CString str;
+					while (i < this->page->GetLength()) {
+						text = dynamic_cast<Text*>(this->page->GetAt(i));
+						Long j = 0;
+						while (j <text->GetLength()) {
+							row = dynamic_cast<Row*>(text->GetAt(j));
+							GetString getString;
+							str = CString(getString.SubString(row, 0, row->GetLength() - 1).c_str());
+							file.WriteString(str + "\n");
+							j++;
+						}
+						if (i <this->page->GetLength() - 1) {
+							file.WriteString("\f\n");
+						}
+						i++;
+					}
+					file.Close();
+				}
+			}
+			CFrameWnd::OnClose();
+		}
+		else if (ret == IDNO) {
+			if (this->page != NULL) {
+				delete this->page;
+			}
+			CFrameWnd::OnClose();
+		}
+	}
+	CWnd::EnableWindow(true);
 }
 

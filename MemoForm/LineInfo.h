@@ -9,13 +9,13 @@ public:
 	LineInfo(const LineInfo& source);
 	~LineInfo();
 	LineInfo& operator=(const LineInfo& source);
-	bool GetAt(Long index);
-	Long Add(bool isOver);
-	bool operator[](Long index);
+	Long GetAt(Long index);
+	Long Add(Long isOver);
+	Long operator[](Long index);
 	Long GetCapapcity() const;
 	Long GetLength() const;
 private:
-	Array<bool> isOverScreen;
+	Array<Long> booleans;
 	Long capacity;
 	Long length;
 };

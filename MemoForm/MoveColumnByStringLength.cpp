@@ -16,9 +16,8 @@ void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
 	row->Move(-1);
 	while (i < row->GetLength()&&stringLength<pointX) {
 		row->Move(i);
-		GetString getString(0, i);
-		row->Accept(&getString);
-		size = pdc->GetTextExtent(CString(getString.GetStr().c_str()));
+		GetString getString;
+		size = pdc->GetTextExtent(CString(getString.SubString(row, 0, i).c_str()));
 		previous = stringLength;
 		stringLength = size.cx;
 		i++;

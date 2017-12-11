@@ -44,7 +44,7 @@ protected:
 	afx_msg void OnLButtonDown(UINT nFlags, CPoint point);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LONG OnFindReplace(WPARAM wParam, LPARAM lParam);
-	afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
+	//afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnClose();
 	//afx_msg void OnButtonCliked(UINT uiID);//버튼 클릭시
 

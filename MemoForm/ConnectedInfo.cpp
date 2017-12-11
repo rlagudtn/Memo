@@ -17,16 +17,16 @@ ConnectedInfo& ConnectedInfo::operator=(const ConnectedInfo& source) {
 	return *this;
 }
 Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
-	bool isConnected = false;
+	this->isConnected = false;
 	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
 	this->lastConnectedRow =index;
 	//현재줄의 마지막글자를 받는다.
 	Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
 	if (dynamic_cast<SingleByteCharacter*>(lastCharacter)->GetAlphabet()!='\n') {
-		isConnected = true;
+		this->isConnected = true;
 	}
 	//연결되져 있는 줄이 있다면.
-	if (isConnected == true) {
+	if (this->isConnected == true) {
 		Long i =index;
 		bool isLineFeed = false;
 		Row *row;

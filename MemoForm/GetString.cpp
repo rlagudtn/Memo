@@ -6,57 +6,23 @@
 #include "Character.h"
 #include "Text.h"
 #include "Paper.h"
-#include <afxwin.h>
-#include <string>	
-using namespace std;
-GetString::GetString()
-:str("") {
-	this->start = -1;
-	this->end = -1;
+GetString::GetString() {
 }
-GetString::GetString(Long start, Long end)
-:str(""){
-	this->start = start;
-	this->end = end;
+GetString::~GetString() {
 }
-GetString::GetString(CDC *pdc):str(""){
-	this->pdc = pdc;
-}
-
-GetString::~GetString() {}
-
-void GetString::Visit(Text *text) {
-
-}
-void GetString::Visit(Row *row) {
-	Long i = this->start;
-
-	while (i <= this->end) {
-		Character *character = dynamic_cast<Character*>(row->GetAt(i));
-		if (dynamic_cast<SingleByteCharacter*>(character)) {
-			(dynamic_cast<SingleByteCharacter*>(character))->Accept(this);
-
+string GetString::SubString(Row *row, Long start, Long end){
+	Long i = start;
+	Character *character;
+	string str;
+	while (i <= end) {
+		character = dynamic_cast<Character*>(row->GetAt(i));
+		if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() != '\r'&&dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() != '\n') {
+			str += dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
 		}
 		else if (dynamic_cast<DoubleByteCharacter*>(character)) {
-			(dynamic_cast<DoubleByteCharacter*>(character))->Accept(this);
+			str += dynamic_cast<DoubleByteCharacter*>(character)->GetAlphabet();
 		}
-
 		i++;
 	}
-
-}
-
-void GetString::Visit(SingleByteCharacter *singleByteCharacter) {
-	//ÄÜ¼Ö:cout << singleByteCharacter->GetAlphabet() ;
-	if (singleByteCharacter->GetAlphabet() != '\r'&&singleByteCharacter->GetAlphabet() != '\n') {
-		this->str += singleByteCharacter->GetAlphabet();
-	}
-}
-void GetString::Visit(DoubleByteCharacter *doubleByteCharacter) {
-	if (strcmp(doubleByteCharacter->GetAlphabet(), "") !=0 ) {
-		this->str += doubleByteCharacter->GetAlphabet();
-	}
-}
-
-
-
+	return str;
+};

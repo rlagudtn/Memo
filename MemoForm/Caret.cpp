@@ -32,9 +32,8 @@ void Caret::MoveY(Long y) {
 void Caret::MoveToCurrent(MemoForm *memoForm, CDC *dc) {
 	this->caretY = memoForm->text->GetCurrent()*memoForm->fontSize - memoForm->paper->GetY();
 	//caretX좌표 구하기
-	GetString getStr(0, memoForm->row->GetCurrent());
-	memoForm->row->Accept(&getStr);
-	this->caretX = dc->GetTextExtent(CString(getStr.GetStr().c_str())).cx;
+	GetString getStr;
+	this->caretX = dc->GetTextExtent(CString(getStr.SubString(memoForm->row,0,memoForm->row->GetCurrent()).c_str())).cx;
 	//캐럿 보여주기
 	memoForm->CreateSolidCaret(1, memoForm->fontSize);
 	memoForm->SetCaretPos(CPoint(this->caretX, this->caretY));
@@ -56,9 +55,8 @@ void Caret::MoveToPoint(MemoForm *memoForm, CDC *dc, CPoint point) {
 	MoveColumnByStringLength temp;
 	temp.MoveColumn(memoForm->row, dc, point.x);
 	//caretX좌표 구하기
-	GetString getStr(0, memoForm->row->GetCurrent());
-	memoForm->row->Accept(&getStr);
-	this->caretX = dc->GetTextExtent(CString(getStr.GetStr().c_str())).cx;
+	GetString getStr;
+	this->caretX = dc->GetTextExtent(CString(getStr.SubString(memoForm->row, 0, memoForm->row->GetCurrent()).c_str())).cx;
 	//캐럿 보여주기
 	memoForm->CreateSolidCaret(1, memoForm->fontSize);
 	memoForm->SetCaretPos(CPoint(this->caretX, this->caretY));
