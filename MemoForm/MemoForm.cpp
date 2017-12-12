@@ -489,35 +489,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		}
 		Invalidate(true);
 	}
-	else if (nChar == VK_RETURN) {
-		//캐럿을 숨긴다
-		HideCaret();
-		//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
-		ConnectedInfo connectedInfo;
-		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
-		//자른다.
-		CutString cutString;
-		CString cuttedText=CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
-		//개행문자 추가
-		LineController lineController;
-		lineController.SetLineFeed(this->row);
-		//새로운 줄 생성
-		lineController.MakeNewLine(this, this->text->GetCurrent() + 1);
-		//current저장
-		Long textCurrent = this->text->GetCurrent();
-		Long rowCurrent = this->row->GetCurrent();
-		//삭제했던 텍스트를 다시 적는다.
-		CClientDC dc(this);
-		cuttedText.Replace("\r\n", "");
-		CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)cuttedText);
-		this->text->Accept(&copyToMemo);
-		//개행추가
-		lineController.SetLineFeed(dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent())));
-		//현재위치 변경
-		this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
-		this->row->Move(rowCurrent);
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-	}
+
 	else if (nChar == VK_BACK) {
 		if (this->text->GetCurrent() != 0 || this->row->GetCurrent() != -1) {
 			Long currentText;
@@ -547,9 +519,39 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		}
 	}
+
 }
 void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_RETURN&&nChar!=VK_BACK){
+	if (nChar == VK_RETURN) {
+		//캐럿을 숨긴다
+		HideCaret();
+		//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
+		ConnectedInfo connectedInfo;
+		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
+		//자른다.
+		CutString cutString;
+		CString cuttedText = CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
+		//개행문자 추가
+		LineController lineController;
+		lineController.SetLineFeed(this->row);
+		//새로운 줄 생성
+		lineController.MakeNewLine(this, this->text->GetCurrent() + 1);
+		//current저장
+		Long textCurrent = this->text->GetCurrent();
+		Long rowCurrent = this->row->GetCurrent();
+		//삭제했던 텍스트를 다시 적는다.
+		CClientDC dc(this);
+		cuttedText.Replace("\r\n", "");
+		CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)cuttedText);
+		this->text->Accept(&copyToMemo);
+		//개행추가
+		lineController.SetLineFeed(dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent())));
+		//현재위치 변경
+		this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
+		this->row->Move(rowCurrent);
+		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+	}
+	else if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_BACK){
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어
@@ -576,7 +578,14 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			
 		}
 	}
-	//스크롤 관련
+	CClientDC dc(this);
+	//캐럿
+	this->caret->MoveToCurrent(this, &dc);
+	//출력글자 보다 밑에 있다면 종이를 올린다.
+	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
+		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
+	}
+	/*//스크롤 관련
 	//마지막줄에서 한줄 내리기
 	if (this->caret->GetY()  >= this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->MoveToY(this->paper->GetY()+ this->fontSize);
@@ -592,7 +601,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 		}
 	}
-	
+	*/
 	
 }
 
@@ -664,38 +673,23 @@ void MemoForm::OnPaint()
 	
 	CString str;
 	CPaintDC dc(this);
-	/*//적혀있는 글자들의 정보들을 저장한다.
-	Long i = 0;
-	while (i < this->text->GetLength()) {
-		Row* temp = dynamic_cast<Row*>(this->text->GetAt(i));
-		GetString getString(0, temp->GetLength() - 1);
-		temp->Accept(&getString);
-		Long stringLength = dc.GetTextExtent(CString(getString.GetStr().c_str())).cx;
-		//화면 영역 안넘을때
-		bool isOver = false;
-		//넘을때
-		if (stringLength > this->screenWidth) {
-			isOver = true;
-		}
-		this->lineInfo->Add(isOver);
-		i++;
-	}*/
+	
+	//캐럿
+	this->caret->MoveToCurrent(this, &dc);
 	
 	//화면에 적는다.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
-	//캐럿
-	this->caret->MoveToCurrent(this, &dc);
 	
 	
-	//스크롤 갱신/
-	if (this->text->GetLength()*this->fontSize > this->screenHeight) {
+	
+	if (this->text->GetLength()*this->fontSize > this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
-		
+
 	}
 	else {
-		this->paper->ModifyPaper(this->screenWidth, this->screenHeight);
+		this->paper->ModifyPaper(this->screenWidth, this->screenHeight/this->fontSize*this->fontSize);
 	}
 	this->scrollInfo.nMax = this->paper->GetHeight()+this->fontSize;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
@@ -724,12 +718,12 @@ void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 	this->caret->MoveToPoint(this, &dc, point);
 	this->firstClickedRow= this->text->GetCurrent();
 	this->firstClickedColumn = this->row->GetCurrent();
+	
+	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 	//출력글자 보다 밑에 있다면 종이를 올린다.
 	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
 	}
-	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-
 	
 }
 
