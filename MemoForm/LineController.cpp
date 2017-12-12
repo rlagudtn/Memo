@@ -61,6 +61,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	//lineInfo에 해당하는 줄만 바꿔준다.
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {
+		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(this->lineInfo->GetAt(i)));
 		MoveConnectedText moveConnectedText;
 		moveConnectedText.ChangeLine(memoForm, dc, this->lineInfo->GetAt(i));
 		i--;
