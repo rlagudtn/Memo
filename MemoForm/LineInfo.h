@@ -5,7 +5,7 @@
 typedef signed long int Long;
 class LineInfo {
 public:
-	LineInfo(Long capacity=60000);
+	LineInfo(Long capacity=3000);
 	LineInfo(const LineInfo& source);
 	~LineInfo();
 	LineInfo& operator=(const LineInfo& source);

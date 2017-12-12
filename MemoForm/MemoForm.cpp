@@ -525,18 +525,19 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			if (this->row->GetCurrent() >= 0) {
 				this->row->Delete(this->row->GetCurrent());
 				//현재줄 먼저 저장.
-				currentText = this->text->GetCurrent();
-				currentRow = this->row->GetCurrent();
+				//currentText = this->text->GetCurrent();
+				//currentRow = this->row->GetCurrent();
 			}
 			//행의 맨 처음일때
 			else {
 				//이전줄의 \r\n을 지운다.
-				Row *previousRow = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent() - 1));
-				previousRow->Delete(previousRow->GetLength() - 1);
-				previousRow->Delete(previousRow->GetLength() - 1);
-				currentText = this->text->GetCurrent() - 1;
-				currentRow = previousRow->GetLength() - 1;
+				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() - 1));
+				this->row->Delete(this->row->GetLength() - 1);
+				this->row->Delete(this->row->GetLength() - 1);
+				
 			}
+			currentText = this->text->GetCurrent();
+			currentRow = this->row->GetCurrent();
 			MoveConnectedText moveConnectedText;
 			CClientDC dc(this);
 			moveConnectedText.ChangeLine(this, &dc, currentText);
@@ -1120,13 +1121,13 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//자동 줄바꿈
-	if (temp != this->screenWidth) {
+	/*if (temp != this->screenWidth) {
 		LineController lineController;
 		CDC *dc = GetDC();
 		lineController.AutomaticLineChange(this, dc);
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		UpdateWindow();
-	}
+	}*/
 	
 }
 

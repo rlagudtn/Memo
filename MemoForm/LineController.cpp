@@ -28,36 +28,38 @@ void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 }
 
 void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
+	if (this->lineInfo != NULL) {
+		delete this->lineInfo;
+		this->lineInfo=NULL;
+	}
 	this->lineInfo = new LineInfo;
+	
 	//lineInfo에 length만큼 반복하낟.
 	Long i =0;
-	/*while (i<memoForm->text->GetLength()) {
+	while (i<memoForm->text->GetLength()) {
 		Row* temp = dynamic_cast<Row*>(memoForm->text->GetAt(i));
 		
 		GetString getString;
 		//라인의 길이를 구한다.
-		//Long stringLength = (dc->GetTextExtent(CString(getString.SubString(temp, 0, temp->GetLength() - 1).c_str()))).cx;
+		Long stringLength = (dc->GetTextExtent(CString(getString.SubString(temp, 0, temp->GetLength() - 1).c_str()))).cx;
 		//해당줄이 연결되어져 있는지 확인한다.
-		//ConnectedInfo connectedInfo;
-		//connectedInfo.GetEndOfConnected(memoForm->text, i);
+		ConnectedInfo connectedInfo;
+		connectedInfo.GetEndOfConnected(memoForm->text, i);
 		bool isConnected = connectedInfo.GetIsConnected();
 		if (stringLength > memoForm->screenWidth || isConnected == true) {
 			this->lineInfo->Add(i);
-			//ConnectedInfo connectedInfo;
-			//Long endLine = connectedInfo.GetEndOfConnected(memoForm->text,i);
+			ConnectedInfo connectedInfo;
+			Long endLine = connectedInfo.GetEndOfConnected(memoForm->text,i);
 			i = endLine + 1;
 		}
 		else {
 			i++;
 		}
-	}*/
-	SelectedText selectedText(dc, memoForm->paper->GetX(), memoForm->paper->GetY());
-	selectedText.SetTextPosition(0, 0, memoForm->text->GetLength() - 1, dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1))->GetLength() - 1);
-	memoForm->text->Accept(&selectedText);
-	CString str = CString(selectedText.GetBuffer().c_str());
+	}
+	
 	
 	//lineInfo에 해당하는 줄만 바꿔준다.
-	//i = this->lineInfo.GetLength() - 1;
+	//i = thi->lineInfo.GetLength() - 1;
 	
 	
 }
