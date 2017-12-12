@@ -668,12 +668,12 @@ void MemoForm::OnPaint()
 	//캐럿
 	this->caret->MoveToCurrent(this, &dc);
 	
-	if (this->text->GetLength()*this->fontSize > this->screenHeight / this->fontSize*this->fontSize) {
+	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize+1)*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
 
 	}
 	else {
-		this->paper->ModifyPaper(this->screenWidth, this->screenHeight);
+		this->paper->ModifyPaper(this->screenWidth,(this->screenHeight / this->fontSize + 1)*this->fontSize);
 	}
 	this->scrollInfo.nMax = this->paper->GetHeight()+this->fontSize;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
@@ -682,7 +682,7 @@ void MemoForm::OnPaint()
 	//선택하기있으면 출력
 	if (this->selectedText != NULL) {
 		if (this->selectedText->GetStartRow() != this->selectedText->GetEndRow() || this->selectedText->GetStartColumn() != this->selectedText->GetEndColumn()) {
-			this->selectedText->SetInfoPosition(&dc, this->paper->GetX(), this->paper->GetY());
+			this->selectedText->SetInfoPosition(&dc, true,this->paper->GetX(), this->paper->GetY());
 			this->selectedText->Visit(this->text);
 		}
 

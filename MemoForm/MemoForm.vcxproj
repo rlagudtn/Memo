@@ -159,6 +159,7 @@
     <ClInclude Include="CutString.h" />
     <ClInclude Include="DoubleByteCharacter.h" />
     <ClInclude Include="EraseSelectedText.h" />
+    <ClInclude Include="FindCurrentByString.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="ConnectedInfo.h" />
     <ClInclude Include="LineController.h" />
@@ -192,6 +193,7 @@
     <ClCompile Include="CutString.cpp" />
     <ClCompile Include="DoubleByteCharacter.cpp" />
     <ClCompile Include="EraseSelectedText.cpp" />
+    <ClCompile Include="FindCurrentByString.cpp" />
     <ClCompile Include="Glyph.cpp" />
     <ClCompile Include="LineController.cpp" />
     <ClCompile Include="LineInfo.cpp" />

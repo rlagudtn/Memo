@@ -8,6 +8,7 @@
 #include <afxwin.h>
 SelectedText::SelectedText() {
 	this->pdc = NULL;
+	this->isPaint = false;
 	this->startRow = -1;
 	this->startColumn = -1;
 	this->endRow = -1;
@@ -18,6 +19,7 @@ SelectedText::SelectedText() {
 	this->endY = 0;
 }
 SelectedText::SelectedText(CDC *pdc,Long paperX,Long paperY):str(""),buffer("") {
+	this->isPaint = false;
 	this->pdc = pdc;
 	this->paperX = paperX;
 	this->paperY = paperY;
@@ -40,7 +42,8 @@ void SelectedText::SetTextPosition(Long startRow, Long startColumn, Long endRow,
 	this->endColumn = endColumn;
 	this->buffer = "";
 }
-void SelectedText::SetInfoPosition(CDC *dc,Long paperX, Long paperY) {
+void SelectedText::SetInfoPosition(CDC *dc,bool isPaint,Long paperX, Long paperY) {
+	this->isPaint = isPaint;
 	this->pdc = dc;
 	this->paperX = paperX;
 	this->paperY = paperY;
@@ -140,7 +143,7 @@ void SelectedText::Visit(Row *row) {
 		}
 		j++;
 	}
-	if (this->pdc != NULL) {
+	if (this->isPaint==true) {
 		//문자열 사이즈 구하기
 		CSize size = this->pdc->GetTextExtent(this->str.c_str(), this->str.length());
 		//사각형 위치 설정
@@ -172,13 +175,13 @@ void SelectedText::Visit(Row *row) {
 
 		top = this->top;
 		bottom = this->top + font;
-		if (left != right) {
-			CRect rect(left, top, right, bottom);
-			this->pdc->FillSolidRect(&rect, RGB(0, 0, 255));
-			this->pdc->SetTextColor(RGB(255, 255, 255));
-
+		CRect rect(left, top, right, bottom);
+		this->pdc->FillSolidRect(&rect, RGB(0, 0, 255));
+		this->pdc->SetTextColor(RGB(255, 255, 255));
+		if (this->isPaint == true) {
 			this->pdc->DrawText(CString(this->str.c_str()), rect, DT_VCENTER);
 		}
+
 		this->top = this->top + font;
 	}
 
