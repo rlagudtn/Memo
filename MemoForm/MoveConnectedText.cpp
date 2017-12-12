@@ -30,7 +30,6 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 	//이어진줄까지 선택한다.
 	CutString cutString;
 	CString writeAgain = CString(cutString.CutText(memoForm->text,textIndex, rowIndex, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1).c_str());
-	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
 	writeAgain.Replace("\r\n", "\r");
 	CopyToMemo copyToMemo(dc, memoForm->screenWidth, (LPCTSTR)writeAgain);
 	memoForm->text->Accept(&copyToMemo);
@@ -41,7 +40,7 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 	row->Add(lineFeed);
 
 	//위치 이동
-	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(currentTextIndex));
+	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(currentTextIndex));
 	memoForm->row->Move(currentRowIndex);
 
 	return endLine;

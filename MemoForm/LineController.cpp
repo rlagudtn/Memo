@@ -36,7 +36,8 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	
 	//lineInfo에 length만큼 반복하낟.
 	Long i =0;
-	while (i<memoForm->text->GetLength()) {
+	Long textLength = memoForm->text->GetLength();
+	while (i<textLength) {
 		Row* temp = dynamic_cast<Row*>(memoForm->text->GetAt(i));
 		
 		GetString getString;
@@ -58,7 +59,12 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	
 	
 	//lineInfo에 해당하는 줄만 바꿔준다.
-	//i = thi->lineInfo.GetLength() - 1;
+	i = this->lineInfo->GetLength() - 1;
+	while (i >= 0) {
+		MoveConnectedText moveConnectedText;
+		moveConnectedText.ChangeLine(memoForm, dc, this->lineInfo->GetAt(i));
+		i--;
+	}
 	
 	
 }

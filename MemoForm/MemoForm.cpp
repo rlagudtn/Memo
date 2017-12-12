@@ -658,8 +658,6 @@ void MemoForm::OnPaint()
 	CString str;
 	CPaintDC dc(this);
 	
-	//Ä³·µ
-	this->caret->MoveToCurrent(this, &dc);
 	
 	//È­¸é¿¡ Àû´Â´Ù.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
@@ -667,13 +665,15 @@ void MemoForm::OnPaint()
 	this->fontSize = paintVisitor.GetFontSize();
 	
 	
+	//Ä³·µ
+	this->caret->MoveToCurrent(this, &dc);
 	
 	if (this->text->GetLength()*this->fontSize > this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
 
 	}
 	else {
-		this->paper->ModifyPaper(this->screenWidth, this->screenHeight/this->fontSize*this->fontSize);
+		this->paper->ModifyPaper(this->screenWidth, this->screenHeight);
 	}
 	this->scrollInfo.nMax = this->paper->GetHeight()+this->fontSize;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
