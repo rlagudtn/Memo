@@ -44,12 +44,11 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		Long stringLength = (dc->GetTextExtent(CString(getString.SubString(temp, 0, temp->GetLength() - 1).c_str()))).cx;
 		//해당줄이 연결되어져 있는지 확인한다.
 		ConnectedInfo connectedInfo;
-		connectedInfo.GetEndOfConnected(memoForm->text, i);
+		Long endLine=connectedInfo.GetEndOfConnected(memoForm->text, i);
 		bool isConnected = connectedInfo.GetIsConnected();
 		if (stringLength > memoForm->screenWidth || isConnected == true) {
 			this->lineInfo->Add(i);
-			ConnectedInfo connectedInfo;
-			Long endLine = connectedInfo.GetEndOfConnected(memoForm->text,i);
+			
 			i = endLine + 1;
 		}
 		else {

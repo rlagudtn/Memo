@@ -1,7 +1,7 @@
 //LineInfo.cpp
 #include "LineInfo.h"
 
-LineInfo::LineInfo(Long capacity){
+LineInfo::LineInfo(Long capacity):booleans(capacity){
 	this->capacity = capacity;
 	this->length = 0;
 }

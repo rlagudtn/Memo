@@ -585,23 +585,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
 	}
-	/*//스크롤 관련
-	//마지막줄에서 한줄 내리기
-	if (this->caret->GetY()  >= this->screenHeight / this->fontSize*this->fontSize) {
-		this->paper->MoveToY(this->paper->GetY()+ this->fontSize);
-		this->scrollInfo.nPos =this->paper->GetY();
-		SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-	}
-	//캐럿의 위치가 화면 밖일때
-	if (this->caret->GetY() < 0 || this->caret->GetY() > this->screenHeight / this->fontSize*this->fontSize) {
-		this->paper->MoveToY(this->fontSize*this->text->GetCurrent());
-		if (this->paper->GetY() + this->screenHeight > this->paper->GetHeight()) {
-			this->paper->MoveToY(this->paper->GetHeight() - this->screenHeight);
-			this->scrollInfo.nPos = this->paper->GetY();
-			SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-		}
-	}
-	*/
+
 	
 }
 
@@ -1108,13 +1092,13 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//자동 줄바꿈
-	/*if (temp != this->screenWidth) {
+	if (temp != this->screenWidth) {
 		LineController lineController;
 		CDC *dc = GetDC();
 		lineController.AutomaticLineChange(this, dc);
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		UpdateWindow();
-	}*/
+	}
 	
 }
 
