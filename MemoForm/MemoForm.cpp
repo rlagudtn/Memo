@@ -686,7 +686,7 @@ void MemoForm::OnPaint()
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
 	//캐럿
-	//this->caret->MoveToCurrent(this, &dc);
+	this->caret->MoveToCurrent(this, &dc);
 	
 	//출력영역 안이라면
 	if (this->caret->GetY() < this->screenHeight / this->fontSize*this->fontSize) {
@@ -787,7 +787,7 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		//선택될곳 셋팅
 		this->selectedText->SetTextPosition(startRow, startColumn, endRow, endColumn);
 
-		if (startRow>=endRow&&startColumn>=endColumn){
+		if (startRow>=endRow&&startColumn>endColumn){
 			delete this->selectedText;
 			this->selectedText = NULL;
 		}
