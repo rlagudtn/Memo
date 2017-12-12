@@ -40,7 +40,8 @@ void SelectedText::SetTextPosition(Long startRow, Long startColumn, Long endRow,
 	this->endColumn = endColumn;
 	this->buffer = "";
 }
-void SelectedText::SetPaperPosition(Long paperX, Long paperY) {
+void SelectedText::SetInfoPosition(CDC *dc,Long paperX, Long paperY) {
+	this->pdc = dc;
 	this->paperX = paperX;
 	this->paperY = paperY;
 }

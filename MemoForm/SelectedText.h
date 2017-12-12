@@ -16,7 +16,7 @@ public:
 	SelectedText(CDC *pdc,Long paperX,Long paperY);
 	~SelectedText();
 	void SetTextPosition(Long startRow, Long startColumn, Long endRow, Long endColumn);
-	void SetPaperPosition(Long paperX, Long paperY);
+	void SetInfoPosition(CDC *dc,Long paperX, Long paperY);
 	Long GetStartRow() const;
 	Long GetStartColumn() const;
 	Long GetEndRow() const;

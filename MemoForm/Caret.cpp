@@ -38,7 +38,7 @@ void Caret::MoveToCurrent(MemoForm *memoForm, CDC *dc) {
 	memoForm->CreateSolidCaret(1, memoForm->fontSize);
 	memoForm->SetCaretPos(CPoint(this->caretX, this->caretY));
 	memoForm->ShowCaret();
-	//작업영역밖일때
+	
 }
 
 void Caret::MoveToPoint(MemoForm *memoForm, CDC *dc, CPoint point) {
