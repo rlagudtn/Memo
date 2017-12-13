@@ -52,8 +52,8 @@ int main(int argc, char *argv[]) {
 	cout << text->GetLength();
 	row->Move(-1);
 	//test
-	SelectedText selectedText;
-	selectedText.SetTextPosition(0, row->GetCurrent()+1, 0, row->GetLength()-1);
+	/*SelectedText selectedText;
+	selectedText.GetSelectedText(memoForm,0, row->GetCurrent()+1, 0, row->GetLength()-1);
 	EraseSelectedText eraseSelectedText(selectedText.GetStartRow(), selectedText.GetStartColumn(), selectedText.GetEndRow(), selectedText.GetEndColumn());
 	text->Accept(&eraseSelectedText);
 	Long i = 0;
@@ -77,6 +77,6 @@ int main(int argc, char *argv[]) {
 		i++;
 	}
 	str = "";
-	
+	*/
 	return 0;
 }

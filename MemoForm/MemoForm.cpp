@@ -81,21 +81,7 @@ MemoForm::MemoForm() {
 	this->lineInfo = NULL;
 
 
-}/*
-BOOL MemoForm::PreTranslateMessage(MSG* pMsg) {
-
-	if (pMsg->message == WM_KEYDOWN) {
-		CClientDC dc(this);
-		CSize size_;
-		CString str_;
-
-		
-		
-	}
-	UpdateWindow();
-	return CFrameWnd::PreTranslateMessage(pMsg);
 }
-*/
 LONG MemoForm::OnStartComposition(UINT wParam,LONG lParam){
 	DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter;
 	if (this->row->GetCurrent() < this->row->GetLength() - 1) {
@@ -159,10 +145,6 @@ LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
 
 		return 0;
 }
-/*LONG MemoForm::OnImeChar(UINT wParam, LONG lParam) {
-	Invalidate(true);
-	return  0;
-}*/
 
 
 int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
@@ -250,7 +232,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
 				//자른다.
 				CutString cutString;
-				CString cuttedText = CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
+				CString cuttedText = CString(cutString.CutText(this, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
 				CClientDC dc(this);
 				CopyToMemo copyToMemo(&dc,this->screenWidth,(LPCTSTR)str);
 				this->text->Accept(&copyToMemo);
@@ -502,7 +484,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
 		//자른다.
 		CutString cutString;
-		CString cuttedText = CString(cutString.CutText(this->text, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
+		CString cuttedText = CString(cutString.CutText(this, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
 		//개행문자 추가
 		LineFeed lineFeed;
 		lineFeed.SetLineFeed(this->row);
@@ -657,8 +639,7 @@ void MemoForm::OnPaint()
 	//선택하기있으면 출력
 	if (this->selectedText != NULL) {
 		//if (this->selectedText->GetStartRow() != this->selectedText->GetEndRow() || this->selectedText->GetStartColumn() != this->selectedText->GetEndColumn()) {
-			this->selectedText->SetInfoPosition(&dc, true,this->paper->GetX(), this->paper->GetY());
-			this->selectedText->Visit(this->text);
+		this->selectedText->DrawUnderLine(this);
 		//}
 
 	}
@@ -694,7 +675,7 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 	CSize size_;
 	
 	if (nFlags == MK_LBUTTON) {
-		this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
+		this->selectedText = new SelectedText;
 
 		//캐럿 이동
 		CClientDC dc(this);
@@ -733,7 +714,7 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 			}
 		}
 		//선택될곳 셋팅
-		this->selectedText->SetTextPosition(startRow, startColumn, endRow, endColumn);
+		this->selectedText->GetSelectedText(this,startRow, startColumn, endRow, endColumn);
 		if (startRow>=endRow&&startColumn>endColumn){
 			delete this->selectedText;
 			this->selectedText = NULL;
@@ -885,12 +866,12 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					this->scrollInfo.nPos = paperLocation;
 					//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 					//마크한다.
-					this->selectedText = new SelectedText(&dc, this->paper->GetX(), this->paper->GetY());
-					this->selectedText->SetTextPosition(currentText, currentRow, currentText, currentRow + findStringLength - 1);
+					this->selectedText = new SelectedText;
+					this->selectedText->GetSelectedText(this,currentText, currentRow, currentText, currentRow + findStringLength - 1);
 
 					InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
 					UpdateWindow();
-					this->selectedText->Visit(this->text);
+					this->selectedText->DrawUnderLine(this);
 				}
 
 				//\n을 만난다면.
@@ -922,8 +903,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 				//선택된 부분이후를 선택하여 임시 저장한다
 				if (this->selectedText != NULL) {
 					SelectedText selectedText;
-					selectedText.SetTextPosition(this->selectedText->GetEndRow(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-					this->text->Accept(&selectedText);
+					CString buffer=CString(selectedText.GetSelectedText(this,this->selectedText->GetEndRow(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 					//선택된 곳부터 끝까지 다 삭제
 					EraseSelectedText eraseSelectedText(this->selectedText->GetStartRow(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
 					this->text->Accept(&eraseSelectedText);
@@ -938,7 +918,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					Long textCurrent = this->text->GetCurrent();
 					Long rowCurrent = this->row->GetCurrent();
 					//임시저장한 텍스트를 다시 적는다.
-					CopyToMemo copyAgain(&dc, this->screenWidth, selectedText.GetBuffer());
+					CopyToMemo copyAgain(&dc, this->screenWidth, (LPCTSTR)buffer);
 					this->text->Accept(&copyAgain);
 					//현재 위치를 원 상태로 돌린다
 					this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
@@ -951,13 +931,11 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 			bool isChanged = false;
 			//전체 복사
 			SelectedText selectedText;
-			selectedText.SetTextPosition(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-			this->text->Accept(&selectedText);
+			CString text=CString(selectedText.GetSelectedText(this,0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 			//전체 삭제
 			EraseSelectedText eraseSelectedText(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
 			this->text->Accept(&eraseSelectedText);
 			//복사한 스트링을 받는다
-			CString text = CString(selectedText.GetBuffer().c_str());
 			CString buffer;
 			CString changeText;
 

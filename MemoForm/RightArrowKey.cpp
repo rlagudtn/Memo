@@ -22,8 +22,11 @@ RightArrowKey::~RightArrowKey() {
 }
 
 void RightArrowKey::Implement(MemoForm *memoForm) {
-	
+	Long currentLine = memoForm->text->GetCurrent();
+	Long currentColumn = memoForm->row->GetCurrent();
 	if (GetKeyState(VK_CONTROL) >= 0) {
+		
+
 		Long textIndex = memoForm->text->GetCurrent();
 		Long rowIndex = memoForm->row->GetCurrent() + 1;//다음 글자로 이동
 		Long previousRowIndex;
@@ -62,15 +65,31 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 		memoForm->paper->MoveToY(memoForm->paper->GetY() + memoForm->fontSize);
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
-	//스크롤바 위치
-	//memoForm->scrollInfo.nPos = memoForm->paper->GetY();
-	//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
+	
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
-			delete memoForm->selectedText;
+			//현재위치를 메모폼의 selectedText에 저장
+			//선택위치보다 왼쪽 위에 있을때 시작위치만 바꿔줌
+			if (memoForm->text->GetCurrent() < memoForm->selectedText->GetEndRow() ) {
+			//	memoForm->selectedText->SetStartPos(memoForm->text->GetCurrent(), memoForm->row->GetCurrent()+1);
+			}
+			else if (memoForm->text->GetCurrent() > memoForm->selectedText->GetEndRow()) {
+			//	memoForm->selectedText->SetTextPosition(memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+			}
+			else {
+				if (memoForm->row->GetCurrent() < memoForm->selectedText->GetEndColumn()) {
+				//	memoForm->selectedText->SetStartPos(memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1);
+				}
+				else if (memoForm->row->GetCurrent() < memoForm->selectedText->GetEndColumn()) {
+
+				}
+			}
 		}
-		memoForm->selectedText = new SelectedText(&dc, memoForm->paper->GetX(), memoForm->paper->GetY());
-		memoForm->selectedText->SetTextPosition(memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
+		else {
+			//memoForm
+		}
+		//memoForm->selectedText = new SelectedText(&dc, memoForm->paper->GetX(), memoForm->paper->GetY());
+		//memoForm->selectedText->SetTextPosition(memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
 
 	}
 }

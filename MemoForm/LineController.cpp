@@ -58,9 +58,8 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		}
 	}
 	//현재위치ㅣ 저장
-	SelectedText selectedText(dc, memoForm->paper->GetX(), memoForm->paper->GetY());
-	selectedText.SetTextPosition(0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-	memoForm->text->Accept(&selectedText);
+	SelectedText selectedText;
+	CString buffer=CString(selectedText.GetSelectedText(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent()).c_str());
 	//lineInfo에 해당하는 줄만 바꿔준다.
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {
@@ -71,7 +70,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	}
 	//현재위치구하기.
 	FindCurrentByString findCurrent;
-	findCurrent.MoveToCurrent(dc, selectedText.GetBuffer(), memoForm->screenWidth);
+	findCurrent.MoveToCurrent(dc, (LPCTSTR)buffer, memoForm->screenWidth);
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(findCurrent.GetTextIndex()));
 	memoForm->row->Move(findCurrent.GetRowIndex());
 }

@@ -44,8 +44,8 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 		if (memoForm->selectedText != NULL) {
 			delete memoForm->selectedText;
 		}
-		memoForm->selectedText = new SelectedText(&dc, memoForm->paper->GetX(), memoForm->paper->GetY());
-		memoForm->selectedText->SetTextPosition(memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
+		memoForm->selectedText = new SelectedText;
+		memoForm->selectedText->GetSelectedText(memoForm,memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
 
 	}
 }

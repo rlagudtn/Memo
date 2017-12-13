@@ -39,7 +39,7 @@ void EraseSelectedText::Visit(Text *text){
 	}
 	
 	//첫줄과 끝줄 잇기
-	string str_;
+	/*string str_;
 	char alpha[3] = { 0, };
 	char alphabet;
 	Row *row = dynamic_cast<Row*>(text->GetAt(text->GetCurrent()));
@@ -61,8 +61,8 @@ void EraseSelectedText::Visit(Text *text){
 			row->Add(singleByteCharacter);
 			stringIndex++;
 		}
-	}
-	row->Move(rowCurrent);
+	}*/
+	
 }
 void EraseSelectedText::Visit(Row *row){
 	Long i;
