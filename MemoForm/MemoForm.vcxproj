@@ -158,11 +158,16 @@
     <ClInclude Include="CStatusButton.h" />
     <ClInclude Include="CutString.h" />
     <ClInclude Include="DoubleByteCharacter.h" />
+    <ClInclude Include="DownArrowKey.h" />
     <ClInclude Include="EraseSelectedText.h" />
     <ClInclude Include="FindCurrentByString.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="ConnectedInfo.h" />
+    <ClInclude Include="KeyAction.h" />
+    <ClInclude Include="KeyBoard.h" />
+    <ClInclude Include="LeftArrowKey.h" />
     <ClInclude Include="LineController.h" />
+    <ClInclude Include="LineFeed.h" />
     <ClInclude Include="LineInfo.h" />
     <ClInclude Include="Load.h" />
     <ClInclude Include="MemoForm.h" />
@@ -177,10 +182,12 @@
     </ClInclude>
     <ClInclude Include="Paper.h" />
     <ClInclude Include="resource.h" />
+    <ClInclude Include="RightArrowKey.h" />
     <ClInclude Include="Row.h" />
     <ClInclude Include="SelectedText.h" />
     <ClInclude Include="SingleByteCharacter.h" />
     <ClInclude Include="Text.h" />
+    <ClInclude Include="UpArrowKey.h" />
     <ClInclude Include="Visitor.h" />
   </ItemGroup>
   <ItemGroup>
@@ -192,10 +199,15 @@
     <ClCompile Include="CStatusButton.cpp" />
     <ClCompile Include="CutString.cpp" />
     <ClCompile Include="DoubleByteCharacter.cpp" />
+    <ClCompile Include="DownArrowKey.cpp" />
     <ClCompile Include="EraseSelectedText.cpp" />
     <ClCompile Include="FindCurrentByString.cpp" />
     <ClCompile Include="Glyph.cpp" />
+    <ClCompile Include="KeyAction.cpp" />
+    <ClCompile Include="KeyBoard.cpp" />
+    <ClCompile Include="LeftArrowKey.cpp" />
     <ClCompile Include="LineController.cpp" />
+    <ClCompile Include="LineFeed.cpp" />
     <ClCompile Include="LineInfo.cpp" />
     <ClCompile Include="Load.cpp" />
     <ClCompile Include="main.cpp" />
@@ -206,10 +218,12 @@
     <ClCompile Include="Page.cpp" />
     <ClCompile Include="PaintVisitor.cpp" />
     <ClCompile Include="Paper.cpp" />
+    <ClCompile Include="RightArrowKey.cpp" />
     <ClCompile Include="Row.cpp" />
     <ClCompile Include="SelectedText.cpp" />
     <ClCompile Include="SingleByteCharacter.cpp" />
     <ClCompile Include="Text.cpp" />
+    <ClCompile Include="UpArowKey.cpp" />
     <ClCompile Include="Visitor.cpp" />
   </ItemGroup>
   <ItemGroup>

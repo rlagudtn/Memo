@@ -68,7 +68,7 @@ Long Composite::Delete(Long index) {
 Glyph* Composite::Move(Long index) {
 	Glyph* glyph=0;
 	this->current = index;
-	if(this->current>=0){
+	if(this->current>=0&&this->current<this->length){
 		glyph = this->glyphs.GetAt(this->current);
 	}
 	return glyph;

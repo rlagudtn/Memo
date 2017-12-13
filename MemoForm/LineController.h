@@ -14,7 +14,7 @@ public:
 	~LineController();
 	void MakeNewLine(MemoForm *memoForm,Long index);
 	void AutomaticLineChange(MemoForm *memoForm,CDC *dc);
-	void SetLineFeed(Row *row);
+	
 private:
 	LineInfo *lineInfo;
 };

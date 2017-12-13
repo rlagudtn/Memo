@@ -23,11 +23,13 @@ void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
 		i++;
 	}
 	//마지막문자가 개행문자라면 row이동시킨다.
-	Character *character = dynamic_cast<Character*>(row->GetAt(row->GetCurrent()));
-	bool isLineFeed = false;
-	if (dynamic_cast<SingleByteCharacter*>(character)) {
-		if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() == '\n') {
-			isLineFeed = true;
+	bool isLineFeed=false;
+	if (stringLength > 0) {
+		Character *character = dynamic_cast<Character*>(row->GetAt(row->GetCurrent()));
+		if (dynamic_cast<SingleByteCharacter*>(character)) {
+			if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() == '\n') {
+				isLineFeed = true;
+			}
 		}
 	}
 	if (isLineFeed == true) {

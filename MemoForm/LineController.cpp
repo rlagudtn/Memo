@@ -76,11 +76,3 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	memoForm->row->Move(findCurrent.GetRowIndex());
 }
 
-void LineController::SetLineFeed(Row *row) {
-	Long rowIndex = row->GetCurrent();
-	SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
-	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-	row->Add(carriageReturn);
-	row->Add(lineFeed);
-	row->Move(rowIndex);
-}

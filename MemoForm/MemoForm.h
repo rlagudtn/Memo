@@ -29,7 +29,7 @@ class MemoForm : public CFrameWnd
 {
 public:
 	MemoForm();
-	virtual BOOL PreTranslateMessage(MSG* pMsg);
+	//virtual BOOL PreTranslateMessage(MSG* pMsg);
 	
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);
@@ -58,13 +58,16 @@ public:
 	LineInfo *lineInfo;
 	Long screenWidth;
 	Long screenHeight;
+	Caret *caret;
+	SelectedText *selectedText;
+	//키 눌려졌을때의 현재 위치 저장
+	Long keyDownTextIndex;
+	Long keyDownRowIndex;
 private:
 	CFindReplaceDialog *pDlg;
 	CStatusBar statusBar;
 	
-	Caret *caret;
 	//CClientDC pdc;
-	SelectedText *selectedText;
 	char wszComp[2];
 	SCROLLINFO scrollInfo;
 	Long(*scrollPositions); //페이지들의 스크롤 포지션
