@@ -1,5 +1,5 @@
-//ShiftAllKey.cpp
-#include "ShiftAllKey.h"
+//CtrlAllKey.cpp
+#include "CtrlAllKey.h"
 #include "MemoForm.h"
 #include "Text.h"
 #include "Row.h"
@@ -9,17 +9,17 @@
 #include "SelectedText.h"
 #include "RowInfo.h"
 #include <afxwin.h>
-ShiftAllKey::ShiftAllKey() {
+CtrlAllKey::CtrlAllKey() {
 
 }
-ShiftAllKey::ShiftAllKey(const ShiftAllKey& source) {
+CtrlAllKey::CtrlAllKey(const CtrlAllKey& source) {
 
 }
-ShiftAllKey::~ShiftAllKey() {
+CtrlAllKey::~CtrlAllKey() {
 
 }
 
-void ShiftAllKey::Implement(MemoForm *memoForm) {
+void CtrlAllKey::Implement(MemoForm *memoForm) {
 	if (memoForm->selectedText != NULL) {
 		delete memoForm->selectedText;
 
@@ -31,6 +31,8 @@ void ShiftAllKey::Implement(MemoForm *memoForm) {
 	RowInfo rowInfo;
 	rowInfo.GetRowInfo(memoForm->row);
 	memoForm->row->Move(rowInfo.GetLastIndex());
-
+	//페이퍼 이동
+	memoForm->paper->MoveToY(memoForm->paper->GetHeight() - memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize);
 	memoForm->selectedText->Select(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight),true);
 }

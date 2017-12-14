@@ -16,6 +16,7 @@ public:
 	SelectedText(const SelectedText& source);
 	~SelectedText();
 	string Select(MemoForm *memoForm,Long startLine, Long startColumn, Long endLine, Long endColumn);
+	void EraseSelectedText(MemoForm *memoForm);
 	bool SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn);
 	SelectedText& operator=(const SelectedText& source);
 

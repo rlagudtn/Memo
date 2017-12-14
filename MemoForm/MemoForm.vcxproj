@@ -164,7 +164,6 @@
     <ClInclude Include="DownArrowKey.h" />
     <ClInclude Include="EndKey.h" />
     <ClInclude Include="EnterKey.h" />
-    <ClInclude Include="EraseSelectedText.h" />
     <ClInclude Include="FindCurrentByString.h" />
     <ClInclude Include="RowInfo.h" />
     <ClInclude Include="Glyph.h" />
@@ -192,7 +191,7 @@
     <ClInclude Include="RightArrowKey.h" />
     <ClInclude Include="Row.h" />
     <ClInclude Include="SelectedText.h" />
-    <ClInclude Include="ShiftAllKey.h" />
+    <ClInclude Include="CtrlAllKey.h" />
     <ClInclude Include="SingleByteCharacter.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="UpArrowKey.h" />
@@ -213,7 +212,6 @@
     <ClCompile Include="DownArrowKey.cpp" />
     <ClCompile Include="EndKey.cpp" />
     <ClCompile Include="EnterKey.cpp" />
-    <ClCompile Include="EraseSelectedText.cpp" />
     <ClCompile Include="FindCurrentByString.cpp" />
     <ClCompile Include="RowInfo.cpp" />
     <ClCompile Include="Glyph.cpp" />
@@ -236,7 +234,7 @@
     <ClCompile Include="RightArrowKey.cpp" />
     <ClCompile Include="Row.cpp" />
     <ClCompile Include="SelectedText.cpp" />
-    <ClCompile Include="ShiftAllKey.cpp" />
+    <ClCompile Include="CtrlAllKey.cpp" />
     <ClCompile Include="SingleByteCharacter.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="UpArowKey.cpp" />

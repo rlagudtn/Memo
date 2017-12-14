@@ -8,7 +8,6 @@
 #include "ConnectedInfo.h"
 #include "LineFeed.h"
 #include "SelectedText.h"
-#include "EraseSelectedText.h"
 #include "CutString.h"
 #include "LineController.h"
 #include "CopyToMemo.h"
@@ -28,10 +27,10 @@ void EnterKey::Implement(MemoForm *memoForm) {
 	//선택되어져 있는 줄이 있다면
 	if (memoForm->selectedText != NULL) {
 		//지운다.
-		EraseSelectedText eraseText(memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
-		memoForm->text->Accept(&eraseText);
+		memoForm->selectedText->EraseSelectedText(memoForm);
 		delete memoForm->selectedText;
 		memoForm->selectedText = NULL;
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 		
 	}
 	//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.

@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 //테스트할것들
-#include "EraseSelectedText.h" 
 #include "SelectedText.h"
 #include "GetString.h"
 using namespace std;

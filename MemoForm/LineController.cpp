@@ -8,7 +8,6 @@
 #include "GetString.h"
 #include "ConnectedInfo.h"
 #include "SelectedText.h"
-#include "EraseSelectedText.h"
 #include "CopyToMemo.h"
 #include "MoveConnectedText.h"
 #include "CutString.h"

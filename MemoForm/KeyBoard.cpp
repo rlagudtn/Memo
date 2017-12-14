@@ -11,6 +11,7 @@
 #include "BackSpaceKey.h"
 #include "DeleteKey.h"
 #include "CtrlFindKey.h"
+#include "CtrlAllKey.h"
 
 KeyBoard::KeyBoard() {
 
@@ -44,6 +45,17 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}break;
 	case VK_RETURN: {
 		this->keyAction = new EnterKey;
+	}break;
+	case VK_BACK: {
+		this->keyAction = new BackSpaceKey;
+	}break;
+	case VK_DELETE: {
+		this->keyAction = new DeleteKey;
+	}break;
+	case 0x41: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlAllKey;
+		}
 	}break;
 	default:
 		break;

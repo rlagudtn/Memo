@@ -76,6 +76,45 @@ string SelectedText::Select(MemoForm *memoForm, Long startLine, Long startColumn
 	}
 	return this->buffer;
 }
+void SelectedText::EraseSelectedText(MemoForm *memoForm) {
+	Long i = this->endLine;
+	while (i >= this->startLine) {
+		Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(i));
+		if (i == this->startLine || i == this->endLine) {
+			Long startEraseRow;
+			Long endEraseRow;
+			if (i == this->startLine&&i == endLine) {
+				startEraseRow = this->endColumn;
+				endEraseRow = this->startColumn;
+			}
+			else if (i == this->startLine&&i != this->endLine) {
+				startEraseRow = row->GetLength() - 1;
+				endEraseRow = this->startColumn;
+			}
+			else if (i == this->endLine&&i != this->startLine) {
+				startEraseRow = this->endColumn;
+				endEraseRow = 0;
+			}
+			Long j = startEraseRow;
+			while (j >= endEraseRow) {
+				row->Delete(j);
+				j--;
+			}
+			if (i != this->startLine&&row->GetLength()<=0) {
+				memoForm->text->Delete(i);
+			}
+		}
+		//중간줄일때
+		else  {
+			memoForm->text->Delete(i);
+		}
+
+
+		i--;
+	}
+	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
+
+}
 bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn) {
 	bool isSelectedSection = true;
 	//오른쪽 아래 이동에 해당

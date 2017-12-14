@@ -18,7 +18,6 @@
 #include "Load.h"
 #include "CopyToMemo.h"
 #include "PaintVisitor.h"
-#include "EraseSelectedText.h"
 #include "MoveConnectedText.h"
 #include "ConnectedInfo.h"
 #include "CutString.h"
@@ -310,10 +309,10 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 					// 클립보드 클로즈
 					CloseClipboard();
 				}
-				
+				this->selectedText->EraseSelectedText(this);
 				//선택된 곳부터 만 삭제
-				EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->selectedText->GetEndLine(), this->selectedText->GetEndColumn());
-				this->text->Accept(&eraseSelectedText);
+			//	EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->selectedText->GetEndLine(), this->selectedText->GetEndColumn());
+			//	this->text->Accept(&eraseSelectedText);
 				
 				//현재 위치를 원 상태로 돌린다.
 				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent()));
@@ -439,35 +438,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		Invalidate(true);
 	}
 
-	else if (nChar == VK_BACK) {
-		if (this->text->GetCurrent() != 0 || this->row->GetCurrent() != -1) {
-			Long currentText;
-			Long currentRow;
-			if (this->row->GetCurrent() >= 0) {
-				this->row->Delete(this->row->GetCurrent());
-				//현재줄 먼저 저장.
-				
-			}
-			//행의 맨 처음일때
-			else {
-				//이전줄의 \r\n을 지운다.
-				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent() - 1));
-				this->row->Delete(this->row->GetLength() - 1);
-				this->row->Delete(this->row->GetLength() - 1);
-				
-			}
-			currentText = this->text->GetCurrent();
-			currentRow = this->row->GetCurrent();
-			MoveConnectedText moveConnectedText;
-			CClientDC dc(this);
-			moveConnectedText.ChangeLine(this, &dc, currentText);
-			//현재줄로 다시 이동
-			this->row = dynamic_cast<Row*>(this->text->Move(currentText));
-			this->row->Move(currentRow);
-
-			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-		}
-	}
+	
 	KeyBoard keyBoardAction;
 	keyBoardAction.SetKeyAction(nChar, nRepCnt, nFlags);
 	if (keyBoardAction.GetKeyAction() != NULL) {
@@ -903,8 +874,9 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					SelectedText selectedText;
 					CString buffer=CString(selectedText.Select(this,this->selectedText->GetEndLine(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 					//선택된 곳부터 끝까지 다 삭제
-					EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-					this->text->Accept(&eraseSelectedText);
+					//EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
+					//this->text->Accept(&eraseSelectedText);
+					selectedText.EraseSelectedText(this);
 					this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
 
 					//바꿀 문자열을 받아온다.
@@ -931,8 +903,9 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 			SelectedText selectedText;
 			CString text=CString(selectedText.Select(this,0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 			//전체 삭제
-			EraseSelectedText eraseSelectedText(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-			this->text->Accept(&eraseSelectedText);
+			selectedText.EraseSelectedText(this);
+			//EraseSelectedText eraseSelectedText(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
+			//this->text->Accept(&eraseSelectedText);
 			//복사한 스트링을 받는다
 			CString buffer;
 			CString changeText;
