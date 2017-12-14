@@ -17,9 +17,9 @@ public:
 	EraseSelectedText( Long startRow, Long startColumn, Long endRow, Long endColumn);
 	~EraseSelectedText();
 
-	Long GetStartRow() const;
+	Long GetStartLine() const;
 	Long GetStartColumn() const;
-	Long GetEndRow() const;
+	Long GetEndLine() const;
 	Long GetEndColumn() const;
 	
 public:
@@ -39,13 +39,13 @@ private:
 
 	string str;
 };
-inline Long EraseSelectedText::GetStartRow() const {
+inline Long EraseSelectedText::GetStartLine() const {
 	return this->startRow;
 }
 inline Long EraseSelectedText::GetStartColumn() const {
 	return this->startColumn;
 }
-inline Long EraseSelectedText::GetEndRow() const {
+inline Long EraseSelectedText::GetEndLine() const {
 	return this->endRow;
 }
 inline Long EraseSelectedText::GetEndColumn() const {

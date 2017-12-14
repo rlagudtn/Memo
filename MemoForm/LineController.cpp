@@ -59,7 +59,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	}
 	//현재위치ㅣ 저장
 	SelectedText selectedText;
-	CString buffer=CString(selectedText.GetSelectedText(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent()).c_str());
+	CString buffer=CString(selectedText.Select(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent()).c_str());
 	//lineInfo에 해당하는 줄만 바꿔준다.
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {

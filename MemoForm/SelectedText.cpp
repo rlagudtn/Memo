@@ -31,13 +31,13 @@ SelectedText& SelectedText::operator=(const SelectedText& source) {
 	this->buffer = source.buffer;
 	return *this;
 }
-string SelectedText::GetSelectedText(MemoForm *memoForm,Long startRow, Long startColumn, Long endRow, Long endColumn) {
-	this->startLine = startRow;
+string SelectedText::Select(MemoForm *memoForm,Long startLine, Long startColumn, Long endLine, Long endColumn) {
+	this->startLine = startLine;
 	this->startColumn = startColumn;
-	this->endLine = endRow;
+	this->endLine = endLine;
 	this->endColumn = endColumn;
-
-	//if (this->startLine < this->endLine || this->startColumn <= this->endColumn) {
+	this->buffer = "";
+	if (this->startLine < this->endLine || this->startColumn <= this->endColumn) {
 		Long i = this->startLine;
 		Long startRowIndex;
 		Long endRowIndex;
@@ -73,7 +73,7 @@ string SelectedText::GetSelectedText(MemoForm *memoForm,Long startRow, Long star
 			i++;
 		}
 		
-	//}
+	}
 	return this->buffer;
 }
 

@@ -312,7 +312,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				}
 				
 				//선택된 곳부터 만 삭제
-				EraseSelectedText eraseSelectedText(this->selectedText->GetStartRow(), this->selectedText->GetStartColumn(), this->selectedText->GetEndRow(), this->selectedText->GetEndColumn());
+				EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->selectedText->GetEndLine(), this->selectedText->GetEndColumn());
 				this->text->Accept(&eraseSelectedText);
 				
 				//현재 위치를 원 상태로 돌린다.
@@ -413,7 +413,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			
 		}break;
 			//페이지 이전으로 이동
-		case VK_LEFT: {
+		/*case VK_LEFT: {
 			if (this->page->GetCurrent() > 0) {
 				this->text=dynamic_cast<Text*>(this->page->Move(this->page->GetCurrent() - 1));
 				this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
@@ -432,7 +432,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 				this->paper->MoveToY(this->scrollPositions[this->page->GetCurrent()]);
 				this->scrollInfo.nPos = this->scrollPositions[this->page->GetCurrent()];
 			}
-		}break;
+		}break;*/
 		default:
 			break;
 		}
@@ -638,7 +638,7 @@ void MemoForm::OnPaint()
 	this->scrollPositions[this->page->GetCurrent()] = this->scrollInfo.nPos;
 	//선택하기있으면 출력
 	if (this->selectedText != NULL) {
-		//if (this->selectedText->GetStartRow() != this->selectedText->GetEndRow() || this->selectedText->GetStartColumn() != this->selectedText->GetEndColumn()) {
+		//if (this->selectedText->GetStartLine() != this->selectedText->GetEndLine() || this->selectedText->GetStartColumn() != this->selectedText->GetEndColumn()) {
 		this->selectedText->DrawUnderLine(this);
 		//}
 
@@ -714,7 +714,7 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 			}
 		}
 		//선택될곳 셋팅
-		this->selectedText->GetSelectedText(this,startRow, startColumn, endRow, endColumn);
+		this->selectedText->Select(this,startRow, startColumn, endRow, endColumn);
 		if (startRow>=endRow&&startColumn>endColumn){
 			delete this->selectedText;
 			this->selectedText = NULL;
@@ -867,7 +867,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 					//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 					//마크한다.
 					this->selectedText = new SelectedText;
-					this->selectedText->GetSelectedText(this,currentText, currentRow, currentText, currentRow + findStringLength - 1);
+					this->selectedText->Select(this,currentText, currentRow, currentText, currentRow + findStringLength - 1);
 
 					InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
 					UpdateWindow();
@@ -903,9 +903,9 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 				//선택된 부분이후를 선택하여 임시 저장한다
 				if (this->selectedText != NULL) {
 					SelectedText selectedText;
-					CString buffer=CString(selectedText.GetSelectedText(this,this->selectedText->GetEndRow(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
+					CString buffer=CString(selectedText.Select(this,this->selectedText->GetEndLine(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 					//선택된 곳부터 끝까지 다 삭제
-					EraseSelectedText eraseSelectedText(this->selectedText->GetStartRow(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
+					EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
 					this->text->Accept(&eraseSelectedText);
 					this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
 
@@ -931,7 +931,7 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 			bool isChanged = false;
 			//전체 복사
 			SelectedText selectedText;
-			CString text=CString(selectedText.GetSelectedText(this,0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
+			CString text=CString(selectedText.Select(this,0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
 			//전체 삭제
 			EraseSelectedText eraseSelectedText(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
 			this->text->Accept(&eraseSelectedText);

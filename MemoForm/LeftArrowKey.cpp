@@ -23,8 +23,8 @@ LeftArrowKey::~LeftArrowKey() {
 
 void LeftArrowKey::Implement(MemoForm *memoForm) {
 	//control 제외 상태
-	Long startLine = memoForm->text->GetCurrent();
-	Long startColumn = memoForm->row->GetCurrent();
+	Long currentLine = memoForm->text->GetCurrent();
+	Long currentColumn = memoForm->row->GetCurrent();
 	if (GetKeyState(VK_CONTROL) >= 0) {
 		//shift키 +left 를 위해 현재위치 임시 저장
 		
@@ -59,10 +59,29 @@ void LeftArrowKey::Implement(MemoForm *memoForm) {
 	}
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
-			delete memoForm->selectedText;
+			if (memoForm->text->GetCurrent() < memoForm->selectedText->GetStartLine()) {
+				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
+			}
+
+			else if (memoForm->text->GetCurrent() > memoForm->selectedText->GetStartLine()) {
+				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+			}
+			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetStartLine() && memoForm->row->GetCurrent() <memoForm->selectedText->GetStartColumn()-1) {
+				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
+			}
+			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetStartLine() && memoForm->row->GetCurrent() >memoForm->selectedText->GetStartColumn()-1) {
+				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+			}
+			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetStartLine() && memoForm->row->GetCurrent()== memoForm->selectedText->GetStartColumn()-1&&memoForm->text->GetCurrent()>0) {
+				delete memoForm->selectedText;
+				memoForm->selectedText = NULL;
+			}
 		}
-		memoForm->selectedText = new SelectedText;
-		memoForm->selectedText->GetSelectedText(memoForm,memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
-		
+		//선택된부분이 없을때
+		else {
+			memoForm->selectedText = new SelectedText;
+			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent()+1, currentLine, currentColumn);
+		}
+
 	}
 }

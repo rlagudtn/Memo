@@ -15,15 +15,15 @@ public:
 	SelectedText();
 	SelectedText(const SelectedText& source);
 	~SelectedText();
-	string GetSelectedText(MemoForm *memoForm,Long startRow, Long startColumn, Long endRow, Long endColumn);
+	string Select(MemoForm *memoForm,Long startLine, Long startColumn, Long endLine, Long endColumn);
 	SelectedText& operator=(const SelectedText& source);
 
 	//void SetStartPos(Long startLine, Long startColumn);
 	//void SetEndPos(Long endLine, Long endColumn);
 	void DrawUnderLine(MemoForm *memoForm);
-	Long GetStartRow() const;
+	Long GetStartLine() const;
 	Long GetStartColumn() const;
-	Long GetEndRow() const;
+	Long GetEndLine() const;
 	Long GetEndColumn() const;
 	string& GetBuffer() const;
 private:
@@ -34,13 +34,13 @@ private:
 	Long endColumn;
 	string buffer;
 };
-inline Long SelectedText::GetStartRow() const {
+inline Long SelectedText::GetStartLine() const {
 	return this->startLine;
 }
 inline Long SelectedText::GetStartColumn() const {
 	return this->startColumn;
 }
-inline Long SelectedText::GetEndRow() const {
+inline Long SelectedText::GetEndLine() const {
 	return this->endLine;
 }
 inline Long SelectedText::GetEndColumn() const {

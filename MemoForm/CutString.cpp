@@ -10,7 +10,7 @@ CutString::CutString(const CutString& source) {}
 CutString::~CutString(){}
 string CutString::CutText(MemoForm *memoForm, Long startLine, Long startColumn, Long endLine, Long endColumn) {
 	SelectedText selectedText;
-	selectedText.GetSelectedText(memoForm,startLine,startColumn, endLine, endColumn);//
+	selectedText.Select(memoForm,startLine,startColumn, endLine, endColumn);//
 	//뒤의 텍스트를 지운다.
 	EraseSelectedText eraseSelectedText(startLine, startColumn, endLine, endColumn);
 	memoForm->text->Accept(&eraseSelectedText);

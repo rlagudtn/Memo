@@ -53,8 +53,8 @@ int main(int argc, char *argv[]) {
 	row->Move(-1);
 	//test
 	/*SelectedText selectedText;
-	selectedText.GetSelectedText(memoForm,0, row->GetCurrent()+1, 0, row->GetLength()-1);
-	EraseSelectedText eraseSelectedText(selectedText.GetStartRow(), selectedText.GetStartColumn(), selectedText.GetEndRow(), selectedText.GetEndColumn());
+	selectedText.Select(memoForm,0, row->GetCurrent()+1, 0, row->GetLength()-1);
+	EraseSelectedText eraseSelectedText(selectedText.GetStartLine(), selectedText.GetStartColumn(), selectedText.GetEndLine(), selectedText.GetEndColumn());
 	text->Accept(&eraseSelectedText);
 	Long i = 0;
 	string str;
