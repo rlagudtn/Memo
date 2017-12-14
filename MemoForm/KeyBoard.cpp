@@ -5,6 +5,13 @@
 #include "RightArrowKey.h"
 #include "UpArrowKey.h"
 #include "DownArrowKey.h"
+#include "HomeKey.h"
+#include "EndKey.h"
+#include "EnterKey.h"
+#include "BackSpaceKey.h"
+#include "DeleteKey.h"
+#include "CtrlFindKey.h"
+
 KeyBoard::KeyBoard() {
 
 }
@@ -28,6 +35,15 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}break;
 	case VK_DOWN: {
 		this->keyAction = new DownArrowKey;
+	}break;
+	case VK_HOME: {
+		this->keyAction = new HomeKey;
+	}break;
+	case VK_END: {
+		this->keyAction = new EndKey;
+	}break;
+	case VK_RETURN: {
+		this->keyAction = new EnterKey;
 	}break;
 	default:
 		break;

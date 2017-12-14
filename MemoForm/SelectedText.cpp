@@ -31,7 +31,7 @@ SelectedText& SelectedText::operator=(const SelectedText& source) {
 	this->buffer = source.buffer;
 	return *this;
 }
-string SelectedText::Select(MemoForm *memoForm,Long startLine, Long startColumn, Long endLine, Long endColumn) {
+string SelectedText::Select(MemoForm *memoForm, Long startLine, Long startColumn, Long endLine, Long endColumn) {
 	this->startLine = startLine;
 	this->startColumn = startColumn;
 	this->endLine = endLine;
@@ -43,7 +43,7 @@ string SelectedText::Select(MemoForm *memoForm,Long startLine, Long startColumn,
 		Long endRowIndex;
 		while (i <= this->endLine) {
 			Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(i));
-			if (i > this->startLine&&i<this->endLine) {
+			if (i > this->startLine&&i < this->endLine) {
 				startRowIndex = 0;
 				endRowIndex = row->GetLength() - 1;
 			}
@@ -60,7 +60,7 @@ string SelectedText::Select(MemoForm *memoForm,Long startLine, Long startColumn,
 				endRowIndex = this->endColumn;
 			}
 			Long j = startRowIndex;
-			while (j<= endRowIndex) {
+			while (j <= endRowIndex) {
 				Character *character = dynamic_cast<Character*>(row->GetAt(j));
 				if (dynamic_cast<SingleByteCharacter*>(character)) {
 					this->buffer += dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
@@ -72,19 +72,47 @@ string SelectedText::Select(MemoForm *memoForm,Long startLine, Long startColumn,
 			}
 			i++;
 		}
-		
+
 	}
 	return this->buffer;
 }
+bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn) {
+	bool isSelectedSection = true;
+	//오른쪽 아래 이동에 해당
+	if (previousLine < currentLine || (previousLine == currentLine&&previousColumn < currentColumn)) {
+		if (currentLine < this->endLine || (currentLine == this->endLine&&currentColumn < this->endColumn)) {
+			this->startLine = currentLine;
+			this->startColumn = currentColumn+1;
+		}
+		else if (currentLine > this->endLine || (currentLine == this->endLine&&currentColumn > this->endColumn)) {
+			this->endLine = currentLine;
+			this->endColumn = currentColumn;
+		}
+		//같은 위치 일때
+		else {
+			isSelectedSection = false;
+		}
+	}
+	//왼쪽 위 이동에 해당.
+	else if (previousLine > currentLine || (previousLine == currentLine&&previousColumn > currentColumn)) {
+		if (currentLine < this->startLine || (currentLine == this->startLine&&currentColumn < this->startColumn-1)) {
+			this->startLine = currentLine;
+			this->startColumn = currentColumn+1;
+		}
+		else if (currentLine > this->startLine || (currentLine == this->startLine-1&&currentColumn > this->startColumn-1)) {
+			this->endLine = currentLine;
+			this->endColumn = currentColumn;
+		}
+		//같은위치일때
+		else  {
+			isSelectedSection = false;
+		}
+	}
 
-/*void SelectedText::SetStartPos(Long startLine, Long startColumn) {
-	this->startRow = startLine;
-	this->startColumn = startColumn;
+		
+	return isSelectedSection;
 }
-void SelectedText::SetEndPos(Long endLine, Long endColumn) {
-	this->endRow = endLine;
-	this->endColumn = endColumn;
-}*/
+
 void SelectedText::DrawUnderLine(MemoForm *memoForm) {
 	if (this->startLine < this->endLine || this->startColumn <= this->endColumn) {
 		Long i = this->startLine;

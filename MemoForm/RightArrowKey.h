@@ -13,4 +13,4 @@ public:
 	void Implement(MemoForm *memoForm);
 
 };
-#endif // _LEFTARROWKEY_H
+#endif // _RIGHTARROWKEY_H

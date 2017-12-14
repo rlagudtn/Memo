@@ -68,32 +68,18 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 	
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
-			//현재위치를 메모폼의 selectedText에 저장
-			//선택위치보다 왼쪽 위에 있을때 시작위치만 바꿔줌
-			if (memoForm->text->GetCurrent() < memoForm->selectedText->GetEndLine()) {
-				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
-			}
-
-			else if (memoForm->text->GetCurrent() > memoForm->selectedText->GetEndLine()) {
-				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() < memoForm->selectedText->GetEndColumn()) {
-				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
-			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() >memoForm->selectedText->GetEndColumn()) {
-				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() == memoForm->selectedText->GetEndColumn() && memoForm->text->GetCurrent()<memoForm->text->GetLength() - 1) {
+			bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+			if (isSelected == false && memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
 				delete memoForm->selectedText;
 				memoForm->selectedText = NULL;
 			}
+			
 		}
 		//선택된부분이 없을때
 		else {
 			memoForm->selectedText = new SelectedText;
 			memoForm->selectedText->Select(memoForm, currentLine, currentColumn + 1, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
 		}
-		//memoForm->selectedText->SetTextPosition(memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->keyDownTextIndex, memoForm->keyDownRowIndex);
 
 	}
 }

@@ -16,10 +16,9 @@ public:
 	SelectedText(const SelectedText& source);
 	~SelectedText();
 	string Select(MemoForm *memoForm,Long startLine, Long startColumn, Long endLine, Long endColumn);
+	bool SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn);
 	SelectedText& operator=(const SelectedText& source);
 
-	//void SetStartPos(Long startLine, Long startColumn);
-	//void SetEndPos(Long endLine, Long endColumn);
 	void DrawUnderLine(MemoForm *memoForm);
 	Long GetStartLine() const;
 	Long GetStartColumn() const;

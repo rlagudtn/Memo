@@ -476,10 +476,8 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	
 }
 void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	if (nChar == VK_RETURN) {
-		//캐럿을 숨긴다
-		HideCaret();
-		//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
+	//if (nChar == VK_RETURN) {
+		/*//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
 		ConnectedInfo connectedInfo;
 		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
 		//자른다.
@@ -504,9 +502,9 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		//현재위치 변경
 		this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
 		this->row->Move(rowCurrent);
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-	}
-	else if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_BACK){
+		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);*/
+	//}
+	if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어

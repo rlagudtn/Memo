@@ -7,6 +7,7 @@
 #include "Paper.h"
 #include "MoveColumnByStringLength.h"
 #include "SelectedText.h"
+#include "RowInfo.h"
 #include <afxwin.h>
 DownArrowKey::DownArrowKey() {
 
@@ -24,12 +25,24 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 	Long currentColumn = memoForm->row->GetCurrent();
 	//위로 이동
 	//마지막줄줄 아닐때
-	if (memoForm->text->GetCurrent() <memoForm->text->GetLength()-1) {
+	if (memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
+		//현재줄의 정보를 가져온다.
+		RowInfo rowInfo;
+		rowInfo.GetRowInfo(memoForm->row);
 		//윗줄로 이동
-		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent() +1));
-		MoveColumnByStringLength moveUp;
-		CClientDC dc(memoForm);
-		moveUp.MoveColumn(memoForm->row, &dc, caretPosX);
+		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent() + 1));
+		bool isLastIndex = rowInfo.GetIsLastIndex();
+		//마지막 열이라면
+		if (isLastIndex == true) {
+			rowInfo.GetRowInfo(memoForm->row);
+			memoForm->row->Move(rowInfo.GetLastIndex());
+		}
+		else {
+		
+			MoveColumnByStringLength moveUp;
+			CClientDC dc(memoForm);
+			moveUp.MoveColumn(memoForm->row, &dc, caretPosX);
+		}
 	}
 
 
@@ -37,34 +50,22 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 	CClientDC dc(memoForm);
 	memoForm->caret->MoveToCurrent(memoForm, &dc);
 	//캐럿이 화면영역위쪽이라면
-	if (memoForm->caret->GetY() >=memoForm->screenHeight/memoForm->fontSize*memoForm->fontSize) {
+	if (memoForm->caret->GetY() >= memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize) {
 		memoForm->paper->MoveToY(memoForm->paper->GetY() + memoForm->fontSize);
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 	//Shift+up
 	if (GetKeyState(VK_SHIFT) < 0) {
-		if (memoForm->selectedText != NULL) {
-			if (memoForm->text->GetCurrent() < memoForm->selectedText->GetEndLine()) {
-				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
+			if (memoForm->selectedText != NULL) {
+				bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+				if (isSelected == false && memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
+					delete memoForm->selectedText;
+					memoForm->selectedText = NULL;
+				}
 			}
-
-			else if (memoForm->text->GetCurrent() > memoForm->selectedText->GetEndLine()) {
-				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+			else {
+				memoForm->selectedText = new SelectedText;
+				memoForm->selectedText->Select(memoForm, currentLine, currentColumn + 1, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
 			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() < memoForm->selectedText->GetEndColumn()) {
-				memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn());
-			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() >memoForm->selectedText->GetEndColumn()) {
-				memoForm->selectedText->Select(memoForm, memoForm->selectedText->GetStartLine(), memoForm->selectedText->GetStartColumn(), memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			}
-			else if (memoForm->text->GetCurrent() == memoForm->selectedText->GetEndLine() && memoForm->row->GetCurrent() == memoForm->selectedText->GetEndColumn()&&memoForm->text->GetCurrent()<memoForm->text->GetLength()-1) {
-				delete memoForm->selectedText;
-				memoForm->selectedText = NULL;
-			}
-		}
-		else {
-			memoForm->selectedText = new SelectedText;
-			memoForm->selectedText->Select(memoForm, currentLine, currentColumn + 1, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-		}
 	}
-}
+}		
