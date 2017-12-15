@@ -150,6 +150,9 @@
     <ClInclude Include="CtrlXKey.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CtrlVKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -282,6 +285,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CtrlXKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CtrlVKey.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

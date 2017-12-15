@@ -8,19 +8,19 @@
 #include "DoubleByteCharacter.h"
 ConnectedInfo::ConnectedInfo(){}
 ConnectedInfo::ConnectedInfo(const ConnectedInfo& source) {
-	this->lastConnectedRow = source.lastConnectedRow;
+	this->lastConnectedLine = source.lastConnectedLine;
 }
 ConnectedInfo::~ConnectedInfo() {}
 
 ConnectedInfo& ConnectedInfo::operator=(const ConnectedInfo& source) {
-	this->lastConnectedRow = source.lastConnectedRow;
+	this->lastConnectedLine = source.lastConnectedLine;
 
 	return *this;
 }
 Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 	this->isConnected = false;
 	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
-	this->lastConnectedRow =index;
+	this->lastConnectedLine =index;
 	//현재줄의 마지막글자를 받는다.
 	if (currentLine->GetLength() > 0) {
 		Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
@@ -33,9 +33,12 @@ Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 			this->isConnected = true;
 		}
 	}
+	else {
+		this->isConnected = true;
+	}
 	//연결되져 있는 줄이 있다면.
 	if (this->isConnected == true) {
-		Long i =index;
+		Long i =index+1;
 		bool isLineFeed = false;
 		Row *row;
 		Character *character;
@@ -51,7 +54,7 @@ Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 			i++;
 		}
 		//저장한다.
-		this->lastConnectedRow=i-1;
+		this->lastConnectedLine=i-1;
 	}
-	return this->lastConnectedRow;
+	return this->lastConnectedLine;
 }

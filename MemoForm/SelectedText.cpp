@@ -79,7 +79,7 @@ string SelectedText::Select(MemoForm *memoForm, Long startLine, Long startColumn
 void SelectedText::EraseSelectedText(MemoForm *memoForm) {
 	Long i = this->endLine;
 	while (i >= this->startLine) {
-		Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(i));
+		Row *row = dynamic_cast<Row*>(memoForm->text->Move(i));
 		if (i == this->startLine || i == this->endLine) {
 			Long startEraseRow;
 			Long endEraseRow;

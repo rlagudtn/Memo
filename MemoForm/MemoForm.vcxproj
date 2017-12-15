@@ -158,6 +158,7 @@
     <ClInclude Include="CopyToMemo.h" />
     <ClInclude Include="CStatusButton.h" />
     <ClInclude Include="CtrlCopyKey.h" />
+    <ClInclude Include="CtrlVKey.h" />
     <ClInclude Include="CtrlXKey.h" />
     <ClInclude Include="CtrlFindKey.h" />
     <ClInclude Include="CtrlZKey.h" />
@@ -209,6 +210,7 @@
     <ClCompile Include="CopyToMemo.cpp" />
     <ClCompile Include="CStatusButton.cpp" />
     <ClCompile Include="CtrlCopyKey.cpp" />
+    <ClCompile Include="CtrlVKey.cpp" />
     <ClCompile Include="CtrlXKey.cpp" />
     <ClCompile Include="CtrlFindKey.cpp" />
     <ClCompile Include="CtrlZKey.cpp" />

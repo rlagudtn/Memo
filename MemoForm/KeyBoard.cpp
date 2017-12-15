@@ -15,6 +15,7 @@
 #include "CtrlZKey.h"
 #include "CtrlXKey.h"
 #include "CtrlCopyKey.h"
+#include "CtrlVKey.h"
 KeyBoard::KeyBoard() {
 
 }
@@ -54,6 +55,7 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	case VK_DELETE: {
 		this->keyAction = new DeleteKey;
 	}break;
+		//ctrl+a
 	case 0x41: {
 		if (GetKeyState(VK_CONTROL) < 0) {
 			this->keyAction = new CtrlAllKey;
@@ -63,6 +65,18 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	case 0x58: {
 		if (GetKeyState(VK_CONTROL) < 0) {
 			this->keyAction = new CtrlXKey;
+		}
+	}break;
+		//ctrl+c
+	case 0x43: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlCopyKey;
+		}
+	}break;
+		//ctrl+v
+	case 0x56: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlVKey;
 		}
 	}break;
 	default:

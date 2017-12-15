@@ -28,16 +28,14 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 	//}
 	//어디까지 이어져있는지 구한다.
 	ConnectedInfo connectedInfo;
-	Long endRow=connectedInfo.GetEndOfConnected(memoForm->text, textIndex);
+	Long endLine=connectedInfo.GetEndOfConnected(memoForm->text, textIndex);
 	//이어진줄까지 선택한다.
 	CutString cutString;
-	CString writeAgain = CString(cutString.CutText(memoForm,textIndex, rowIndex, endRow, dynamic_cast<Row*>(memoForm->text->GetAt(endRow))->GetLength() - 1).c_str());
+	CString writeAgain = CString(cutString.CutText(memoForm,textIndex, rowIndex, endLine, dynamic_cast<Row*>(memoForm->text->GetAt(endLine))->GetLength() - 1).c_str());
 	writeAgain.Replace("\r\n", "\r");
-	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent()));
 	CopyToMemo copyToMemo(dc, memoForm->screenWidth, (LPCTSTR)writeAgain);
 	memoForm->text->Accept(&copyToMemo);
 	//마지막줄에 \n추가
-	Long endLine = memoForm->text->GetCurrent();
 	Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
 	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
 	row->Add(lineFeed);
