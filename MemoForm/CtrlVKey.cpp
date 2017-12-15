@@ -23,6 +23,11 @@ CtrlVKey::~CtrlVKey() {
 }
 
 void CtrlVKey::Implement(MemoForm *memoForm) {
+	if (memoForm->selectedText != NULL) {
+		memoForm->selectedText->EraseSelectedText(memoForm);
+		delete memoForm->selectedText;
+		memoForm->selectedText = NULL;
+	}
 	if (IsClipboardFormatAvailable(CF_TEXT)) {
 		memoForm->OpenClipboard();
 		HANDLE hClipboardData = GetClipboardData(CF_TEXT);
@@ -52,6 +57,7 @@ void CtrlVKey::Implement(MemoForm *memoForm) {
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 		memoForm->row->Move(rowCurrent);
 
-		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
+	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+
 }

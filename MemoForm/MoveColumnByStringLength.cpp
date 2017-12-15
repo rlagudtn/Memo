@@ -4,6 +4,7 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "GetString.h"
+#include "RowInfo.h"
 #include <afxwin.h>
 MoveColumnByStringLength::MoveColumnByStringLength(){}
 MoveColumnByStringLength::MoveColumnByStringLength(const MoveColumnByStringLength& source){}
@@ -14,7 +15,10 @@ void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
 	CSize size;
 	Long stringLength = 0;
 	row->Move(-1);
-	while (i < row->GetLength()&&stringLength<pointX) {
+	RowInfo rowInfo;
+	rowInfo.GetRowInfo(row);
+	Long lastIndex = rowInfo.GetLastIndex();
+	while (i <=lastIndex&&stringLength<pointX) {
 		row->Move(i);
 		GetString getString;
 		size = pdc->GetTextExtent(CString(getString.SubString(row, 0, i).c_str()));

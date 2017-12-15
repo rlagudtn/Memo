@@ -161,6 +161,7 @@
     <ClInclude Include="CtrlCopyKey.h" />
     <ClInclude Include="CtrlLeftArrowKey.h" />
     <ClInclude Include="CtrlRightArrowKey.h" />
+    <ClInclude Include="CtrlSaveKey.h" />
     <ClInclude Include="CtrlVKey.h" />
     <ClInclude Include="CtrlXKey.h" />
     <ClInclude Include="CtrlFindKey.h" />
@@ -172,6 +173,9 @@
     <ClInclude Include="EndKey.h" />
     <ClInclude Include="EnterKey.h" />
     <ClInclude Include="FindCurrentByString.h" />
+    <ClInclude Include="FindReplace.h" />
+    <ClInclude Include="Mouse.h" />
+    <ClInclude Include="MouseLButton.h" />
     <ClInclude Include="RowInfo.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="ConnectedInfo.h" />
@@ -197,6 +201,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="RightArrowKey.h" />
     <ClInclude Include="Row.h" />
+    <ClInclude Include="Save.h" />
     <ClInclude Include="SelectedText.h" />
     <ClInclude Include="CtrlAllKey.h" />
     <ClInclude Include="SingleByteCharacter.h" />
@@ -216,6 +221,7 @@
     <ClCompile Include="CtrlCopyKey.cpp" />
     <ClCompile Include="CtrlLeftArrowKey.cpp" />
     <ClCompile Include="CtrlRightArrowKey.cpp" />
+    <ClCompile Include="CtrlSaveKey.cpp" />
     <ClCompile Include="CtrlVKey.cpp" />
     <ClCompile Include="CtrlXKey.cpp" />
     <ClCompile Include="CtrlFindKey.cpp" />
@@ -227,6 +233,9 @@
     <ClCompile Include="EndKey.cpp" />
     <ClCompile Include="EnterKey.cpp" />
     <ClCompile Include="FindCurrentByString.cpp" />
+    <ClCompile Include="FindReplace.cpp" />
+    <ClCompile Include="Mouse.cpp" />
+    <ClCompile Include="MouseLButton.cpp" />
     <ClCompile Include="RowInfo.cpp" />
     <ClCompile Include="Glyph.cpp" />
     <ClCompile Include="HomeKey.cpp" />
@@ -247,6 +256,7 @@
     <ClCompile Include="Paper.cpp" />
     <ClCompile Include="RightArrowKey.cpp" />
     <ClCompile Include="Row.cpp" />
+    <ClCompile Include="Save.cpp" />
     <ClCompile Include="SelectedText.cpp" />
     <ClCompile Include="CtrlAllKey.cpp" />
     <ClCompile Include="SingleByteCharacter.cpp" />

@@ -19,7 +19,7 @@
 #include "CtrlChangeKey.h"
 #include "CtrlRightArrowKey.h"
 #include "CtrlLeftArrowKey.h"
-
+#include "CtrlSaveKey.h"
 KeyBoard::KeyBoard() {
 
 }
@@ -103,6 +103,11 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	case 0x48: {
 		if (GetKeyState(VK_CONTROL) < 0) {
 			this->keyAction = new CtrlChangeKey;
+		}
+	}break;
+	case 0x53: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlSaveKey;
 		}
 	}break;
 	default:

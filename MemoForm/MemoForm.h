@@ -50,6 +50,7 @@ protected:
 
 	DECLARE_MESSAGE_MAP()
 public:
+
 	Page *page;
 	Text *text;
 	Row *row;
@@ -66,7 +67,7 @@ public:
 	//찾기 바꾸기
 	CFindReplaceDialog *pDlg;
 	Long(*scrollPositions); //페이지들의 스크롤 포지션
-
+	CString originalPathName;
 private:
 	CStatusBar statusBar;
 	

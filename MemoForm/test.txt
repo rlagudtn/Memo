@@ -2,10 +2,10 @@
 #include "LineController.h"
 #include "MemoForm.h"
 #include "Paper.h"
-#include "Text.h"
-#include "Row.h"
+#include "Text.h"WWWWWWWWWW
+#include "Row.h"ÀúÀú¤¿¤·
 #include "SingleByteCharacter.h"
-#include "GetString.h"
+#include "GetString.h"wwwwwwwwwww
 #include "ConnectedInfo.h"
 #include "SelectedText.h"
 #include "EraseSelectedText.h"

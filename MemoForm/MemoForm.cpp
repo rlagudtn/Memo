@@ -24,10 +24,11 @@
 #include "LineController.h"
 #include "LineFeed.h"
 #include "KeyBoard.h"
+#include "FindReplace.h"
+#include "Save.h"
 #include "resource.h"
 #include <afxcmn.h>	//cstatusbarctrl
 #include < afxstatusbar.h>
-//#include "CStatusButton.h"//만든 버튼
 #pragma warning(disable:4996)
 //#define ID_INDICATOR 0
 CControlApp the;
@@ -178,6 +179,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		CStdioFile file;
 		CString str;
 		CClientDC dc(this);
+		this->originalPathName = dlg.GetPathName();
 		if (file.Open(dlg.GetPathName(), CFile::modeRead)) {
 			while (file.ReadString(str)) {
 				if (str != '\f') {
@@ -308,8 +310,15 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	
 }
 void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-
-	if(GetKeyState(VK_SHIFT)>=0&& GetKeyState(VK_CONTROL)>=0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
+	
+	if(GetKeyState(VK_SHIFT)>=0 && GetKeyState(VK_CONTROL)>=0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
+		CClientDC dc(this);
+		if (this->selectedText != NULL) {
+			this->selectedText->EraseSelectedText(this);
+			this->selectedText = NULL;
+			MoveConnectedText moveConnectedText;
+			moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
+		}
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어
@@ -327,7 +336,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//화면 넘는지.
 		GetString getString;
-		CClientDC dc(this);
+		
 		CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
 		//넘는다면 자동줄바꿈 시켜준다.
 		if (size.cx > this->screenWidth) {
@@ -344,11 +353,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
 		this->scrollInfo.nPos = this->scrollInfo.nPos;
 	}
-
-	
 }
-
-
 void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	Long yInc=0;//스크롤 thumb의 이동거리
 	Long i = -1;
@@ -441,10 +446,7 @@ void MemoForm::OnPaint()
 	this->scrollPositions[this->page->GetCurrent()] = this->scrollInfo.nPos;
 	//선택하기있으면 출력
 	if (this->selectedText != NULL) {
-		//if (this->selectedText->GetStartLine() != this->selectedText->GetEndLine() || this->selectedText->GetStartColumn() != this->selectedText->GetEndColumn()) {
 		this->selectedText->DrawUnderLine(this);
-		//}
-
 	}
 }
 
@@ -471,12 +473,11 @@ void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 }
 
 void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
-	
 	Long x = point.x;
 	Long y = point.y;
 	CClientDC dc(this);
 	CSize size_;
-	
+
 	if (nFlags == MK_LBUTTON) {
 		this->selectedText = new SelectedText;
 
@@ -493,13 +494,13 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		if (this->text->GetCurrent() < this->firstClickedRow) {
 			startRow = this->text->GetCurrent();
 			endRow = this->firstClickedRow;
-			startColumn = this->row->GetCurrent()+1;
+			startColumn = this->row->GetCurrent() + 1;
 			endColumn = this->firstClickedColumn;
 		}
 		else if (this->text->GetCurrent() > this->firstClickedRow) {
 			startRow = this->firstClickedRow;
 			endRow = this->text->GetCurrent();
-			startColumn = this->firstClickedColumn+1;
+			startColumn = this->firstClickedColumn + 1;
 			endColumn = this->row->GetCurrent();
 		}
 		//같은줄 이라면
@@ -508,333 +509,54 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 			endRow = this->text->GetCurrent();
 			//현재 위치가 처음보다 왼쪽이라면
 			if (this->row->GetCurrent() < this->firstClickedColumn) {
-				startColumn = this->row->GetCurrent()+1;
+				startColumn = this->row->GetCurrent() + 1;
 				endColumn = this->firstClickedColumn;
 			}
 			else if (this->row->GetCurrent() >= this->firstClickedColumn) {
-				startColumn = this->firstClickedColumn+1;
+				startColumn = this->firstClickedColumn + 1;
 				endColumn = this->row->GetCurrent();
 			}
 		}
 		//선택될곳 셋팅
-		this->selectedText->Select(this,startRow, startColumn, endRow, endColumn);
-		if (startRow>=endRow&&startColumn>endColumn){
+		this->selectedText->Select(this, startRow, startColumn, endRow, endColumn);
+		if (startRow >= endRow&&startColumn > endColumn) {
 			delete this->selectedText;
 			this->selectedText = NULL;
 		}
 		// 택 기
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), false);
+		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), false);
 		UpdateWindow();
 	}
-
 }
+	
+
 
 //찾기 
 LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 	UNREFERENCED_PARAMETER(wParam);
 	HideCaret();
-	
-	CFindReplaceDialog *dlg = CFindReplaceDialog::GetNotifier(lParam);
 
-	if (dlg != NULL) {
-		//아래로 검색일때
-		
-		//찾기 창에 적힌 글자를 받아와서 keys에 저장한다
-		CString findString = dlg->GetFindString();
-		CString replaceString = "";
-		Long i = 0;
-		Long findStringLength = 0;
-		CString alphabet;
-		Row *keys = new Row(findString.GetLength());
-		while (i < findString.GetLength()) {
-			if (IsDBCSLeadByte(findString.GetAt(i))) {
-				i += 2;
-			}
-			else {
-				i++;
-			}
-			findStringLength++;
+	this->pDlg = CFindReplaceDialog::GetNotifier(lParam);
+
+	if (this->pDlg != NULL&&this->pDlg->IsTerminating()==0) {
+		FindReplace findReplace;
+		findReplace.FindString(this);
+		if (this->pDlg->ReplaceCurrent() != 0) {
+			findReplace.ReplaceString(this);
 		}
-
-		CClientDC dc(this);
-		CSize size_;
-		Long startRow;
-		Long endRow;
-		Long startColumn;
-		Long endColumn;
-		Long startX;
-		Long endX;
-		Long startY;
-		Long endY;
-		//찾기 방향 아래로
-		//찾기랑 바꾸기
-		if (dlg->ReplaceAll() == 0 && !dlg->IsTerminating()) {
-			//현재 위치 이후 텍스트를 버퍼에 담는다.
-			/*SelectedText selectedText;
-			selectedText.SetTextPosition(this->text->GetCurrent(), this->row->GetCurrent() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-			this->text->Accept(&selectedText);
-			CString text = CString(selectedText.GetBuffer().c_str());*/
-			//자동으로 줄바꾸기 때문에 전체 다 해줘야 될듯
-			CString buffer;
-			Row *row;
-			CString text;
-			Long startColumn;
-			Long endColumn;
-			Long afterTextRow=this->text->GetCurrent();
-			while (afterTextRow < this->text->GetLength()) {
-				row = dynamic_cast<Row*>(this->text->GetAt(afterTextRow));
-				if (afterTextRow!=this->text->GetCurrent()) {
-					startColumn = 0;
-				}
-				else {
-					startColumn = row->GetCurrent() + 1;
-				}
-				endColumn = row->GetLength() - 1;
-				GetString getString;
-				text += CString(getString.SubString(row, startColumn, endColumn).c_str());
-				text += "\r\n";
-				afterTextRow++;
-			}
-			//i로 돌리면서 같은것이 있는지 확인한다
-			bool isEqual = false;
-			Long i = 0;
-			//모두 바꾸기 시작
-			i = 0;
-			Long j;
-			Long k;
-
-			//마크할것에 관한 데이터
-			Long startRow;
-			Long endRow;
-			Long startX;
-			Long endX;
-			Long startY;
-			Long endY;
-			//CString 을 돌면서 텍스트 상의 위치 표시
-			Long currentText = this->text->GetCurrent();
-			Long currentRow = this->row->GetCurrent();
-			CString comparedString;//비교되는 문자
-			while (i < text.GetLength() - findString.GetLength()  && isEqual == false) {
-				k = 0;
-				j = i;
-
-				comparedString = "";
-				//비교될 문자 합치기
-				while (k < findStringLength) {
-					//한글
-					if (IsDBCSLeadByte(text.GetAt(j))) {
-						comparedString += text.Mid(j, 2);
-						//i바꿔줘야되므로
-						j += 2;
-					}
-					else {
-						//영어
-						comparedString += text.Mid(j, 1);
-						//i바꿔줘야되므로
-						j++;
-					}
-					k++;
-				}
-				//\r을 만난다면
-				if (text.GetAt(i) != '\r'&&text.GetAt(i) != '\n') {
-					currentRow++;
-				}
-				//찾는 문자열과 같다면
-				if (comparedString == findString) {
-					if (this->selectedText != NULL) {
-						delete this->selectedText;
-						this->selectedText = NULL;
-					}
-
-					//isEqual
-					isEqual = true;
-					startRow = currentText;
-					endRow = currentText;
-					startColumn = currentRow;
-					endColumn = currentRow + findStringLength - 1;
-					//현재위치를 옮긴다.
-					this->row = dynamic_cast<Row*>(this->text->Move(currentText));
-					this->row->Move(currentRow + findStringLength - 1);
-
-					//스크롤 관련
-					Long paperLocation = this->fontSize*(this->text->GetCurrent() + 2) - this->screenHeight/this->fontSize*this->fontSize;
-					if (paperLocation > this->paper->GetHeight() - this->screenHeight) {
-						paperLocation = this->paper->GetHeight() - this->screenHeight/this->fontSize*this->fontSize;
-					}
-					if (paperLocation < 0) {
-						paperLocation = 0;
-					}
-					this->paper->MoveToY(paperLocation);
-
-					this->scrollInfo.nPos = paperLocation;
-					//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-					//마크한다.
-					this->selectedText = new SelectedText;
-					this->selectedText->Select(this,currentText, currentRow, currentText, currentRow + findStringLength - 1);
-
-					InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
-					UpdateWindow();
-					this->selectedText->DrawUnderLine(this);
-				}
-
-				//\n을 만난다면.
-				if (text.GetAt(i) == '\n') {
-					currentText++;
-					currentRow = -1;//??????????????????
-				}
-				//더블바이트이면
-				if (IsDBCSLeadByte(text.GetAt(i))) {
-					i += 2;
-				}
-				//싱글바이트라면
-				else {
-					i++;
-				}
-			}
-			if (isEqual == false) {
-				Invalidate(true);
-				CString temp = "'이 존재하지 않습니다.";
-				CString print = "'" + findString + temp;
-				MessageBox((LPCTSTR)print, "메모장", MB_OK);
+		//모두 바꾸기
+		else if (this->pDlg->ReplaceAll() != 0 && !this->pDlg->IsTerminating()) {
+			if (this->selectedText != NULL) {
 				delete this->selectedText;
 				this->selectedText = NULL;
 			}
-			CString replaceString = "";
-			replaceString = dlg->GetReplaceString();
-
-			if (dlg->ReplaceCurrent() != 0) {
-				//선택된 부분이후를 선택하여 임시 저장한다
-				if (this->selectedText != NULL) {
-					SelectedText selectedText;
-					CString buffer=CString(selectedText.Select(this,this->selectedText->GetEndLine(), this->selectedText->GetEndColumn() + 1, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
-					//선택된 곳부터 끝까지 다 삭제
-					//EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-					//this->text->Accept(&eraseSelectedText);
-					selectedText.EraseSelectedText(this);
-					this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-
-					//바꿀 문자열을 받아온다.
-					CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)replaceString);
-					this->text->Accept(&copyToMemo);
-					this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-
-					//임시저장한 뒷부분을 옮겨 적는다.
-					Long textCurrent = this->text->GetCurrent();
-					Long rowCurrent = this->row->GetCurrent();
-					//임시저장한 텍스트를 다시 적는다.
-					CopyToMemo copyAgain(&dc, this->screenWidth, (LPCTSTR)buffer);
-					this->text->Accept(&copyAgain);
-					//현재 위치를 원 상태로 돌린다
-					this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
-					this->row->Move(rowCurrent);
-				}
-			}
+			findReplace.ReplaceAll(this);
 		}
-		//모두 바꾸기
-		else if (dlg->ReplaceAll() != 0 && !dlg->IsTerminating()) {
-			bool isChanged = false;
-			//전체 복사
-			SelectedText selectedText;
-			CString text=CString(selectedText.Select(this,0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1).c_str());
-			//전체 삭제
-			selectedText.EraseSelectedText(this);
-			//EraseSelectedText eraseSelectedText(0, 0, this->text->GetLength() - 1, dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1))->GetLength() - 1);
-			//this->text->Accept(&eraseSelectedText);
-			//복사한 스트링을 받는다
-			CString buffer;
-			CString changeText;
-
-			//찾을 텍스트,바꿀 텍스트를 받아온다.
-			CString findString = dlg->GetFindString();
-			//찾을 텍스트의 길이를 받아온다.
-			Long findStringLength = 0;
-			Long i = 0;
-			while (i < findString.GetLength()) {
-				if (IsDBCSLeadByte(findString.GetAt(i))) {
-					i += 2;
-				}
-				else {
-					i++;
-				}
-				findStringLength++;
-			}
-			CString replaceString = dlg->GetReplaceString();
-			//모두 바꾸기 시작
-			i = 0;
-			Long j;
-			Long k;
-			Long start = 0;
-			Long end;
-			CString comparedString;//비교되는 문자
-			while (i < text.GetLength() - findString.GetLength() - 1) {
-				k = 0;
-				j = i;
-				comparedString = "";
-				//비교될 문자 합치기
-				while (k < findStringLength) {
-					//한글
-					if (IsDBCSLeadByte(text.GetAt(j))) {
-						comparedString += text.Mid(j, 2);
-						j += 2;
-					}
-					else {
-						//영어
-						comparedString += text.Mid(j, 1);
-						j++;
-					}
-					k++;
-				}
-				//찾는 문자열과 같다면
-				if (comparedString == findString) {
-					end = i - 1;
-					buffer = text.Mid(start, end - start + 1);
-					changeText += buffer;
-					changeText += replaceString;
-					start = i + findString.GetLength();
-					//isChanged 바꿔줌
-					isChanged = true;
-				}
-				//더블바이트이면
-				if (IsDBCSLeadByte(text.GetAt(j))) {
-					i += 2;
-				}
-				else {
-					//영어
-					i++;
-				}
-			}
-			end = text.GetLength() - 1;
-			buffer = text.Mid(start, end - start + 1);
-			changeText += buffer;
-
-			CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)changeText);
-			this->text->Accept(&copyToMemo);
-			//맨앞으로 이동
-			this->row = dynamic_cast<Row*>(this->text->GetAt(0));
-			this->row->Move(0);
-			this->paper->MoveToY(0);
-			this->caret->Move(0, 0);
-			this->scrollInfo.nPos = 0;
-			SetScrollInfo(SB_VERT, &this->scrollInfo);
-			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), true);
-			if (isChanged == false) {
-				CString temp = "'이 존재하지 않습니다.";
-				CString print = "'" + findString + temp;
-				MessageBox((LPCTSTR)print, "메모장", MB_OK);
-			}
-
-
-		}
-		/*CreateSolidCaret(1, this->fontSize);
-		*/
-		//끌때
-		if (dlg->IsTerminating()) {
-			//동적할당한거 해제시켜줘야함*************************아직 못해줌
-			this->pDlg = NULL;
-		}
-
 	}
-	
+	if (this->pDlg->IsTerminating()!=0) {
+		//동적할당한거 해제시켜줘야함*************************아직 못해줌
+		this->pDlg = NULL;
+	}
 	return 0;
 }
 
@@ -866,36 +588,8 @@ void MemoForm::OnClose() {
 		//메세지박스 출력
 		int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
 		if (ret == IDYES) {
-			CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
-			if (dlg.DoModal() == IDOK) {
-				CStdioFile file;
-				CString str;
-				//TCHAR pathName[128];//파일경로
-				//GetModuleFileName(NULL, pathName, 128);
-
-				if (file.Open(dlg.GetPathName(), CFile::modeCreate | CFile::modeWrite | CFile::typeText)) {
-					Long i = 0;
-					Text *text;
-					Row *row;
-					CString str;
-					while (i < this->page->GetLength()) {
-						text = dynamic_cast<Text*>(this->page->GetAt(i));
-						Long j = 0;
-						while (j <text->GetLength()) {
-							row = dynamic_cast<Row*>(text->GetAt(j));
-							GetString getString;
-							str = CString(getString.SubString(row, 0, row->GetLength() - 1).c_str());
-							file.WriteString(str + "\n");
-							j++;
-						}
-						if (i <this->page->GetLength() - 1) {
-							file.WriteString("\f\n");
-						}
-						i++;
-					}
-					file.Close();
-				}
-			}
+			Save save;
+			save.SaveMemo(this, (LPCTSTR)this->originalPathName);
 			CFrameWnd::OnClose();
 		}
 		else if (ret == IDNO) {
