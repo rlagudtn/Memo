@@ -157,7 +157,10 @@
     <ClInclude Include="Composite.h" />
     <ClInclude Include="CopyToMemo.h" />
     <ClInclude Include="CStatusButton.h" />
+    <ClInclude Include="CtrlCopyKey.h" />
+    <ClInclude Include="CtrlXKey.h" />
     <ClInclude Include="CtrlFindKey.h" />
+    <ClInclude Include="CtrlZKey.h" />
     <ClInclude Include="CutString.h" />
     <ClInclude Include="DeleteKey.h" />
     <ClInclude Include="DoubleByteCharacter.h" />
@@ -205,7 +208,10 @@
     <ClCompile Include="ConnectedInfo.cpp" />
     <ClCompile Include="CopyToMemo.cpp" />
     <ClCompile Include="CStatusButton.cpp" />
+    <ClCompile Include="CtrlCopyKey.cpp" />
+    <ClCompile Include="CtrlXKey.cpp" />
     <ClCompile Include="CtrlFindKey.cpp" />
+    <ClCompile Include="CtrlZKey.cpp" />
     <ClCompile Include="CutString.cpp" />
     <ClCompile Include="DeleteKey.cpp" />
     <ClCompile Include="DoubleByteCharacter.cpp" />

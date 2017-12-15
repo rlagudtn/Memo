@@ -283,52 +283,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			}
 		}break;
 			//CTRL+X
-		case 0x58: {
-			CString copiedStr = "";
-			if (this->selectedText != NULL) {
-				copiedStr = CString(this->selectedText->GetBuffer().c_str());
-
-				HGLOBAL hGloBal = GlobalAlloc(GHND | GMEM_SHARE, (lstrlen(copiedStr) + 1) * sizeof(TCHAR));
-
-				PSTR pStr = (PSTR)GlobalLock(hGloBal);
-				if (pStr != NULL) {
-					lstrcpy(pStr, TEXT(copiedStr));
-
-					// 락 해제
-					GlobalUnlock(pStr);
-
-					// 클립보드 오픈
-					OpenClipboard();
-
-					// 클립보드 초기화
-					EmptyClipboard();
-
-					// 클립보드에 복사
-					SetClipboardData(CF_TEXT, pStr);
-
-					// 클립보드 클로즈
-					CloseClipboard();
-				}
-				this->selectedText->EraseSelectedText(this);
-				//선택된 곳부터 만 삭제
-			//	EraseSelectedText eraseSelectedText(this->selectedText->GetStartLine(), this->selectedText->GetStartColumn(), this->selectedText->GetEndLine(), this->selectedText->GetEndColumn());
-			//	this->text->Accept(&eraseSelectedText);
-				
-				//현재 위치를 원 상태로 돌린다.
-				this->row = dynamic_cast<Row*>(this->text->Move(this->text->GetCurrent()));
-				MoveConnectedText moveConnectedText;
-				CClientDC dc(this);
-				moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
-				if (this->selectedText != NULL) {
-					delete this->selectedText;
-					this->selectedText = NULL;
-				}
-
-
-				InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
-				UpdateWindow();
-			}
-		}break;
+		
 			//CTRL+F
 		case 0x46: {
 			if (this->pDlg==	NULL )

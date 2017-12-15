@@ -26,7 +26,6 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 			currentRowIndex = 0;
 		}
 	//}
-	//memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textIndex));
 	//어디까지 이어져있는지 구한다.
 	ConnectedInfo connectedInfo;
 	Long endRow=connectedInfo.GetEndOfConnected(memoForm->text, textIndex);

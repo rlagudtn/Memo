@@ -22,14 +22,16 @@ Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
 	this->lastConnectedRow =index;
 	//현재줄의 마지막글자를 받는다.
-	Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
-	if (dynamic_cast<SingleByteCharacter*>(lastCharacter)) {
-		if (dynamic_cast<SingleByteCharacter*>(lastCharacter)->GetAlphabet() != '\n') {
+	if (currentLine->GetLength() > 0) {
+		Character *lastCharacter = dynamic_cast<Character*>(currentLine->GetAt(currentLine->GetLength() - 1));
+		if (dynamic_cast<SingleByteCharacter*>(lastCharacter)) {
+			if (dynamic_cast<SingleByteCharacter*>(lastCharacter)->GetAlphabet() != '\n') {
+				this->isConnected = true;
+			}
+		}
+		else if (dynamic_cast<DoubleByteCharacter*>(lastCharacter)) {
 			this->isConnected = true;
 		}
-	}
-	else if (dynamic_cast<DoubleByteCharacter*>(lastCharacter)) {
-		this->isConnected = true;
 	}
 	//연결되져 있는 줄이 있다면.
 	if (this->isConnected == true) {

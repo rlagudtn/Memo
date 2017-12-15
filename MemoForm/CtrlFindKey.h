@@ -13,4 +13,4 @@ public:
 	void Implement(MemoForm *memoForm);
 
 };
-#endif // _SHIFTALLKEY_H
+#endif // _CTRLFINDKEY_H
