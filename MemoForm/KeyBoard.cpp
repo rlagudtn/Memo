@@ -10,12 +10,16 @@
 #include "EnterKey.h"
 #include "BackSpaceKey.h"
 #include "DeleteKey.h"
-#include "CtrlFindKey.h"
 #include "CtrlAllKey.h"
 #include "CtrlZKey.h"
 #include "CtrlXKey.h"
 #include "CtrlCopyKey.h"
 #include "CtrlVKey.h"
+#include "CtrlFindKey.h"
+#include "CtrlChangeKey.h"
+#include "CtrlRightArrowKey.h"
+#include "CtrlLeftArrowKey.h"
+
 KeyBoard::KeyBoard() {
 
 }
@@ -28,10 +32,20 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	switch (nChar)
 	{
 	case VK_LEFT: {
-		this->keyAction = new LeftArrowKey;
+		if (GetKeyState(VK_CONTROL) >= 0) {
+			this->keyAction = new LeftArrowKey;
+		}
+		else {
+			this->keyAction = new CtrlLeftArrowKey;
+		}
 	}break;
 	case VK_RIGHT: {
-		this->keyAction = new RightArrowKey;
+		if (GetKeyState(VK_CONTROL) >= 0) {
+			this->keyAction = new RightArrowKey;
+		}
+		else {
+			this->keyAction = new CtrlRightArrowKey;
+		}
 	}break;
 	case VK_UP: {
 		this->keyAction = new  UpArrowKey;
@@ -77,6 +91,18 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	case 0x56: {
 		if (GetKeyState(VK_CONTROL) < 0) {
 			this->keyAction = new CtrlVKey;
+		}
+	}break;
+		//ctrl+f
+	case 0x46: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlFindKey;
+		}
+	}break;
+		//ctrl+h
+	case 0x48: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlChangeKey;
 		}
 	}break;
 	default:

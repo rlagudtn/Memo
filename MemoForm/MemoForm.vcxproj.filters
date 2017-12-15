@@ -153,6 +153,15 @@
     <ClInclude Include="CtrlVKey.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CtrlChangeKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CtrlLeftArrowKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="CtrlRightArrowKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -288,6 +297,15 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CtrlVKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CtrlChangeKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CtrlRightArrowKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CtrlLeftArrowKey.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

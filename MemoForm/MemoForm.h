@@ -63,14 +63,16 @@ public:
 	//키 눌려졌을때의 현재 위치 저장
 	Long keyDownTextIndex;
 	Long keyDownRowIndex;
-private:
+	//찾기 바꾸기
 	CFindReplaceDialog *pDlg;
+	Long(*scrollPositions); //페이지들의 스크롤 포지션
+
+private:
 	CStatusBar statusBar;
 	
 	//CClientDC pdc;
 	char wszComp[2];
 	SCROLLINFO scrollInfo;
-	Long(*scrollPositions); //페이지들의 스크롤 포지션
 	//텍스트 선택 관련
 	Long x;//첫번째 클릭된곳의 캐럿위치
 	Long y;

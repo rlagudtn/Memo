@@ -20,5 +20,11 @@ CtrlFindKey::~CtrlFindKey() {
 }
 
 void CtrlFindKey::Implement(MemoForm *memoForm) {
-	
+		memoForm->pDlg = new CFindReplaceDialog;  // Must be created on the heap
+
+		memoForm->pDlg->Create(TRUE, _T(""), _T(""), FR_HIDEUPDOWN | FR_HIDEWHOLEWORD, memoForm);
+		memoForm->HideCaret();
+		memoForm->pDlg->CreateSolidCaret(1, memoForm->fontSize);
+		//memoForm->pDlg->ShowCaret();
+		//memoForm->pDlg->SetFocus();
 }

@@ -217,38 +217,8 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 }
 void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	
-	if (GetKeyState(VK_CONTROL)<0) {
-		switch (nChar) {
-		
-			//CTRL+F
-		case 0x46: {
-			if (this->pDlg==	NULL )
-			{
-				this->pDlg = new CFindReplaceDialog;  // Must be created on the heap
 
-				pDlg->Create(TRUE, _T(""), _T(""), FR_HIDEUPDOWN | FR_HIDEWHOLEWORD, this);
-				HideCaret();
-				pDlg->CreateSolidCaret(1,this->fontSize);
-				pDlg->ShowCaret();
-				pDlg->SetFocus();
-			}
-		}break;
-			//CTRL+H
-		case 0x48: {
-			if (this->pDlg == NULL)
-			{
-				HideCaret();
-				pDlg = new CFindReplaceDialog;  // Must be created on the heap
-			
-				pDlg->Create(FALSE, _T(""), _T(""), FR_HIDEUPDOWN | FR_HIDEWHOLEWORD, this);
-				
-			}
-		}break;
-		default:break;
-		}
-
-	}
-	else if (GetKeyState(VK_SHIFT) < 0) {
+	if (GetKeyState(VK_SHIFT) < 0) {
 		this->keyDownTextIndex = this->text->GetCurrent();
 		this->keyDownRowIndex = this->row->GetCurrent();
 		switch (nChar)	
@@ -338,35 +308,8 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	
 }
 void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	//if (nChar == VK_RETURN) {
-		/*//현재 줄에 연결되어져 있는 줄이 있는지 확인한다.
-		ConnectedInfo connectedInfo;
-		Long endLine = connectedInfo.GetEndOfConnected(this->text, this->text->GetCurrent());
-		//자른다.
-		CutString cutString;
-		CString cuttedText = CString(cutString.CutText(this, this->text->GetCurrent(), this->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(this->text->GetAt(endLine))->GetLength() - 1).c_str());
-		//개행문자 추가
-		LineFeed lineFeed;
-		lineFeed.SetLineFeed(this->row);
-		//새로운 줄 생성
-		LineController lineController;
-		lineController.MakeNewLine(this, this->text->GetCurrent() + 1);
-		//current저장
-		Long textCurrent = this->text->GetCurrent();
-		Long rowCurrent = this->row->GetCurrent();
-		//삭제했던 텍스트를 다시 적는다.
-		CClientDC dc(this);
-		cuttedText.Replace("\r\n", "");
-		CopyToMemo copyToMemo(&dc, this->screenWidth, (LPCTSTR)cuttedText);
-		this->text->Accept(&copyToMemo);
-		//개행추가
-		lineFeed.SetLineFeed(dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent())));
-		//현재위치 변경
-		this->row = dynamic_cast<Row*>(this->text->Move(textCurrent));
-		this->row->Move(rowCurrent);
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);*/
-	//}
-	if(GetAsyncKeyState(VK_SHIFT)==0&& GetAsyncKeyState(VK_CONTROL)==0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
+
+	if(GetKeyState(VK_SHIFT)>=0&& GetKeyState(VK_CONTROL)>=0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어
@@ -888,8 +831,6 @@ LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
 		if (dlg->IsTerminating()) {
 			//동적할당한거 해제시켜줘야함*************************아직 못해줌
 			this->pDlg = NULL;
-
-			//Long i;
 		}
 
 	}

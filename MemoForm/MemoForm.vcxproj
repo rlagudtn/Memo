@@ -157,7 +157,10 @@
     <ClInclude Include="Composite.h" />
     <ClInclude Include="CopyToMemo.h" />
     <ClInclude Include="CStatusButton.h" />
+    <ClInclude Include="CtrlChangeKey.h" />
     <ClInclude Include="CtrlCopyKey.h" />
+    <ClInclude Include="CtrlLeftArrowKey.h" />
+    <ClInclude Include="CtrlRightArrowKey.h" />
     <ClInclude Include="CtrlVKey.h" />
     <ClInclude Include="CtrlXKey.h" />
     <ClInclude Include="CtrlFindKey.h" />
@@ -209,7 +212,10 @@
     <ClCompile Include="ConnectedInfo.cpp" />
     <ClCompile Include="CopyToMemo.cpp" />
     <ClCompile Include="CStatusButton.cpp" />
+    <ClCompile Include="CtrlChangeKey.cpp" />
     <ClCompile Include="CtrlCopyKey.cpp" />
+    <ClCompile Include="CtrlLeftArrowKey.cpp" />
+    <ClCompile Include="CtrlRightArrowKey.cpp" />
     <ClCompile Include="CtrlVKey.cpp" />
     <ClCompile Include="CtrlXKey.cpp" />
     <ClCompile Include="CtrlFindKey.cpp" />
