@@ -58,6 +58,7 @@ BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	ON_WM_MOUSEMOVE()
 	ON_WM_LBUTTONUP()
 	ON_WM_LBUTTONDOWN()
+	ON_WM_MOUSEWHEEL()
 	ON_MESSAGE(WM_IME_STARTCOMPOSITION, OnStartComposition)
 	ON_WM_VSCROLL()
 	//ON_MESSAGE(WM_IME_CHAR, OnImeChar)
@@ -550,7 +551,23 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 	}
 }
 	
-
+BOOL MemoForm::OnMouseWheel(UINT nFlags, short zDelta, CPoint pt) {
+	if (zDelta < 0) {
+		this->paper->MoveToY(this->paper->GetY() + this->fontSize * 3);
+	}
+	else if (zDelta > 0) {
+		this->paper->MoveToY(this->paper->GetY() - this->fontSize * 3);
+	}
+	if (this->paper->GetY() < 0) {
+		this->paper->MoveToY(0);
+	}
+	if (this->paper->GetY() > this->paper->GetHeight()-this->screenHeight/this->fontSize*this->fontSize) {
+		this->paper->MoveToY(this->paper->GetHeight() - this->screenHeight / this->fontSize*this->fontSize);
+	}
+	this->scrollInfo.nPos= this->paper->GetY();
+	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+	return CWnd::OnMouseWheel(nFlags, zDelta, pt);
+}
 
 //Ã£±â 
 LONG MemoForm::OnFindReplace(WPARAM wParam, LPARAM lParam) {
