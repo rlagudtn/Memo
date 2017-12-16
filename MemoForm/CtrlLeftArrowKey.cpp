@@ -59,6 +59,6 @@ void CtrlLeftArrowKey::Implement(MemoForm *memoForm) {
 	}
 	//Ä³·µÀÌµ¿
 	CClientDC dc(memoForm);
-	memoForm->caret->MoveToCurrent(memoForm, &dc);
+	memoForm->caret->MoveToCurrent(memoForm);
 	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 }

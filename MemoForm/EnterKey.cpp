@@ -59,4 +59,11 @@ void EnterKey::Implement(MemoForm *memoForm) {
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 	memoForm->row->Move(rowCurrent);
 	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+	//캐럿이동
+	memoForm->caret->MoveToCurrent(memoForm);
+	//캐럿이 출력영역을 넘어섰을 경우
+	if (memoForm->caret->GetY() >=memoForm->screenHeight/memoForm->fontSize*memoForm->fontSize) {
+		memoForm->paper->MoveToY(memoForm->paper->GetY() +memoForm->fontSize);
+		memoForm->scrollInfo.nPos = memoForm->scrollInfo.nPos + memoForm->fontSize;
+	}
 }

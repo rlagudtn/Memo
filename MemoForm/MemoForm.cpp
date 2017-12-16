@@ -344,15 +344,25 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
 			
 		}
+		
 	}
-	CClientDC dc(this);
 	//캐럿
-	this->caret->MoveToCurrent(this, &dc);
+	this->caret->MoveToCurrent(this);
 	//출력글자 보다 밑에 있다면 종이를 올린다.
 	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
-		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
-		this->scrollInfo.nPos = this->scrollInfo.nPos;
+		this->paper->MoveToY((this->text->GetCurrent()+1)*this->fontSize-this->screenHeight/this->fontSize*this->fontSize);
+		this->scrollInfo.nPos = this->paper->GetY();
+		//다시 캐럿 이동
+		this->caret->MoveToCurrent(this);
 	}
+	//캐럿이 화면 위에 있다면
+	else if (this->caret->GetY() < 0) {
+		this->paper->MoveToY(this->text->GetCurrent()*this->fontSize );
+		this->scrollInfo.nPos = this->paper->GetY();
+		//다시 캐럿 이동
+		this->caret->MoveToCurrent(this);
+	}
+	
 }
 void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	Long yInc=0;//스크롤 thumb의 이동거리
@@ -410,6 +420,8 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	}
  	//새로운 위치 설정
 	this->scrollInfo.nPos = this->scrollInfo.nPos + yInc;
+	//캐럿 설정
+	this->caret->MoveToCurrent(this);
 	//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 	SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
 	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
@@ -428,20 +440,19 @@ void MemoForm::OnPaint()
 	this->fontSize = paintVisitor.GetFontSize();
 	
 	
-	//캐럿
-	this->caret->MoveToCurrent(this, &dc);
 	
-	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize+1)*this->fontSize) {
+	
+	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize)*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
 
 	}
 	else {
-		this->paper->ModifyPaper(this->screenWidth,(this->screenHeight / this->fontSize + 1)*this->fontSize);
+		this->paper->ModifyPaper(this->screenWidth,this->screenHeight / this->fontSize *this->fontSize);
 	}
-	this->scrollInfo.nMax = this->paper->GetHeight()+this->fontSize;
+	this->scrollInfo.nMax = this->paper->GetHeight()+this->screenHeight%this->fontSize;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-
+	
 	//스크롤 위치 저장
 	this->scrollPositions[this->page->GetCurrent()] = this->scrollInfo.nPos;
 	//선택하기있으면 출력
@@ -464,12 +475,14 @@ void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 	this->firstClickedRow= this->text->GetCurrent();
 	this->firstClickedColumn = this->row->GetCurrent();
 	
-	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+	
 	//출력글자 보다 밑에 있다면 종이를 올린다.
 	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
 		this->paper->MoveToY(this->paper->GetY() + this->fontSize);
+		this->scrollInfo.nPos = this->paper->GetY();
+		this->caret->MoveToCurrent(this);
 	}
-	
+	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 }
 
 void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
@@ -484,6 +497,14 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 		//캐럿 이동
 		CClientDC dc(this);
 		this->caret->MoveToPoint(this, &dc, point);
+		//출력글자 보다 밑에 있다면 종이를 올린다.
+		if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
+			this->paper->MoveToY(this->paper->GetY() + this->fontSize);
+			this->scrollInfo.nPos = this->paper->GetY();
+			this->caret->MoveToCurrent(this);
+			InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+
+		}
 		//텍스트 선택시작.************************************************
 		//현재 위치 저장
 		Long startRow;
@@ -567,7 +588,7 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	this->scrollInfo.cbSize = sizeof(this->scrollInfo);
 	this->scrollInfo.fMask = SIF_ALL;
 	this->scrollInfo.nMin = 0;
-	this->scrollInfo.nMax = this->paper->GetHeight();
+	this->scrollInfo.nMax = this->paper->GetHeight()+this->screenHeight%this->fontSize;
 	this->scrollInfo.nPage = cy;
 	SetScrollInfo(SB_VERT, &this->scrollInfo);
 	//자동 줄바꿈

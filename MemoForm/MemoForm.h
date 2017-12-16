@@ -68,12 +68,13 @@ public:
 	CFindReplaceDialog *pDlg;
 	Long(*scrollPositions); //페이지들의 스크롤 포지션
 	CString originalPathName;
+	SCROLLINFO scrollInfo;
+
 private:
 	CStatusBar statusBar;
 	
 	//CClientDC pdc;
 	char wszComp[2];
-	SCROLLINFO scrollInfo;
 	//텍스트 선택 관련
 	Long x;//첫번째 클릭된곳의 캐럿위치
 	Long y;

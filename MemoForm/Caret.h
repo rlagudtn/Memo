@@ -13,7 +13,7 @@ public:
 	void Move(Long x, Long y);
 	void MoveX(Long x);
 	void MoveY(Long y);
-	void MoveToCurrent(MemoForm *memoForm,CDC *dc);
+	void MoveToCurrent(MemoForm *memoForm);
 	void MoveToPoint(MemoForm *memoForm, CDC *dc,CPoint point);
 	Caret& operator=(const Caret& source);
 	Long GetX() const;

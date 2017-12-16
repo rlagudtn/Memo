@@ -53,10 +53,7 @@ void CtrlXKey::Implement(MemoForm *memoForm) {
 			delete memoForm->selectedText;
 			memoForm->selectedText = NULL;
 		}
-		memoForm->caret->MoveToCurrent(memoForm, &dc);
-		if (memoForm->caret->GetY() < 0) {
-			memoForm->paper->MoveToY(memoForm->text->GetCurrent()*memoForm->fontSize);
-		}
+		
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 }

@@ -46,7 +46,7 @@ void UpArrowKey::Implement(MemoForm *memoForm) {
 	}
 	//캐럿이동
 	CClientDC dc(memoForm);
-	memoForm->caret->MoveToCurrent(memoForm, &dc);
+	memoForm->caret->MoveToCurrent(memoForm);
 	//캐럿이 화면영역위쪽이라면
 	if (memoForm->caret->GetY() < 0) {
 		memoForm->paper->MoveToY(memoForm->paper->GetY() - memoForm->fontSize);

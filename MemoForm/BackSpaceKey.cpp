@@ -58,9 +58,7 @@ void BackSpaceKey::Implement(MemoForm *memoForm) {
 			memoForm->row->Move(currentRow);
 		}
 	}
-	if (memoForm->caret->GetY() < 0) {
-		memoForm->paper->MoveToY((memoForm->text->GetCurrent()-1)*memoForm->fontSize);
-	}
+
 	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 
 }

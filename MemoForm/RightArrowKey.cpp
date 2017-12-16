@@ -56,7 +56,7 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 	memoForm->row->Move(rowIndex);
 	//캐럿이동
 	CClientDC dc(memoForm);
-	memoForm->caret->MoveToCurrent(memoForm, &dc);
+	memoForm->caret->MoveToCurrent(memoForm);
 	//캐럿이 화면영역위쪽이라면
 	if (memoForm->caret->GetY() >= memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize) {
 		memoForm->paper->MoveToY(memoForm->paper->GetY() + memoForm->fontSize);

@@ -34,5 +34,5 @@ void CtrlAllKey::Implement(MemoForm *memoForm) {
 	//페이퍼 이동
 	memoForm->paper->MoveToY(memoForm->paper->GetHeight() - memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize);
 	memoForm->selectedText->Select(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight),true);
+	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 }

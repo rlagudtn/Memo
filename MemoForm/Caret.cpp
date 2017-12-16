@@ -29,11 +29,12 @@ void Caret::MoveX(Long x) {
 void Caret::MoveY(Long y) {
 	this->caretY = y;
 }
-void Caret::MoveToCurrent(MemoForm *memoForm, CDC *dc) {
+void Caret::MoveToCurrent(MemoForm *memoForm) {
 	this->caretY = memoForm->text->GetCurrent()*memoForm->fontSize - memoForm->paper->GetY();
 	//caretX좌표 구하기
+	CClientDC dc(memoForm);
 	GetString getStr;
-	this->caretX = dc->GetTextExtent(CString(getStr.SubString(memoForm->row,0,memoForm->row->GetCurrent()).c_str())).cx;
+	this->caretX = dc.GetTextExtent(CString(getStr.SubString(memoForm->row,0,memoForm->row->GetCurrent()).c_str())).cx;
 	//캐럿 보여주기
 	memoForm->CreateSolidCaret(1, memoForm->fontSize);
 	memoForm->SetCaretPos(CPoint(this->caretX, this->caretY));
