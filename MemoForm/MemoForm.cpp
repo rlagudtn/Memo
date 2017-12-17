@@ -95,37 +95,36 @@ LONG MemoForm::OnStartComposition(UINT wParam,LONG lParam){
 	return 0;
 }
 LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
-	
+			
 		int nLength = 0;
 		this->wszComp[2] = { 0, };
 		int cxBuffer;
+		CClientDC dc(this);
 		HIMC hImc = ImmGetContext(GetSafeHwnd());
 		HDC hdc = ::GetDC(GetSafeHwnd());
 		if (lParam&GCS_COMPSTR) {
 			nLength = ImmGetCompositionString(hImc, GCS_COMPSTR, NULL, 0);
 			if (nLength > 0) {
-				//캐럿 이동;
-				GetCharWidth(hdc, wParam, wParam, &cxBuffer);
-				//SetCaretPos(CPoint(this->caret->GetX() + cxBuffer, this->caret->GetY()));
+				this->isWritingKorean = true;
 				//글자 적기
 				ImmGetCompositionString(hImc, GCS_COMPSTR,this->wszComp, nLength);
+				
 				DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter((LPSTR)(LPCTSTR)this->wszComp);
 				this->row->Modify(this->row->GetCurrent(), doubleByteCharacter);
+					
 			}
-			string temp = to_string(this->row->GetLength());
-			Long x = 300;
-			Long y = 200;
-			TextOut(hdc, x, y, temp.c_str(), 4);
-			//저장되는지 확인->w저장은 됨
+			//backspace
+			else {
+				this->row->Delete(this->row->GetCurrent());
+				this->isWritingKorean = false;
+			}
 		}
 		else if (lParam&GCS_RESULTSTR) {
 			nLength = ImmGetCompositionString(hImc, GCS_RESULTSTR, NULL, 0);
 			if (nLength > 0) {
-				//캐럿 이동;
-				GetCharWidth(hdc, wParam, wParam, &cxBuffer);
-				//SetCaretPos(CPoint(this->caret->GetX() + cxBuffer, this->caret->GetY()));
+
 				//글자 적기
-				ImmGetCompositionString(hImc, GCS_RESULTSTR,this->wszComp, nLength);
+				ImmGetCompositionString(hImc, GCS_RESULTSTR, this->wszComp, nLength);
 				DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter((LPSTR)(LPCTSTR)this->wszComp);
 				this->row->Modify(this->row->GetCurrent(), doubleByteCharacter);
 				//다음칸에 넣어질 칸을 넣는다
@@ -137,13 +136,13 @@ LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
 				else if (this->row->GetCurrent() >= this->row->GetLength() - 1) {
 					this->row->Add(doubleByteCharacter_);
 				}
-				this->caret->MoveX(this->caret->GetX() + cxBuffer);
+				this->caret->MoveToCurrent(this);
 			}
+			
 		}
-		//SendMessage(WM_CHAR);
-		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ),false);
+		ImmReleaseContext(GetSafeHwnd(), hImc);
+		InvalidateRect(CRect(0, 0, this->screenWidth,this->screenHeight), false);
 		UpdateWindow();
-
 		return 0;
 }
 
@@ -213,8 +212,8 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	//스크롤 포지션 초기화
 	
-	this->x_ = 0;
 	CreateSolidCaret(1, this->fontSize);
+	this->caret->MoveToCurrent(this);
 	
 	return 0;
 }
