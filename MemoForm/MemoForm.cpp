@@ -10,6 +10,7 @@
 #include <string.h>
 #include "GetString.h"
 #include <imm.h>//한글조함
+#include "WriteKorean.h"//한글
 #include <ctype.h>//영어 구분
 #include "Paper.h"
 #include "Caret.h"
@@ -95,63 +96,18 @@ LONG MemoForm::OnStartComposition(UINT wParam,LONG lParam){
 	return 0;
 }
 LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
-			
-		int nLength = 0;
-		this->wszComp[2] = { 0, };
-		int cxBuffer;
-		CClientDC dc(this);
-		HIMC hImc = ImmGetContext(GetSafeHwnd());
-		HDC hdc = ::GetDC(GetSafeHwnd());
-		if (lParam&GCS_COMPSTR) {
-			nLength = ImmGetCompositionString(hImc, GCS_COMPSTR, NULL, 0);
-			if (nLength > 0) {
-				this->isWritingKorean = true;
-				//글자 적기
-				ImmGetCompositionString(hImc, GCS_COMPSTR,this->wszComp, nLength);
-				
-				DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter((LPSTR)(LPCTSTR)this->wszComp);
-				this->row->Modify(this->row->GetCurrent(), doubleByteCharacter);
-					
-			}
-			//backspace
-			else {
-				this->row->Delete(this->row->GetCurrent());
-				this->isWritingKorean = false;
-			}
-		}
-		else if (lParam&GCS_RESULTSTR) {
-			nLength = ImmGetCompositionString(hImc, GCS_RESULTSTR, NULL, 0);
-			if (nLength > 0) {
-
-				//글자 적기
-				ImmGetCompositionString(hImc, GCS_RESULTSTR, this->wszComp, nLength);
-				DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter((LPSTR)(LPCTSTR)this->wszComp);
-				this->row->Modify(this->row->GetCurrent(), doubleByteCharacter);
-				//다음칸에 넣어질 칸을 넣는다
-				DoubleByteCharacter *doubleByteCharacter_ = new DoubleByteCharacter;
-				if (this->row->GetCurrent() < this->row->GetLength() - 1) {
-					this->row->TakeIn(this->row->GetCurrent() + 1, doubleByteCharacter_);
-				}
-				//글의 현재위치가 줄의 길이보다 크거나 같으면
-				else if (this->row->GetCurrent() >= this->row->GetLength() - 1) {
-					this->row->Add(doubleByteCharacter_);
-				}
-				this->caret->MoveToCurrent(this);
-			}
-			
-		}
-		ImmReleaseContext(GetSafeHwnd(), hImc);
-		InvalidateRect(CRect(0, 0, this->screenWidth,this->screenHeight), false);
-		UpdateWindow();
-		return 0;
+	
+	WriteKorean writeKorean;
+	writeKorean.Write(this, wParam, lParam);
+	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), false);
+	UpdateWindow();
+	return 0;
 }
 
 
 int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 {
-	//HIMC hImc = ImmGetContext(GetSafeHwnd());
-	//ImmSetConversionStatus(hImc, IME_CMODE_HANGUL, IME_SMODE_CONVERSATION);
-	//ImmReleaseContext(GetSafeHwnd(), hImc);
+	
 	this->pDlg = NULL;
 	this->page = new Page;
 	this->text = new Text;

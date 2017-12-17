@@ -75,8 +75,6 @@ private:
 	CStatusBar statusBar;
 	bool isWritingKorean;//한글적을때 검은색 칸막이
 	//CClientDC pdc;
-	char wszComp[2];
-	//텍스트 선택 관련
 	Long x;//첫번째 클릭된곳의 캐럿위치
 	Long y;
 	Long firstClickedRow;

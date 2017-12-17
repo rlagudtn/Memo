@@ -177,6 +177,9 @@
     <ClInclude Include="MouseLButton.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="WriteKorean.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -336,6 +339,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="MouseLButton.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="WriteKorean.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
