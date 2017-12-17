@@ -131,12 +131,15 @@ void FindReplace::FindString(MemoForm *memoForm) {
 		if (paperLocation < 0) {
 			paperLocation = 0;
 		}
+		//종이와 스크롤
 		memoForm->paper->MoveToY(paperLocation);
-
+		memoForm->scrollInfo.nPos = memoForm->paper->GetY();
 		//마크한다.
 		memoForm->selectedText = new SelectedText;
 		memoForm->selectedText->Select(memoForm, currentText, currentRow, currentText, currentRow + findStringLength - 1);
-
+		//캐럿이동
+		memoForm->caret->MoveToCurrent(memoForm);
+		
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 
@@ -153,28 +156,42 @@ void FindReplace::ReplaceString(MemoForm *memoForm) {
 	CString replaceString =  memoForm->pDlg->GetReplaceString();
 	//선택된 부분이후를 선택하여 임시 저장한다
 	if (memoForm->selectedText != NULL) {
+
 		CutString cutString;
 		CString buffer =CString(cutString.CutText(memoForm, memoForm->selectedText->GetEndLine(), memoForm->selectedText->GetEndColumn() + 1, memoForm->text->GetLength() - 1, dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1))->GetLength() - 1).c_str());
 		//선택된 곳부터 끝까지 다 삭제
 		memoForm->selectedText->EraseSelectedText(memoForm);
 		delete memoForm->selectedText;
 		memoForm->selectedText = NULL;
+		//바꾸는 문자열의 시작위치 저장
+		Long startReplaceLine = memoForm->text->GetCurrent();
+		Long startReplaceColumn = memoForm->row->GetCurrent()+1;
 		
 		//바꿀 문자열을 받아온다.
 		CClientDC dc(memoForm);
 		CopyToMemo copyToMemo(&dc, memoForm->screenWidth, (LPCTSTR)replaceString);
 		memoForm->text->Accept(&copyToMemo);
-
+		//바꾼 문자열의 마지막위치저장
+		Long endReplaceLine = memoForm->text->GetCurrent();
+		Long endReplaceColumn = memoForm->row->GetCurrent();
 		//임시저장한 뒷부분을 옮겨 적는다.
 		Long textCurrent = memoForm->text->GetCurrent();
-		Long rowCurrent = memoForm->row->GetCurrent();
+		Long rowCurrent = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()))->GetCurrent();
 		//임시저장한 텍스트를 다시 적는다.
 		CopyToMemo copyAgain(&dc, memoForm->screenWidth, (LPCTSTR)buffer);
 		memoForm->text->Accept(&copyAgain);
 		//현재 위치를 원 상태로 돌린다
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 		memoForm->row->Move(rowCurrent);
+		//마크한다.
+		memoForm->selectedText = new SelectedText;
+		memoForm->selectedText->Select(memoForm, startReplaceLine,startReplaceColumn,endReplaceLine,endReplaceColumn);
+		//캐럿이동
+		memoForm->caret->MoveToCurrent(memoForm);
+
 	}
+
+
 }
 
 void FindReplace::ReplaceAll(MemoForm *memoForm) {

@@ -545,7 +545,6 @@ void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
 			delete this->selectedText;
 			this->selectedText = NULL;
 		}
-		// ец ╠Б
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), false);
 		UpdateWindow();
 	}
