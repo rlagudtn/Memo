@@ -96,10 +96,34 @@ LONG MemoForm::OnStartComposition(UINT wParam,LONG lParam){
 	return 0;
 }
 LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
-	
+	//선택되어져있는게 있으면 지운다.
+	if (this->selectedText != NULL) {
+		this->selectedText->EraseSelectedText(this);
+		this->selectedText = NULL;
+	}
 	WriteKorean writeKorean;
 	writeKorean.Write(this, wParam, lParam);
-	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), false);
+	//한글 입력중 다른 이벤트 발생으로 입력이 끝날때
+	Character *character = dynamic_cast<Character*>(this->row->GetAt(this->row->GetCurrent()));
+	if (dynamic_cast<DoubleByteCharacter*>(character)) {
+		if (dynamic_cast<DoubleByteCharacter*>(character)->GetAlphabet() == "") {
+			this->row->Delete(this->row->GetCurrent());
+		}
+	}
+	//화면 넘는지
+	GetString getString;
+	CClientDC dc(this);
+	CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
+	//넘는다면 자동줄바꿈 시켜준다.
+	if (size.cx > this->screenWidth) {
+		MoveConnectedText moveConnectedText;
+		moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
+		//캐럿
+		this->caret->MoveToCurrent(this);
+
+	}
+
+	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 	UpdateWindow();
 	return 0;
 }
@@ -420,7 +444,6 @@ void MemoForm::OnPaint()
 //마우스 클릭 캐럿 이동
 void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 	HideCaret();
-	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight ), false);
 	if (this->selectedText != NULL) {
 		delete this->selectedText;
 		this->selectedText = NULL;

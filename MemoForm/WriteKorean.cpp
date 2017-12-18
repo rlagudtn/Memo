@@ -25,12 +25,13 @@ void WriteKorean::Write(MemoForm *memoForm,UINT wParam, LONG lParam) {
 
 			DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter((LPSTR)(LPCTSTR)wszComp);
 			memoForm->row->Modify(memoForm->row->GetCurrent(), doubleByteCharacter);
-
+			
 		}
 		//backspace
 		else {
 			memoForm->row->Delete(memoForm->row->GetCurrent());
 		}
+		memoForm->caret->MoveToCurrent(memoForm);
 	}
 	else if (lParam&GCS_RESULTSTR) {
 		nLength = ImmGetCompositionString(hImc, GCS_RESULTSTR, NULL, 0);
@@ -52,10 +53,11 @@ void WriteKorean::Write(MemoForm *memoForm,UINT wParam, LONG lParam) {
 			else if (memoForm->row->GetCurrent() >= memoForm->row->GetLength() - 1) {
 				memoForm->row->Add(doubleByteCharacter_);
 			}
-			memoForm->caret->MoveToCurrent(memoForm);
+			
 		}
 
 	}
+	
 	ImmReleaseContext(memoForm->GetSafeHwnd(), hImc);
 	
 }
