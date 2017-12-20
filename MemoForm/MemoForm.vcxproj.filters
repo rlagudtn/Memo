@@ -180,6 +180,12 @@
     <ClInclude Include="WriteKorean.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CtrlPrintKey.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Menu.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -342,6 +348,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="WriteKorean.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CtrlPrintKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="Menu.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

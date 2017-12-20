@@ -36,7 +36,6 @@ protected:
 	afx_msg LONG OnStartComposition(UINT wParam,LONG lParam);
 	afx_msg LONG OnComposition(UINT wParam, LONG lParam);
 	afx_msg void OnKeyDown(UINT nChar,UINT nRepCnt,UINT nFlags);
-	//afx_msg LONG OnImeChar(UINT wParam, LONG lParam);
 	afx_msg void OnChar(UINT nChar, UINT nRepCnt, UINT nFlags);
 	afx_msg void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar);
 	afx_msg void OnPaint();
@@ -45,9 +44,7 @@ protected:
 	afx_msg BOOL OnMouseWheel(UINT nFlags,short zDelta,CPoint pt);
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LONG OnFindReplace(WPARAM wParam, LPARAM lParam);
-	//afx_msg void OnSysCommand(UINT nID, LPARAM lParam);
 	afx_msg void OnClose();
-	//afx_msg void OnButtonCliked(UINT uiID);//버튼 클릭시
 
 	DECLARE_MESSAGE_MAP()
 public:
@@ -70,7 +67,7 @@ public:
 	Long(*scrollPositions); //페이지들의 스크롤 포지션
 	CString originalPathName;
 	SCROLLINFO scrollInfo;
-
+	CPrintDialog *printDlg;
 private:
 	CStatusBar statusBar;
 	bool isWritingKorean;//한글적을때 검은색 칸막이
@@ -89,6 +86,8 @@ private:
 	
 	//CStatusButton (*pageButtons);
 	Array<CStatusButton*> *pageButtons;*/
+public:
+	afx_msg void OnNew();
 };
 
 #endif // _MEMOFORM_H

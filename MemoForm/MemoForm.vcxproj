@@ -150,6 +150,8 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="Menu.h" />
+    <ClInclude Include="CtrlPrintKey.h" />
     <ClInclude Include="Array.h" />
     <ClInclude Include="BackSpaceKey.h" />
     <ClInclude Include="Caret.h" />
@@ -211,6 +213,8 @@
     <ClInclude Include="WriteKorean.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="CtrlPrintKey.cpp" />
     <ClCompile Include="BackSpaceKey.cpp" />
     <ClCompile Include="Caret.cpp" />
     <ClCompile Include="Character.cpp" />

@@ -1,6 +1,7 @@
 //MemoForm.cpp
 #include "MemoForm.h"
 #include <WinUser.h>
+#include "Menu.h"
 #include "Page.h"
 #include "Text.h"  
 #include "Row.h"
@@ -41,10 +42,8 @@ BOOL CControlApp::InitInstance()
 	CRect rect(300, 300,1000, 816);
 	this->m_pMainWnd = memoForm;
 	memoForm->Create(NULL, "¸Þ¸ðÀå", WS_OVERLAPPEDWINDOW| WS_VSCROLL, rect);
-
 	this->m_pMainWnd->ShowWindow(SW_SHOW);
 	this->m_pMainWnd->UpdateWindow();
-
 
 	return TRUE;
 	
@@ -65,10 +64,8 @@ BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	//ON_MESSAGE(WM_IME_CHAR, OnImeChar)
 	ON_REGISTERED_MESSAGE(WM_FINDREPLACE,OnFindReplace)
 	ON_MESSAGE(WM_IME_COMPOSITION, OnComposition)
-	//ON_COMMAND_RANGE(IDI_ADDICON,200,MemoForm::OnButtonCliked)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
-	//ON_WM_SYSCOMMAND()
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
 MemoForm::MemoForm() {
@@ -92,7 +89,7 @@ LONG MemoForm::OnStartComposition(UINT wParam,LONG lParam){
 	else if (this->row->GetCurrent() >= this->row->GetLength() - 1) {
 		this->row->Add(doubleByteCharacter);
 	}
-
+	
 	return 0;
 }
 LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
@@ -194,7 +191,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	CreateSolidCaret(1, this->fontSize);
 	this->caret->MoveToCurrent(this);
-	
+	Menu menu(this);
 	return 0;
 }
 void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
@@ -616,4 +613,6 @@ void MemoForm::OnClose() {
 	}
 	CWnd::EnableWindow(true);
 }
+
+
 
