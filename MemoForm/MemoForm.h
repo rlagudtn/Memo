@@ -69,7 +69,6 @@ public:
 	CString originalPathName;
 	SCROLLINFO scrollInfo;
 	CPrintDialog *printDlg;
-	CString currentPath;
 
 private:
 	//Menu *menu;

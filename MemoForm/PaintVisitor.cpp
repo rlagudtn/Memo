@@ -71,9 +71,9 @@ void PaintVisitor::Visit(Row *row) {
 }
 
 void PaintVisitor::Visit(SingleByteCharacter *singleByteCharacter) {
-	if (singleByteCharacter->GetAlphabet() != '\n'&&singleByteCharacter->GetAlphabet() != '\r') {
+	//if (singleByteCharacter->GetAlphabet() != '\n'&&singleByteCharacter->GetAlphabet() != '\r') {
 		this->str += singleByteCharacter->GetAlphabet();
-	}
+//	}
 }
 void PaintVisitor::Visit(DoubleByteCharacter *doubleByteCharacter) {
 	if (strcmp(doubleByteCharacter->GetAlphabet(), "") != 0) {

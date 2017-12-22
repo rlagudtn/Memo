@@ -516,8 +516,15 @@ void MemoForm::OnClose() {
 		//메세지박스 출력
 		int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
 		if (ret == IDYES) {
+			CString savePath = this->originalPathName;
+			if (this->originalPathName == "") {
+				CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
+				if (dlg.DoModal() == IDOK) {
+					savePath = dlg.GetPathName();
+				}
+			}
 			Save save;
-			save.SaveMemo(this, (LPCTSTR)this->originalPathName);
+			save.SaveMemo(this, (LPCTSTR)savePath);
 			CFrameWnd::OnClose();
 		}
 		else if (ret == IDNO) {
