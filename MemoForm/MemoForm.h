@@ -14,6 +14,7 @@ class Text;
 class Paper;
 class Caret;
 class LineInfo;
+class Menu;
 //class GetString;
 class SelectedText;
 typedef signed long int Long;
@@ -45,7 +46,7 @@ protected:
 	afx_msg void OnSize(UINT nType, int cx, int cy);
 	afx_msg LONG OnFindReplace(WPARAM wParam, LPARAM lParam);
 	afx_msg void OnClose();
-
+	afx_msg void OnMenu(UINT nID);
 	DECLARE_MESSAGE_MAP()
 public:
 
@@ -68,7 +69,10 @@ public:
 	CString originalPathName;
 	SCROLLINFO scrollInfo;
 	CPrintDialog *printDlg;
+	CString currentPath;
+
 private:
+	//Menu *menu;
 	CStatusBar statusBar;
 	bool isWritingKorean;//한글적을때 검은색 칸막이
 	//CClientDC pdc;
@@ -78,7 +82,6 @@ private:
 	Long firstClickedColumn;
 	Long x_;
 
-	CString currentPath;
 	/*CButton addPageButton;
 	CButton trashPageButton;
 	CButton previousButton;

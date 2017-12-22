@@ -16,9 +16,16 @@ Save::Save() {
 Save::~Save(){}
 
 void Save::SaveMemo(MemoForm *memoForm,string pathName) {
+	CString savePath = CString(pathName.c_str());
+	if (savePath== "") {
+		CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
+		if (dlg.DoModal() == IDOK) {
+			savePath = dlg.GetPathName();
+		}
+	}
 	CStdioFile file;
 	CString str;
-	if (file.Open(CString(pathName.c_str()), CFile::modeCreate | CFile::modeWrite | CFile::typeText)) {
+	if (file.Open(savePath, CFile::modeCreate | CFile::modeWrite | CFile::typeText)) {
 		Long i = 0;
 		Text *text;
 		Row *row;

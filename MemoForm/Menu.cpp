@@ -1,6 +1,32 @@
 //Menu.h
 #include "Menu.h"
 #include "MemoForm.h"
+#include "MenuAction.h"
+#include "MakeNewFileMenu.h"
+#include "OpenMenu.h"
+#include "Save.h"
+#include "SaveAnotherPathMenu.h"
+#include "SetPageMenu.h"
+#include "PrintMenu.h"
+#include "PrintPreviewMenu.h"
+#include "ExitMenu.h"
+#include "CopyMenu.h"
+#include "AttachMenu.h"
+#include "CutMenu.h"
+#include "RecoveryMenu.h"
+#include "CancelRecoveryMenu.h"
+#include "FindMenu.h"
+#include "ChangeTextMenu.h"
+#include "SelectAllMenu.h"
+#include "MakeNewPageMenu.h"
+#include "MoveNextPageMenu.h"
+#include "MovePreviousPageMenu.h"
+#include "DeletePageMenu.h"
+#include "ChangeAutoLineMenu.h"
+#include "FontMenu.h"
+#include "HelpViewMenu.h"
+#include "InformationMenu.h"
+
 Menu::Menu(MemoForm *memoForm){
 	this->memoForm = memoForm;
 	this->main = new CMenu;
@@ -58,9 +84,91 @@ Menu::Menu(MemoForm *memoForm){
 
 
 
-
 }
 Menu::~Menu(){}
-void Menu::SetMenuBar(MemoForm *memoForm) {
-	
+void Menu::SetMenuAction(UINT nID) {
+	switch (nID)
+	{
+	case 201: {
+
+	}break;
+	case 202: {
+		this->menuAction = new OpenMenu;
+	}break;
+	case 203: {
+
+	}break;
+	case 204: {
+
+	}break;
+	case 205: {
+
+	}break;
+	case 206: {
+
+	}break;
+	case 207: {
+
+	}break;
+	case 208: {
+
+	}break;
+	case 209: {
+		this->menuAction = new CopyMenu;
+	}break;
+	case 210: {
+
+	}break;
+	case 211: {
+
+	}break;
+	case 212: {
+
+	}break;
+	case 213: {
+
+	}break;
+	case 214: {
+		this->menuAction = new FindMenu;
+	}break;
+	case 215: {
+		this->menuAction = new ChangeTextMenu;
+	}break;
+	case 216: {
+		this->menuAction = new SelectAllMenu;
+
+	}break;
+	case 217: {
+
+	}break;
+	case 218: {
+
+	}break;
+	case 219: {
+
+	}break;
+	case 220: {
+
+	}break;
+	case 221: {
+
+	}break;
+	case 222: {
+		this->menuAction = new MakeNewPageMenu;
+	}break;
+	case 223: {
+		this->menuAction = new MoveNextPageMenu;
+	}break;
+	case 224: {
+		this->menuAction = new MovePreviousPageMenu;
+	}break;
+	case 225: {
+		this->menuAction = new DeletePageMenu;
+	}break;
+	default:
+		break;
+	}
+}
+void Menu::DoAction() {
+	this->menuAction->Implement(this->memoForm);
 }

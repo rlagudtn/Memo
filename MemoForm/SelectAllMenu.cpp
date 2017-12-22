@@ -1,25 +1,15 @@
-//CtrlAllKey.cpp
-#include "CtrlAllKey.h"
+//SelectAllMenu.cpp
+#include "SelectAllMenu.h"
 #include "MemoForm.h"
+#include "SelectedText.h"
 #include "Text.h"
 #include "Row.h"
-#include "Caret.h"
-#include "Paper.h"
-#include "LineFeed.h"
-#include "SelectedText.h"
 #include "RowInfo.h"
-#include <afxwin.h>
-CtrlAllKey::CtrlAllKey() {
+#include "Paper.h"
+SelectAllMenu::SelectAllMenu() {}
+SelectAllMenu::~SelectAllMenu() {}
 
-}
-CtrlAllKey::CtrlAllKey(const CtrlAllKey& source) {
-
-}
-CtrlAllKey::~CtrlAllKey() {
-
-}
-
-void CtrlAllKey::Implement(MemoForm *memoForm) {
+void SelectAllMenu::Implement(MemoForm *memoForm) {
 	if (memoForm->selectedText != NULL) {
 		delete memoForm->selectedText;
 
@@ -34,6 +24,7 @@ void CtrlAllKey::Implement(MemoForm *memoForm) {
 	//페이퍼 이동
 	memoForm->paper->MoveToY(memoForm->paper->GetHeight() - memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize);
 	memoForm->scrollInfo.nPos = memoForm->paper->GetY();
-	memoForm->selectedText->Select(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
+
+	memoForm->selectedText->Select(memoForm, 0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
 	memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 }

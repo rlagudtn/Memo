@@ -150,6 +150,20 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="AttachMenu.h" />
+    <ClInclude Include="CancelRecoveryMenu.h" />
+    <ClInclude Include="ChangeAutoLineMenu.h" />
+    <ClInclude Include="ChangeTextMenu.h" />
+    <ClInclude Include="CopyMenu.h" />
+    <ClInclude Include="CutMenu.h" />
+    <ClInclude Include="DeletePageMenu.h" />
+    <ClInclude Include="ExitMenu.h" />
+    <ClInclude Include="FindMenu.h" />
+    <ClInclude Include="FontMenu.h" />
+    <ClInclude Include="HelpViewMenu.h" />
+    <ClInclude Include="InformationMenu.h" />
+    <ClInclude Include="MakeNewFileMenu.h" />
+    <ClInclude Include="MakeNewPageMenu.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="CtrlPrintKey.h" />
     <ClInclude Include="Array.h" />
@@ -176,8 +190,15 @@
     <ClInclude Include="EnterKey.h" />
     <ClInclude Include="FindCurrentByString.h" />
     <ClInclude Include="FindReplace.h" />
+    <ClInclude Include="MenuAction.h" />
     <ClInclude Include="Mouse.h" />
     <ClInclude Include="MouseLButton.h" />
+    <ClInclude Include="MoveNextPageMenu.h" />
+    <ClInclude Include="MovePreviousPageMenu.h" />
+    <ClInclude Include="OpenMenu.h" />
+    <ClInclude Include="PrintMenu.h" />
+    <ClInclude Include="PrintPreviewMenu.h" />
+    <ClInclude Include="RecoveryMenu.h" />
     <ClInclude Include="RowInfo.h" />
     <ClInclude Include="Glyph.h" />
     <ClInclude Include="ConnectedInfo.h" />
@@ -204,15 +225,33 @@
     <ClInclude Include="RightArrowKey.h" />
     <ClInclude Include="Row.h" />
     <ClInclude Include="Save.h" />
+    <ClInclude Include="SaveAnotherPathMenu.h" />
+    <ClInclude Include="SaveMenu.h" />
+    <ClInclude Include="SelectAllMenu.h" />
     <ClInclude Include="SelectedText.h" />
     <ClInclude Include="CtrlAllKey.h" />
+    <ClInclude Include="SetPageMenu.h" />
     <ClInclude Include="SingleByteCharacter.h" />
+    <ClInclude Include="StatusBarMenu.h" />
     <ClInclude Include="Text.h" />
     <ClInclude Include="UpArrowKey.h" />
     <ClInclude Include="Visitor.h" />
     <ClInclude Include="WriteKorean.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="AttachMenu.cpp" />
+    <ClCompile Include="CancelRecoveryMenu.cpp" />
+    <ClCompile Include="ChangeTextMenu.cpp" />
+    <ClCompile Include="CopyMenu.cpp" />
+    <ClCompile Include="CutMenu.cpp" />
+    <ClCompile Include="DeletePageMenu.cpp" />
+    <ClCompile Include="ExitMenu.cpp" />
+    <ClCompile Include="FindMenu.cpp" />
+    <ClCompile Include="FontMenu.cpp" />
+    <ClCompile Include="HelpViewMenu.cpp" />
+    <ClCompile Include="InformationMenu.cpp" />
+    <ClCompile Include="MakeNewFileMenu.cpp" />
+    <ClCompile Include="MakeNewPageMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="CtrlPrintKey.cpp" />
     <ClCompile Include="BackSpaceKey.cpp" />
@@ -239,8 +278,15 @@
     <ClCompile Include="EnterKey.cpp" />
     <ClCompile Include="FindCurrentByString.cpp" />
     <ClCompile Include="FindReplace.cpp" />
+    <ClCompile Include="MenuAction.cpp" />
     <ClCompile Include="Mouse.cpp" />
     <ClCompile Include="MouseLButton.cpp" />
+    <ClCompile Include="MoveNextPageMenu.cpp" />
+    <ClCompile Include="MovePreviousPageMenu.cpp" />
+    <ClCompile Include="OpenMenu.cpp" />
+    <ClCompile Include="PrintMenu.cpp" />
+    <ClCompile Include="PrintPreviewMenu.cpp" />
+    <ClCompile Include="RecoveryMenu.cpp" />
     <ClCompile Include="RowInfo.cpp" />
     <ClCompile Include="Glyph.cpp" />
     <ClCompile Include="HomeKey.cpp" />
@@ -262,9 +308,14 @@
     <ClCompile Include="RightArrowKey.cpp" />
     <ClCompile Include="Row.cpp" />
     <ClCompile Include="Save.cpp" />
+    <ClCompile Include="SaveAnotherPath.cpp" />
+    <ClCompile Include="SaveMenu.cpp" />
+    <ClCompile Include="SelectAllMenu.cpp" />
     <ClCompile Include="SelectedText.cpp" />
     <ClCompile Include="CtrlAllKey.cpp" />
+    <ClCompile Include="SetPageMenu.cpp" />
     <ClCompile Include="SingleByteCharacter.cpp" />
+    <ClCompile Include="StatusBarMenu.cpp" />
     <ClCompile Include="Text.cpp" />
     <ClCompile Include="UpArowKey.cpp" />
     <ClCompile Include="Visitor.cpp" />

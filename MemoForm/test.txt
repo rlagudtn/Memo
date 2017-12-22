@@ -6,7 +6,7 @@
 #include "Row.h"ÀúÀú¤¿¤·
 #include "SingleByteCharacter.h"
 #include "GetString.h"wwwwwwwwwww
-#include "ConnectedInfo.h"
+#include "ConnectedInfo.h"sss
 #include "SelectedText.h"
 #include "EraseSelectedText.h"
 #include "CopyToMemo.h"

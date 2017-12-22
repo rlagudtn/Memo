@@ -28,6 +28,7 @@
 #include "KeyBoard.h"
 #include "FindReplace.h"
 #include "Save.h"
+#include "Menu.h"
 #include "resource.h"
 #include <afxcmn.h>	//cstatusbarctrl
 #include < afxstatusbar.h>
@@ -64,6 +65,7 @@ BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	//ON_MESSAGE(WM_IME_CHAR, OnImeChar)
 	ON_REGISTERED_MESSAGE(WM_FINDREPLACE,OnFindReplace)
 	ON_MESSAGE(WM_IME_COMPOSITION, OnComposition)
+	ON_COMMAND_RANGE(201,300,OnMenu)
 	ON_WM_PAINT()
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
@@ -150,34 +152,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 		this->scrollPositions[k] = 0;
 		k++;
 	}
-	//불러오기
-	CFileDialog dlg(true, "*.txt", NULL, OFN_FILEMUSTEXIST, "text Files(*.txt)|*.txt|", NULL);
-	if (dlg.DoModal() == IDOK) {
-		CStdioFile file;
-		CString str;
-		CClientDC dc(this);
-		this->originalPathName = dlg.GetPathName();
-		if (file.Open(dlg.GetPathName(), CFile::modeRead)) {
-			while (file.ReadString(str)) {
-				if (str != '\f') {
-					
-					Load load(&dc,this->screenWidth,(LPCTSTR)str);
-					this->text->Accept(&load);
-				}
-				else {
-					this->text->Move(0);
-					Text *text=new Text;
-					this->page->Add(text);
-					this->text = dynamic_cast<Text*>(this->page->GetAt(this->page->GetCurrent()));
-				}
-			}
-			file.Close();
-		}
-		this->text =dynamic_cast<Text*>( this->page->Move(0));
-		this->row = dynamic_cast<Row*>(this->text->Move(0));
-		this->row->Move(-1);
-
-	}
+	
 	if (this->text->GetLength() == 0) {
 		this->row = new Row;
 		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter('\r');
@@ -192,91 +167,10 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CreateSolidCaret(1, this->fontSize);
 	this->caret->MoveToCurrent(this);
 	Menu menu(this);
+	
 	return 0;
 }
 void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
-	
-
-	if (GetKeyState(VK_SHIFT) < 0) {
-		this->keyDownTextIndex = this->text->GetCurrent();
-		this->keyDownRowIndex = this->row->GetCurrent();
-		switch (nChar)	
-		{
-			//페이지 생성 A키
-		case VK_TAB: {
-			/*//기존 페이지에 '\f'추가
-			Row *row_ = dynamic_cast<Row*>(this->text->GetAt(this->text->GetLength() - 1));
-			SingleByteCharacter *formFeed = new SingleByteCharacter('\f');
-			row_->Add(formFeed);
-			*/
-			Text *text = new Text;
-			if(this->page->GetCurrent()<this->page->GetLength()-1){
-				this->page->TakeIn(this->page->GetCurrent() + 1, text);
-			}
-			else {
-				this->page->Add(text);
-			}
-			this->text = dynamic_cast<Text*>(this->page->GetAt(this->page->GetCurrent()));
-			Row *row = new Row;
-			SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
-			SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-			row->Add(carriageReturn);
-			row->Add(lineFeed);
-			row->Move(-1);
-			this->text->Add(row);
-			this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-			this->paper->ModifyPaper(this->screenWidth, this->screenHeight);
-			this->paper->MoveToY(0);
-		}break;
-			//페이지 삭제 s키
-		case  VK_SPACE : {
-			this->page->Delete(this->page->GetCurrent());
-			if (this->page->GetCurrent() < this->page->GetLength() - 1) {
-				this->page->Move(this->page->GetCurrent() + 1);
-			}
-			//페이지가 아예 없으면 새로 생성
-			if (this->page->GetLength() == 0) {
-				Text *text = new Text;
-				this->page->Add(text);
-				this->text = dynamic_cast<Text*>(this->page->GetAt(this->page->GetCurrent()));
-				Row *row = new Row;
-				SingleByteCharacter *carriageReturn = new SingleByteCharacter('\r');
-				SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-				row->Add(carriageReturn);
-				row->Add(lineFeed);
-				row->Move(-1);
-				this->text->Add(row);
-				this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-				
-			}
-			
-		}break;
-			//페이지 이전으로 이동
-		/*case VK_LEFT: {
-			if (this->page->GetCurrent() > 0) {
-				this->text=dynamic_cast<Text*>(this->page->Move(this->page->GetCurrent() - 1));
-				this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-				//스크롤 위치 변경f
-				this->paper->MoveToY(this->scrollPositions[this->page->GetCurrent()]);
-				this->scrollInfo.nPos = this->scrollPositions[this->page->GetCurrent()];
-				SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-			}
-		}break;
-			//페이지 다음 이동
-		case VK_RIGHT: {
-			if (this->page->GetCurrent()  <this->page->GetLength()-1) {
-				this->text = dynamic_cast<Text*>(this->page->Move(this->page->GetCurrent() + 1));
-				this->row = dynamic_cast<Row*>(this->text->GetAt(this->text->GetCurrent()));
-				//스크롤 위치 변경
-				this->paper->MoveToY(this->scrollPositions[this->page->GetCurrent()]);
-				this->scrollInfo.nPos = this->scrollPositions[this->page->GetCurrent()];
-			}
-		}break;*/
-		default:
-			break;
-		}
-		Invalidate(true);
-	}
 
 	
 	KeyBoard keyBoardAction;
@@ -461,13 +355,15 @@ void MemoForm::OnLButtonDown(UINT nFlags, CPoint point) {
 	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 }
 
-void MemoForm::OnMouseMove(UINT nFlags, CPoint point) {
+void MemoForm::OnMouseMove(UINT nFlags, CPoint point){
+	
 	Long x = point.x;
 	Long y = point.y;
 	CClientDC dc(this);
 	CSize size_;
 
 	if (nFlags == MK_LBUTTON) {
+		HideCaret();
 		this->selectedText = new SelectedText;
 
 		//캐럿 이동
@@ -592,7 +488,27 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 	}
 	
 }
-
+void MemoForm::OnMenu(UINT nID) {
+	Menu menu(this);
+	menu.SetMenuAction(nID);
+	menu.DoAction();
+	//캐럿
+	this->caret->MoveToCurrent(this);
+	//출력글자 보다 밑에 있다면 종이를 올린다.
+	if (this->caret->GetY() >= this->screenHeight / this->fontSize*this->fontSize) {
+		this->paper->MoveToY((this->text->GetCurrent() + 1)*this->fontSize - this->screenHeight / this->fontSize*this->fontSize);
+		this->scrollInfo.nPos = this->paper->GetY();
+		//다시 캐럿 이동
+		this->caret->MoveToCurrent(this);
+	}
+	//캐럿이 화면 위에 있다면
+	else if (this->caret->GetY() < 0) {
+		this->paper->MoveToY(this->text->GetCurrent()*this->fontSize);
+		this->scrollInfo.nPos = this->paper->GetY();
+		//다시 캐럿 이동
+		this->caret->MoveToCurrent(this);
+	}
+}
 void MemoForm::OnClose() {
 	CWnd::EnableWindow(false);
 	if (this->page != NULL) {
