@@ -27,10 +27,7 @@ void CtrlZKey::Implement(MemoForm *memoForm) {
 		memoForm->page = memoForm->restoreToRearStack->Pop();
 		memoForm->text = dynamic_cast<Text*>(memoForm->page->GetAt(memoForm->page->GetCurrent()));
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
-		//Ä³·µÀÌµ¿
-		memoForm->caret->MoveToCurrent(memoForm);
-
-
+		
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 }

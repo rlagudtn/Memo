@@ -12,6 +12,7 @@
 #include "DeleteKey.h"
 #include "CtrlAllKey.h"
 #include "CtrlZKey.h"
+#include "CtrlYKey.h"
 #include "CtrlXKey.h"
 #include "CtrlCopyKey.h"
 #include "CtrlVKey.h"
@@ -123,7 +124,7 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}break;
 	case 0x59: {
 		if (GetKeyState(VK_CONTROL) < 0) {
-		//	this->keyAction = new CtrlYKey;
+			this->keyAction = new CtrlYKey;
 		}
 	}break;
 	default:

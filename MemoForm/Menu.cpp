@@ -93,7 +93,7 @@ void Menu::SetMenuAction(UINT nID) {
 		
 	}break;
 	case 202: {
-		//this->menuAction = new OpenMenu;
+		this->menuAction = new OpenMenu;
 	}break;
 	case 203: {
 		this->menuAction = new SaveMenu;
