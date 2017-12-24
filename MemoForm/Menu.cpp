@@ -4,7 +4,7 @@
 #include "MenuAction.h"
 #include "MakeNewFileMenu.h"
 #include "OpenMenu.h"
-#include "Save.h"
+#include "SaveMenu.h"
 #include "SaveAnotherPathMenu.h"
 #include "SetPageMenu.h"
 #include "PrintMenu.h"
@@ -90,16 +90,16 @@ void Menu::SetMenuAction(UINT nID) {
 	switch (nID)
 	{
 	case 201: {
-
+		
 	}break;
 	case 202: {
-		this->menuAction = new OpenMenu;
+		//this->menuAction = new OpenMenu;
 	}break;
 	case 203: {
-
+		this->menuAction = new SaveMenu;
 	}break;
 	case 204: {
-
+		this->menuAction = new SaveAnotherPathMenu;
 	}break;
 	case 205: {
 

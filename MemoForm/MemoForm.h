@@ -14,6 +14,7 @@ class Text;
 class Paper;
 class Caret;
 class LineInfo;
+class PageStack;
 class Menu;
 //class GetString;
 class SelectedText;
@@ -69,6 +70,9 @@ public:
 	CString originalPathName;
 	SCROLLINFO scrollInfo;
 	CPrintDialog *printDlg;
+	//되돌리기 관련
+	PageStack *restoreToRearStack;
+	PageStack *restoreToFrontStack;
 
 private:
 	//Menu *menu;

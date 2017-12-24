@@ -116,6 +116,16 @@ void KeyBoard::SetKeyAction(UINT nChar, UINT nRepCnt, UINT nFlags) {
 			this->keyAction = new CtrlPrintKey;
 		}
 	}break;
+	case 0x5A: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+			this->keyAction = new CtrlZKey;
+		}
+	}break;
+	case 0x59: {
+		if (GetKeyState(VK_CONTROL) < 0) {
+		//	this->keyAction = new CtrlYKey;
+		}
+	}break;
 	default:
 		break;
 	}

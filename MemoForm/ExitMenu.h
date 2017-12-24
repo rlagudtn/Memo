@@ -3,7 +3,7 @@
 #define _EXITMENU_H
 #include "MenuAction.h"
 class MemoForm;
-class ExitMenu :MenuAction {
+class ExitMenu :public MenuAction {
 public:
 	ExitMenu();
 	virtual ~ExitMenu();

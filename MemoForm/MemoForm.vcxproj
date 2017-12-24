@@ -155,6 +155,7 @@
     <ClInclude Include="ChangeAutoLineMenu.h" />
     <ClInclude Include="ChangeTextMenu.h" />
     <ClInclude Include="CopyMenu.h" />
+    <ClInclude Include="CtrlYKey.h" />
     <ClInclude Include="CutMenu.h" />
     <ClInclude Include="DeletePageMenu.h" />
     <ClInclude Include="ExitMenu.h" />
@@ -162,6 +163,7 @@
     <ClInclude Include="FontMenu.h" />
     <ClInclude Include="HelpViewMenu.h" />
     <ClInclude Include="InformationMenu.h" />
+    <ClInclude Include="LoadFactory.h" />
     <ClInclude Include="MakeNewFileMenu.h" />
     <ClInclude Include="MakeNewPageMenu.h" />
     <ClInclude Include="Menu.h" />
@@ -196,6 +198,7 @@
     <ClInclude Include="MoveNextPageMenu.h" />
     <ClInclude Include="MovePreviousPageMenu.h" />
     <ClInclude Include="OpenMenu.h" />
+    <ClInclude Include="PageStack.h" />
     <ClInclude Include="PrintMenu.h" />
     <ClInclude Include="PrintPreviewMenu.h" />
     <ClInclude Include="RecoveryMenu.h" />
@@ -243,6 +246,7 @@
     <ClCompile Include="CancelRecoveryMenu.cpp" />
     <ClCompile Include="ChangeTextMenu.cpp" />
     <ClCompile Include="CopyMenu.cpp" />
+    <ClCompile Include="CtrlYKey.cpp" />
     <ClCompile Include="CutMenu.cpp" />
     <ClCompile Include="DeletePageMenu.cpp" />
     <ClCompile Include="ExitMenu.cpp" />
@@ -250,6 +254,7 @@
     <ClCompile Include="FontMenu.cpp" />
     <ClCompile Include="HelpViewMenu.cpp" />
     <ClCompile Include="InformationMenu.cpp" />
+    <ClCompile Include="LoadFactory.cpp" />
     <ClCompile Include="MakeNewFileMenu.cpp" />
     <ClCompile Include="MakeNewPageMenu.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -284,6 +289,7 @@
     <ClCompile Include="MoveNextPageMenu.cpp" />
     <ClCompile Include="MovePreviousPageMenu.cpp" />
     <ClCompile Include="OpenMenu.cpp" />
+    <ClCompile Include="PageStack.cpp" />
     <ClCompile Include="PrintMenu.cpp" />
     <ClCompile Include="PrintPreviewMenu.cpp" />
     <ClCompile Include="RecoveryMenu.cpp" />

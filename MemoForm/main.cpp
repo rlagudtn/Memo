@@ -1,4 +1,6 @@
 #include "CopyToMemo.h"
+#include "Page.h"	
+#include "PageStack.h"
 #include "Text.h"
 #include "Row.h"
 #include "SingleByteCharacter.h"
@@ -10,6 +12,8 @@
 #include "GetString.h"
 using namespace std;
 int main(int argc, char *argv[]) {
+	Page *page = new Page;
+	PageStack *pageStack = new PageStack(2);
 	Text *text = new Text;
 	Row *row = new Row;
 	DoubleByteCharacter *doubleByteCharacter1 = new DoubleByteCharacter("문");
@@ -31,13 +35,13 @@ int main(int argc, char *argv[]) {
 	text->Add(row);
 
 	Row *row1 = new Row;
-	DoubleByteCharacter *doubleByteCharacter11 = new DoubleByteCharacter("문");
+	DoubleByteCharacter *doubleByteCharacter11 = new DoubleByteCharacter("음");
 	row1->Add(doubleByteCharacter11);
-	DoubleByteCharacter *doubleByteCharacter21 = new DoubleByteCharacter("제");
+	DoubleByteCharacter *doubleByteCharacter21 = new DoubleByteCharacter("오");
 	row1->Add(doubleByteCharacter21);
-	DoubleByteCharacter *doubleByteCharacter31 = new DoubleByteCharacter("가");
+	DoubleByteCharacter *doubleByteCharacter31 = new DoubleByteCharacter("아");
 	row1->Add(doubleByteCharacter31);
-	DoubleByteCharacter *doubleByteCharacter41 = new DoubleByteCharacter("없");
+	DoubleByteCharacter *doubleByteCharacter41 = new DoubleByteCharacter("ㅇ{");
 	row1->Add(doubleByteCharacter41);
 	DoubleByteCharacter *doubleByteCharacter51 = new DoubleByteCharacter("었");
 	row1->Add(doubleByteCharacter51);
@@ -48,34 +52,19 @@ int main(int argc, char *argv[]) {
 	SingleByteCharacter *singleByteCharacter21 = new SingleByteCharacter('\n');
 	row1->Add(singleByteCharacter21);
 	text->Add(row1);
-	cout << text->GetLength();
+	//cout << text->GetLength();
 	row->Move(-1);
-	//test
-	/*SelectedText selectedText;
-	selectedText.Select(memoForm,0, row->GetCurrent()+1, 0, row->GetLength()-1);
-	EraseSelectedText eraseSelectedText(selectedText.GetStartLine(), selectedText.GetStartColumn(), selectedText.GetEndLine(), selectedText.GetEndColumn());
-	text->Accept(&eraseSelectedText);
-	Long i = 0;
-	string str;
-	Character *character;
-	while (i < text->GetLength() ) {
-		Row *row_ = dynamic_cast<Row*>(text->GetAt(i));
-		Long j = 0;
-		while (j < row_->GetLength()) {
-			character = dynamic_cast<Character*>(row_->GetAt(j));
-			if (dynamic_cast<SingleByteCharacter*>(character)) {
-				str += dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
-			}
-			else if (dynamic_cast<DoubleByteCharacter*>(character)) {
-				str += dynamic_cast<DoubleByteCharacter*>(character)->GetAlphabet();
-			}
-			j++;
-		}
-		cout << str<<endl;
-		str = "";
-		i++;
-	}
-	str = "";
-	*/
+
+	pageStack->Push(page);
+	cout << pageStack->GetTop() << endl;
+	
+	//하나 더 추가
+	Page *page1 = new Page;
+	pageStack->Push(page1);
+	cout << pageStack->GetTop() << endl;
+
+	Page *page2 = new Page(*page1);
+	
+
 	return 0;
 }

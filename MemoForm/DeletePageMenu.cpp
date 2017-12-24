@@ -1,5 +1,6 @@
 //DeletePageMenu.cpp
 #include "DeletePageMenu.h"
+#include "PageStack.h"
 #include "MemoForm.h"
 #include "Page.h"
 #include "Text.h"	
@@ -9,6 +10,14 @@ DeletePageMenu::DeletePageMenu() {}
 DeletePageMenu::~DeletePageMenu() {}
 
 void DeletePageMenu::Implement(MemoForm *memoForm) {
+	//뒤로 가기에 저장
+	memoForm->restoreToRearStack->Push(memoForm->page);
+	//입력될때 앞으로 가기 리셋
+	if (memoForm->restoreToFrontStack != NULL) {
+		delete memoForm->restoreToFrontStack;
+	}
+	memoForm->restoreToFrontStack = new PageStack;
+	//페이지 삭제
 	memoForm->page->Delete(memoForm->page->GetCurrent());
 	if (memoForm->page->GetCurrent() < memoForm->page->GetLength() - 1) {
 		memoForm->page->Move(memoForm->page->GetCurrent() + 1);

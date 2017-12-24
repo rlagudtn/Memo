@@ -1,5 +1,5 @@
-//CtrlZKey.cpp
-#include "CtrlZKey.h"
+//CtrlYKey.cpp
+#include "CtrlYKey.h"
 #include "MemoForm.h"
 #include "Page.h"
 #include "Text.h"
@@ -7,18 +7,18 @@
 #include "Caret.h"
 #include "PageStack.h"
 #include <afxwin.h>
-CtrlZKey::CtrlZKey() {
+CtrlYKey::CtrlYKey() {
 
 }
-CtrlZKey::CtrlZKey(const CtrlZKey& source) {
+CtrlYKey::CtrlYKey(const CtrlYKey& source) {
 
 }
-CtrlZKey::~CtrlZKey() {
+CtrlYKey::~CtrlYKey() {
 
 }
 
-void CtrlZKey::Implement(MemoForm *memoForm) {
-	if (memoForm->restoreToRearStack->GetTop() >= 0) {
+void CtrlYKey::Implement(MemoForm *memoForm) {
+	if (memoForm->restoreToFrontStack->GetTop() >= 0) {
 		//되돌리기 전 상태를 앞으로 되돌리기에 저장
 		memoForm->restoreToFrontStack->Push(memoForm->page);
 		//현재 페이지 삭제

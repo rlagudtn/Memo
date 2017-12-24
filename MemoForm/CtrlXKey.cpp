@@ -4,6 +4,7 @@
 #include "Text.h"
 #include "Row.h"
 #include "Caret.h"
+#include "PageStack.h"
 #include "Paper.h"
 #include "SelectedText.h"
 #include "MoveConnectedText.h"
@@ -21,6 +22,14 @@ CtrlXKey::~CtrlXKey() {
 void CtrlXKey::Implement(MemoForm *memoForm) {
 	CString copiedStr = "";
 	if (memoForm->selectedText != NULL) {
+		//뒤로 가기에 저장
+		memoForm->restoreToRearStack->Push(memoForm->page);
+		//입력될때 앞으로 가기 리셋
+		if (memoForm->restoreToFrontStack != NULL) {
+			delete memoForm->restoreToFrontStack;
+		}
+		memoForm->restoreToFrontStack = new PageStack;
+		//선택된 부분 복사
 		copiedStr = CString(memoForm->selectedText->GetBuffer().c_str());
 
 		HGLOBAL hGloBal = GlobalAlloc(GHND | GMEM_SHARE, (lstrlen(copiedStr) + 1) * sizeof(TCHAR));

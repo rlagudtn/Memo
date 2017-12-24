@@ -5,6 +5,7 @@
 #include "Row.h"
 #include "Caret.h"
 #include "Paper.h"
+#include "PageStack.h"
 #include "SelectedText.h"
 #include "CutString.h"
 #include "LineFeed.h"
@@ -23,6 +24,15 @@ CtrlVKey::~CtrlVKey() {
 }
 
 void CtrlVKey::Implement(MemoForm *memoForm) {
+	//뒤로 가기에 저장
+	memoForm->restoreToRearStack->Push(memoForm->page);
+	//입력될때 앞으로 가기 리셋
+	if (memoForm->restoreToFrontStack != NULL) {
+		delete memoForm->restoreToFrontStack;
+	}
+	memoForm->restoreToFrontStack = new PageStack;
+
+	//선택된부분있으면 삭제
 	if (memoForm->selectedText != NULL) {
 		memoForm->selectedText->EraseSelectedText(memoForm);
 		delete memoForm->selectedText;

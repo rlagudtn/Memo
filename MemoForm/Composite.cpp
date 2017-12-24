@@ -16,9 +16,7 @@ Composite::Composite(const Composite& source)
 	while (i < source.length) {
 		Glyph *glyph = (source.GetAt(i))->Clone();
 		//임시변수에 기존것의 주소를 넘기고 힙에 있는 것을 삭제
-		temp = this->glyphs.GetAt(i);
 		this->glyphs.Modify(i, glyph);
-		delete temp;
 		i++;
 	}
 	this->current = source.current;

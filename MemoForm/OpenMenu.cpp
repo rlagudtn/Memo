@@ -13,6 +13,12 @@ void OpenMenu::Implement(MemoForm *memoForm) {
 	//불러오기
 	CFileDialog dlg(true, "*.txt", NULL, OFN_FILEMUSTEXIST, "text Files(*.txt)|*.txt|", NULL);
 	if (dlg.DoModal() == IDOK) {
+		if (memoForm->page != NULL) {
+			delete memoForm->page;
+		}
+		memoForm->page = new Page;
+		memoForm->text = new Text;
+		memoForm->page->Add(memoForm->text);
 		CStdioFile file;
 		CString str;
 		CClientDC dc(memoForm);

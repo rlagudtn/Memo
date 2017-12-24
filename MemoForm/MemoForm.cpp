@@ -15,6 +15,7 @@
 #include <ctype.h>//영어 구분
 #include "Paper.h"
 #include "Caret.h"
+#include "PageStack.h"
 #include "SelectedText.h"
 #include <afxdlgs.h>//CDialog
 #include "Load.h"
@@ -146,6 +147,10 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->scrollPositions = new Long[32];
 	this->keyDownTextIndex = 0;
 	this->keyDownTextIndex = -1;
+	this->originalPathName = "";
+	this->restoreToFrontStack = new PageStack;
+	this->restoreToRearStack = new PageStack;
+	
 	//배열 초기화
 	Long k = 0;
 	while (k < 32) {
@@ -167,7 +172,8 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	CreateSolidCaret(1, this->fontSize);
 	this->caret->MoveToCurrent(this);
 	Menu menu(this);
-	
+	//처음상태 저장
+	this->restoreToRearStack->Push(this->page);
 	return 0;
 }
 void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
@@ -193,7 +199,14 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		CString str;
 		str.Format(_T("%c"), nChar);
 		//영어
-
+		if (str == " ") {//스페이스바 들어올때 뒤로 가기에 저장
+			this->restoreToRearStack->Push(this->page);
+		}
+		//입력될때 앞으로 가기 리셋
+		if (this->restoreToFrontStack != NULL) {
+			delete this->restoreToFrontStack;
+		}
+		this->restoreToFrontStack = new PageStack;
 		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter(*(LPCTSTR)str);
 		//글의 현재위치가 줄의 길이보다 작으면
 			if (this->row->GetCurrent() < this->row->GetLength() - 1) {

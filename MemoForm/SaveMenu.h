@@ -3,7 +3,7 @@
 #define _SAVEMENU_H
 #include "MenuAction.h"
 class MemoForm;
-class SaveMenu :MenuAction {
+class SaveMenu :public MenuAction {
 public:
 	SaveMenu();
 	virtual ~SaveMenu();

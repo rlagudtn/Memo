@@ -5,6 +5,7 @@
 #include "Row.h"
 #include "Caret.h"
 #include "Paper.h"
+#include "PageStack.h"
 #include "LineFeed.h"
 #include "SelectedText.h"
 #include "RowInfo.h"
@@ -21,6 +22,14 @@ BackSpaceKey::~BackSpaceKey() {
 }
 
 void BackSpaceKey::Implement(MemoForm *memoForm) {
+	//뒤로 가기에 저장
+	memoForm->restoreToRearStack->Push(memoForm->page);
+	//입력될때 앞으로 가기 리셋
+	if (memoForm->restoreToFrontStack != NULL) {
+		delete memoForm->restoreToFrontStack;
+	}
+	memoForm->restoreToFrontStack = new PageStack;
+	//선택 되어져 있는 부분 있으면 지운다.
 	if (memoForm->selectedText != NULL) {
 		memoForm->selectedText->EraseSelectedText(memoForm);
 		delete memoForm->selectedText;

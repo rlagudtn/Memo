@@ -20,6 +20,7 @@ CtrlChangeKey::~CtrlChangeKey() {
 }
 
 void CtrlChangeKey::Implement(MemoForm *memoForm) {
+
 	if (memoForm->pDlg == NULL)
 	{
 		memoForm->pDlg = new CFindReplaceDialog;  // Must be created on the heap
