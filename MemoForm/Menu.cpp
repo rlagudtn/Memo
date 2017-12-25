@@ -102,7 +102,7 @@ void Menu::SetMenuAction(UINT nID) {
 		this->menuAction = new SaveAnotherPathMenu;
 	}break;
 	case 205: {
-
+		this->menuAction = new SetPageMenu;
 	}break;
 	case 206: {
 

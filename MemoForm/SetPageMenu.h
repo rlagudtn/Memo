@@ -3,7 +3,7 @@
 #define _SETPAGEMENU_H
 #include "MenuAction.h"
 class MemoForm;
-class SetPageMenu :MenuAction {
+class SetPageMenu :public MenuAction {
 public:
 	SetPageMenu();
 	virtual ~SetPageMenu();

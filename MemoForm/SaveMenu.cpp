@@ -17,4 +17,5 @@ void SaveMenu::Implement(MemoForm *memoForm) {
 		}
 		Save save;
 		save.SaveMemo(memoForm, (LPCTSTR)savePath);
+		memoForm->isChanged = false;
 }

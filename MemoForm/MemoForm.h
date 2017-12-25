@@ -70,6 +70,8 @@ public:
 	CString originalPathName;
 	SCROLLINFO scrollInfo;
 	CPrintDialog *printDlg;
+	CPageSetupDialog *pageSetUpDialog;
+	CFontDialog *fontDlg;
 	//되돌리기 관련
 	PageStack *restoreToRearStack;
 	PageStack *restoreToFrontStack;

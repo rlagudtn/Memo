@@ -11,6 +11,7 @@ void SaveAnotherPathMenu::Implement(MemoForm *memoForm) {
 		Save save;
 		save.SaveMemo(memoForm, (LPCTSTR)dlg.GetPathName());
 		memoForm->originalPathName = dlg.GetPathName();
+		memoForm->isChanged = false;
 	}
 }
 

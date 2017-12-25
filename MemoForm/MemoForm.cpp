@@ -147,6 +147,10 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->scrollPositions = new Long[32];
 	this->keyDownTextIndex = 0;
 	this->keyDownTextIndex = -1;
+	//프린트,페이지 설정,폰트
+	this->printDlg = NULL;
+	this->pageSetUpDialog = NULL;
+	this->fontDlg = NULL;
 	this->originalPathName = "";
 	this->restoreToFrontStack = new PageStack;
 	this->restoreToRearStack = new PageStack;
@@ -529,25 +533,31 @@ void MemoForm::OnClose() {
 		//저장하기
 		//메세지박스 출력
 		int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
-		if (ret == IDYES) {
-			CString savePath = this->originalPathName;
-			if (this->originalPathName == "") {
-				CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
-				if (dlg.DoModal() == IDOK) {
-					savePath = dlg.GetPathName();
+		//창닫음
+		if (ret == IDYES || ret == IDNO) {
+			if (ret == IDYES) {
+				CString savePath = this->originalPathName;
+				if (this->originalPathName == "") {
+					CFileDialog dlg(FALSE, "*.txt", NULL, OFN_HIDEREADONLY | OFN_OVERWRITEPROMPT, "text Files(*.txt)|*.txt|");
+					if (dlg.DoModal() == IDOK) {
+						savePath = dlg.GetPathName();
+					}
 				}
+				Save save;
+				save.SaveMemo(this, (LPCTSTR)savePath);
+				CFrameWnd::OnClose();
 			}
-			Save save;
-			save.SaveMemo(this, (LPCTSTR)savePath);
-			CFrameWnd::OnClose();
-		}
-		else if (ret == IDNO) {
-			if (this->page != NULL) {
-				delete this->page;
-				this->page = NULL;
+			else if (ret == IDNO) {
+				if (this->page != NULL) {
+					delete this->page;
+					this->page = NULL;
+				}
+				CFrameWnd::OnClose();
 			}
-			CFrameWnd::OnClose();
-
+			if (this->pageSetUpDialog != NULL) {
+				delete this->pageSetUpDialog;
+				this->pageSetUpDialog = NULL;
+			}
 		}
 	}
 	else {
