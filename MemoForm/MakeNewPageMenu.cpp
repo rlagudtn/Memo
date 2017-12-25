@@ -13,6 +13,7 @@ MakeNewPageMenu::MakeNewPageMenu() {}
 MakeNewPageMenu::~MakeNewPageMenu() {}
 
 void MakeNewPageMenu::Implement(MemoForm *memoForm) {
+	memoForm->isChanged = true;
 	//뒤로 가기에 저장
 	memoForm->restoreToRearStack->Push(memoForm->page);
 	//입력될때 앞으로 가기 리셋

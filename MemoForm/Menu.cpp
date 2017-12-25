@@ -90,7 +90,7 @@ void Menu::SetMenuAction(UINT nID) {
 	switch (nID)
 	{
 	case 201: {
-		
+		this->menuAction = new MakeNewFileMenu;
 	}break;
 	case 202: {
 		this->menuAction = new OpenMenu;
@@ -111,7 +111,7 @@ void Menu::SetMenuAction(UINT nID) {
 
 	}break;
 	case 208: {
-
+		this->menuAction = new ExitMenu;
 	}break;
 	case 209: {
 		this->menuAction = new CopyMenu;

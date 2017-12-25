@@ -150,7 +150,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->originalPathName = "";
 	this->restoreToFrontStack = new PageStack;
 	this->restoreToRearStack = new PageStack;
-	
+	this->isChanged = false;
 	//배열 초기화
 	Long k = 0;
 	while (k < 32) {
@@ -189,6 +189,7 @@ void MemoForm::OnKeyDown(UINT nChar, UINT nRepCnt, UINT nFlags) {
 void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	
 	if(GetKeyState(VK_SHIFT)>=0 && GetKeyState(VK_CONTROL)>=0&&nChar!=VK_BACK&&nChar!=VK_RETURN){
+		this->isChanged = true;
 		CClientDC dc(this);
 		if (this->selectedText != NULL) {
 			this->selectedText->EraseSelectedText(this);
@@ -524,7 +525,7 @@ void MemoForm::OnMenu(UINT nID) {
 }
 void MemoForm::OnClose() {
 	CWnd::EnableWindow(false);
-	if (this->page != NULL) {
+	if (this->isChanged==true) {
 		//저장하기
 		//메세지박스 출력
 		int ret = MessageBox(_T("변경내용을 제목없음에 저장하시겠습니까?"), _T("메모장"), MB_YESNOCANCEL);
@@ -545,7 +546,11 @@ void MemoForm::OnClose() {
 				delete this->page;
 			}
 			CFrameWnd::OnClose();
+
 		}
+	}
+	else {
+		CFrameWnd::OnClose();
 	}
 	CWnd::EnableWindow(true);
 }

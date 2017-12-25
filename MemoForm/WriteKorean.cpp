@@ -9,6 +9,7 @@ WriteKorean::WriteKorean(){}
 WriteKorean::~WriteKorean(){}
 
 void WriteKorean::Write(MemoForm *memoForm,UINT wParam, LONG lParam) {
+	memoForm->isChanged = true;
 	int nLength = 0;
 	char  *wszComp;
 	int cxBuffer;

@@ -73,7 +73,7 @@ public:
 	//되돌리기 관련
 	PageStack *restoreToRearStack;
 	PageStack *restoreToFrontStack;
-
+	bool isChanged;//처음 시작한 이후 바뀐것이 있다면
 private:
 	//Menu *menu;
 	CStatusBar statusBar;

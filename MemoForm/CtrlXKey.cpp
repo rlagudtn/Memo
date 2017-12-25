@@ -20,6 +20,8 @@ CtrlXKey::~CtrlXKey() {
 }
 
 void CtrlXKey::Implement(MemoForm *memoForm) {
+	memoForm->isChanged = true;
+
 	CString copiedStr = "";
 	if (memoForm->selectedText != NULL) {
 		//뒤로 가기에 저장
