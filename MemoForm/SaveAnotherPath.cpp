@@ -10,6 +10,7 @@ void SaveAnotherPathMenu::Implement(MemoForm *memoForm) {
 	if (dlg.DoModal() == IDOK) {
 		Save save;
 		save.SaveMemo(memoForm, (LPCTSTR)dlg.GetPathName());
+		memoForm->originalPathName = dlg.GetPathName();
 	}
 }
 

@@ -544,6 +544,7 @@ void MemoForm::OnClose() {
 		else if (ret == IDNO) {
 			if (this->page != NULL) {
 				delete this->page;
+				this->page = NULL;
 			}
 			CFrameWnd::OnClose();
 

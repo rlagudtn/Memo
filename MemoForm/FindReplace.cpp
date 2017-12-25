@@ -188,7 +188,8 @@ void FindReplace::ReplaceString(MemoForm *memoForm) {
 		memoForm->selectedText->Select(memoForm, startReplaceLine,startReplaceColumn,endReplaceLine,endReplaceColumn);
 		//Ä³·µÀÌµ¿
 		memoForm->caret->MoveToCurrent(memoForm);
-
+		//¹Ù²ñ
+		memoForm->isChanged = true;
 	}
 
 
