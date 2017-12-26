@@ -15,7 +15,7 @@ void SetPageMenu::Implement(MemoForm *memoForm) {
 	}
 	
 
-	if (IDOK == memoForm->pageSetUpDialog->DoModal())
+	if ( memoForm->pageSetUpDialog->DoModal()==IDOK)
 	{
 		// Propagate changes to the app
 		AfxGetApp()->SelectPrinter(memoForm->pageSetUpDialog->m_psd.hDevNames, memoForm->pageSetUpDialog->m_psd.hDevMode);

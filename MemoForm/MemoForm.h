@@ -76,6 +76,7 @@ public:
 	PageStack *restoreToRearStack;
 	PageStack *restoreToFrontStack;
 	bool isChanged;//처음 시작한 이후 바뀐것이 있다면
+	CFont *font;
 private:
 	//Menu *menu;
 	CStatusBar statusBar;

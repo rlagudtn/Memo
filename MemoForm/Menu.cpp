@@ -142,7 +142,7 @@ void Menu::SetMenuAction(UINT nID) {
 
 	}break;
 	case 218: {
-
+		this->menuAction = new FontMenu;
 	}break;
 	case 219: {
 

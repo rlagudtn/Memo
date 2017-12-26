@@ -155,6 +155,10 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->restoreToFrontStack = new PageStack;
 	this->restoreToRearStack = new PageStack;
 	this->isChanged = false;
+	this->font = new CFont;
+	this->font->CreatePointFont(120, "휴먼편지체", NULL);
+	CClientDC dc(this);
+
 	//배열 초기화
 	Long k = 0;
 	while (k < 32) {
@@ -321,13 +325,13 @@ void MemoForm::OnPaint()
 	
 	CString str;
 	CPaintDC dc(this);
-	
-	
+	dc.SelectObject(this->font);
+
 	//화면에 적는다.
 	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
-	
+
 	
 	
 	

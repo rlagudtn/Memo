@@ -3,7 +3,7 @@
 #define _FONTMENU_H
 #include "MenuAction.h"
 class MemoForm;
-class FontMenu :MenuAction {
+class FontMenu :public MenuAction {
 public:
 	FontMenu();
 	virtual ~FontMenu();

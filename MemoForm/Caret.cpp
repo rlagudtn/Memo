@@ -30,9 +30,10 @@ void Caret::MoveY(Long y) {
 	this->caretY = y;
 }
 void Caret::MoveToCurrent(MemoForm *memoForm) {
+	CClientDC dc(memoForm);
+	dc.SelectObject(memoForm->font);
 	this->caretY = memoForm->text->GetCurrent()*memoForm->fontSize - memoForm->paper->GetY();
 	//caretX좌표 구하기
-	CClientDC dc(memoForm);
 	GetString getStr;
 	this->caretX = dc.GetTextExtent(CString(getStr.SubString(memoForm->row,0,memoForm->row->GetCurrent()).c_str())).cx;
 	//캐럿 보여주기
@@ -43,6 +44,8 @@ void Caret::MoveToCurrent(MemoForm *memoForm) {
 }
 
 void Caret::MoveToPoint(MemoForm *memoForm, CDC *dc, CPoint point) {
+	dc->SelectObject(memoForm->font);
+
 	//행의 위치를 찾는다.
 	Long textCurrent = (memoForm->paper->GetY() + point.y) / memoForm->fontSize;
 	if (textCurrent >= memoForm->text->GetLength()) {

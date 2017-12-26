@@ -153,6 +153,7 @@ bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long curr
 }
 
 void SelectedText::DrawUnderLine(MemoForm *memoForm) {
+
 	if (this->startLine < this->endLine || this->startColumn <= this->endColumn) {
 		Long i = this->startLine;
 		Long startRowIndex;
@@ -162,6 +163,7 @@ void SelectedText::DrawUnderLine(MemoForm *memoForm) {
 		Long top= memoForm->fontSize*this->startLine - memoForm->paper->GetY();
 		GetString getString;
 		CClientDC dc(memoForm);
+		dc.SelectObject(memoForm->font);
 		while (i <= this->endLine) {
 			Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(i));
 			if (i > this->startLine&&i < this->endLine) {
