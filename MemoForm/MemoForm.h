@@ -55,7 +55,6 @@ public:
 	Text *text;
 	Row *row;
 	Paper *paper;
-	int fontSize;//글자 세로 길이
 	LineInfo *lineInfo;
 	Long screenWidth;
 	Long screenHeight;
@@ -77,6 +76,7 @@ public:
 	PageStack *restoreToFrontStack;
 	bool isChanged;//처음 시작한 이후 바뀐것이 있다면
 	CFont *font;
+	int fontSize;//글자 세로 길이
 private:
 	//Menu *menu;
 	CStatusBar statusBar;
@@ -88,15 +88,7 @@ private:
 	Long firstClickedColumn;
 	Long x_;
 
-	/*CButton addPageButton;
-	CButton trashPageButton;
-	CButton previousButton;
-	CButton nextButton;
-	
-	//CStatusButton (*pageButtons);
-	Array<CStatusButton*> *pageButtons;*/
-public:
-	afx_msg void OnNew();
+
 };
 
 #endif // _MEMOFORM_H
