@@ -22,7 +22,6 @@ public:
 	void Visit(SingleByteCharacter *singleByteCharacter);
 	void Visit(DoubleByteCharacter *doubleByteCharacter);
 	string& GetStr() const;
-	Long GetFontSize() const;
 private:
 	string str;
 	//Long start;
@@ -30,13 +29,9 @@ private:
 	MemoForm *memoForm;
 	Long screenHeight;
 	Long paperPosY;
-	Long fontSize;
 };
 inline string& PaintVisitor::GetStr() const {
 	return const_cast<string&>(this->str);
-}
-inline Long PaintVisitor::GetFontSize() const {
-	return this->fontSize;
 }
 
 

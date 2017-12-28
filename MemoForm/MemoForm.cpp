@@ -76,7 +76,6 @@ MemoForm::MemoForm() {
 	this->row = NULL;
 	this->caret = NULL;
 	this->selectedText = NULL;
-	this->fontSize = 16;
 	this->paper = NULL;
 	this->pDlg = NULL;
 	this->lineInfo = NULL;
@@ -102,26 +101,8 @@ LONG MemoForm::OnComposition(UINT wParam, LONG lParam) {
 	}
 	WriteKorean writeKorean;
 	writeKorean.Write(this, wParam, lParam);
-	//한글 입력중 다른 이벤트 발생으로 입력이 끝날때
-	Character *character = dynamic_cast<Character*>(this->row->GetAt(this->row->GetCurrent()));
-	if (dynamic_cast<DoubleByteCharacter*>(character)) {
-		if (dynamic_cast<DoubleByteCharacter*>(character)->GetAlphabet() == "") {
-			this->row->Delete(this->row->GetCurrent());
-		}
-	}
-	//화면 넘는지
-	GetString getString;
-	CClientDC dc(this);
-	CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
-	//넘는다면 자동줄바꿈 시켜준다.
-	if (size.cx > this->screenWidth) {
-		MoveConnectedText moveConnectedText;
-		moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
-		//캐럿
-		this->caret->MoveToCurrent(this);
-
-	}
-
+	
+	
 	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 	UpdateWindow();
 	return 0;
@@ -155,9 +136,12 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->restoreToRearStack = new PageStack;
 	this->isChanged = false;
 	this->font = new CFont;
-	this->font->CreatePointFont(120, "휴먼편지체", NULL);
+	this->font->CreatePointFont(180, "휴먼편지체", NULL);
+	
 	CClientDC dc(this);
-
+	dc.SelectObject(this->font);
+	this->fontSize = dc.GetTextExtent("T").cy;
+	CreateSolidCaret(1, this->fontSize);
 	//배열 초기화
 	Long k = 0;
 	while (k < 32) {
@@ -171,7 +155,6 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	}
 	//스크롤 포지션 초기화
 	
-	CreateSolidCaret(1, this->fontSize);
 	this->caret->MoveToCurrent(this);
 	Menu menu(this);
 	//처음상태 저장
@@ -212,13 +195,13 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		this->restoreToFrontStack = new PageStack;
 		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter(*(LPCTSTR)str);
 		//글의 현재위치가 줄의 길이보다 작으면
-			if (this->row->GetCurrent() < this->row->GetLength() - 1) {
-				this->row->TakeIn(this->row->GetCurrent() + 1, singleByteCharacter);
-			}
-			//글의 현재위치가 줄의 길이보다 크거나 같으면
-			else if (this->row->GetCurrent() >= this->row->GetLength() - 1) {
-				this->row->Add(singleByteCharacter);
-			}
+		if (this->row->GetCurrent() < this->row->GetLength() - 1) {
+			this->row->TakeIn(this->row->GetCurrent() + 1, singleByteCharacter);
+		}
+		//글의 현재위치가 줄의 길이보다 크거나 같으면
+		else if (this->row->GetCurrent() >= this->row->GetLength() - 1) {
+			this->row->Add(singleByteCharacter);
+		}
 		
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//화면 넘는지.
@@ -246,7 +229,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 	}
 	//캐럿이 화면 위에 있다면
 	else if (this->caret->GetY() < 0) {
-		this->paper->MoveToY(this->text->GetCurrent()*this->fontSize );
+		this->paper->MoveToY(this->text->GetCurrent()*this->fontSize);
 		this->scrollInfo.nPos = this->paper->GetY();
 		//다시 캐럿 이동
 		this->caret->MoveToCurrent(this);
@@ -294,7 +277,7 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	}
 	//위치가 스크롤 범위 넘어섰을때
 	if (this->scrollInfo.nPos + yInc<0||this->paper->GetY()<0) {
-		this->caret->MoveY(this->caret->GetY() + yInc);
+		//this->caret->MoveY(this->caret->GetY() + yInc);
 		yInc = -this->scrollInfo.nPos;
 		this->paper->MoveToY(0);
 	}
@@ -303,9 +286,6 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 		yInc = (this->scrollInfo.nMax - this->scrollInfo.nPos-this->scrollInfo.nPage) / this->fontSize*this->fontSize;
 		this->paper->MoveToY(this->paper->GetHeight()-this->screenHeight / this->fontSize*this->fontSize);
 		Long distance = previous - this->paper->GetY();
-		if (LOWORD(nSBCode) != SB_THUMBTRACK) {
-			//this->caret->MoveY(this->caret->GetY()+distance);
-		}
 	}
  	//새로운 위치 설정
 	this->scrollInfo.nPos = this->scrollInfo.nPos + yInc;
@@ -325,8 +305,6 @@ void MemoForm::OnPaint()
 	//화면에 적는다.
 	PaintVisitor paintVisitor(this,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
-	this->fontSize = paintVisitor.GetFontSize();
-
 	
 	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize)*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
@@ -498,6 +476,7 @@ void MemoForm::OnSize(UINT nType, int cx, int cy) {
 		LineController lineController;
 		CDC *dc = GetDC();
 		lineController.AutomaticLineChange(this, dc);
+		
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		UpdateWindow();
 	}

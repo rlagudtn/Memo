@@ -62,6 +62,6 @@ void LeftArrowKey::Implement(MemoForm *memoForm) {
 			memoForm->selectedText = new SelectedText;
 			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, currentLine, currentColumn);
 		}
-
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 }

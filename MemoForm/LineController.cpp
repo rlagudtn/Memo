@@ -12,6 +12,7 @@
 #include "MoveConnectedText.h"
 #include "CutString.h"
 #include "FindCurrentByString.h"
+#include "Caret.h"
 LineController::LineController(){}
 LineController::LineController(const LineController& source) {}
 LineController::~LineController(){}
@@ -73,5 +74,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	findCurrent.MoveToCurrent(dc, (LPCTSTR)buffer, memoForm->screenWidth);
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(findCurrent.GetTextIndex()));
 	memoForm->row->Move(findCurrent.GetRowIndex());
+	//Ä³·µÀÌµ¿
+	memoForm->caret->MoveToCurrent(memoForm);
 }
 

@@ -23,14 +23,13 @@ PaintVisitor::PaintVisitor(MemoForm *memoForm,Long screenHeight,Long paperPosY) 
 	this->memoForm = memoForm;
 	this->screenHeight = screenHeight;
 	this->paperPosY = paperPosY;
-	this->fontSize = 20;//임의적으로 설정
 }
 
 PaintVisitor::~PaintVisitor() {}
 
 void PaintVisitor::Visit(Text *text) {
-	Long i = this->paperPosY / this->fontSize;
-	Long last = (this->paperPosY + this->screenHeight) / this->fontSize ;
+	Long i = this->paperPosY / memoForm->fontSize;
+	Long last = (this->paperPosY + this->screenHeight) / memoForm->fontSize ;
 	if (last > text->GetLength()) {
 		last = text->GetLength();
 	}
@@ -44,11 +43,8 @@ void PaintVisitor::Visit(Text *text) {
 		dc.TextOut(0, y , CString(this->str.c_str()));
 		//입력된 글자 사이즈 받아옴
 		CSize size = dc.GetTextExtent(CString(this->str.c_str()));
-		if (size.cy != 0) {
-			this->fontSize = size.cy;
-		}
 		this->str = "";
-		y += this->fontSize;
+		y += memoForm->fontSize;
 		i++;
 	}
 }

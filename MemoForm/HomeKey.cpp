@@ -45,5 +45,6 @@ void HomeKey::Implement(MemoForm *memoForm) {
 			memoForm->selectedText = new SelectedText;
 			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), 0, memoForm->text->GetCurrent(), currentColumn);
 		}
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 }
