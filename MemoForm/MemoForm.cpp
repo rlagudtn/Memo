@@ -223,7 +223,7 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//화면 넘는지.
 		GetString getString;
-		//dc.SelectObject(this->font);
+		dc.SelectObject(this->font);
 
 		CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
 		//넘는다면 자동줄바꿈 시켜준다.
@@ -327,8 +327,6 @@ void MemoForm::OnPaint()
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
 
-	
-	
 	
 	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize)*this->fontSize) {
 		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);

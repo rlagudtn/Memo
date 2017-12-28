@@ -18,6 +18,8 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 	Long currentTextIndex = memoForm->text->GetCurrent();
 	Long currentRowIndex = memoForm->row->GetCurrent();
 	GetString currentString;
+	dc->SelectObject(memoForm->font);
+
 	CSize size = dc->GetTextExtent(CString(currentString.SubString(memoForm->row, 0, memoForm->row->GetCurrent()).c_str()));
 	if (size.cx > memoForm->screenWidth) {
 		currentTextIndex = memoForm->text->GetCurrent() + 1;

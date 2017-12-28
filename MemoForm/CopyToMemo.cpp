@@ -38,6 +38,8 @@ void CopyToMemo::WriteToMemo(MemoForm *memoForm, string str) {
 		}
 		//텍스트 길이 구한다.
 		CClientDC dc(memoForm);
+		dc.SelectObject(memoForm->font);
+
 		Long stringLength = dc.GetTextExtent(CString(currentString.c_str())).cx;
 		if (stringLength > memoForm->screenWidth) {
 			memoForm->row->Connect();
