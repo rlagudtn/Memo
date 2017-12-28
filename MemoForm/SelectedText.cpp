@@ -70,6 +70,9 @@ string SelectedText::Select(MemoForm *memoForm, Long startLine, Long startColumn
 				}
 				j++;
 			}
+			if (row->GetIsConnected() == false&&i<endLine) {
+				buffer += "\r\n";
+			}
 			i++;
 		}
 

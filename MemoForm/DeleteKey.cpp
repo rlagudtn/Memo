@@ -7,9 +7,7 @@
 #include "Paper.h"
 #include "PageStack.h"
 #include "MoveConnectedText.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 DeleteKey::DeleteKey() {
 
@@ -44,9 +42,7 @@ void DeleteKey::Implement(MemoForm *memoForm) {
 
 	}
 	else {
-		RowInfo rowInfo;
-		rowInfo.GetRowInfo(memoForm->row);
-		bool isLastIndex = rowInfo.GetIsLastIndex();
+		bool isLastIndex = memoForm->row->GetLength() - 1;
 		if (isLastIndex == false) {
 			memoForm->row->Delete(memoForm->row->GetCurrent() + 1);
 		}

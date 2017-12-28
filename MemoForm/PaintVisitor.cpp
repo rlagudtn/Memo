@@ -1,12 +1,12 @@
 //PaintVisitor.cpp
 #include "PaintVisitor.h"
+#include "MemoForm.h"
 #include"Row.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
 #include "Character.h"
 #include "Text.h"
 #include "Paper.h"
-#include <afxwin.h>
 #include <string>    
 using namespace std;
 PaintVisitor::PaintVisitor()
@@ -19,8 +19,8 @@ PaintVisitor::PaintVisitor()
 	this->start = start;
 	this->end = end;
 }*/
-PaintVisitor::PaintVisitor(CDC *pdc,Long screenHeight,Long paperPosY) : str("") {
-	this->pdc = pdc;
+PaintVisitor::PaintVisitor(MemoForm *memoForm,Long screenHeight,Long paperPosY) : str("") {
+	this->memoForm = memoForm;
 	this->screenHeight = screenHeight;
 	this->paperPosY = paperPosY;
 	this->fontSize = 20;//임의적으로 설정
@@ -36,13 +36,14 @@ void PaintVisitor::Visit(Text *text) {
 	}
 	
 	Long y = 0;
-
+	CClientDC dc(memoForm);
+	dc.SelectObject(memoForm->font);
 	while (i < last) {
 		text->GetAt(i)->Accept(this);
 		//글자 출력
-		this->pdc->TextOut(0, y , CString(this->str.c_str()));
+		dc.TextOut(0, y , CString(this->str.c_str()));
 		//입력된 글자 사이즈 받아옴
-		CSize size = this->pdc->GetTextExtent(CString(this->str.c_str()));
+		CSize size = dc.GetTextExtent(CString(this->str.c_str()));
 		if (size.cy != 0) {
 			this->fontSize = size.cy;
 		}

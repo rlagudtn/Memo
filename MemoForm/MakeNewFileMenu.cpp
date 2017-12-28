@@ -7,7 +7,6 @@
 #include "SingleByteCharacter.h"
 #include "Caret.h"
 #include "Paper.h"
-#include "LineFeed.h"
 #include "Save.h"
 MakeNewFileMenu::MakeNewFileMenu() {}
 MakeNewFileMenu::~MakeNewFileMenu() {}
@@ -35,8 +34,6 @@ void MakeNewFileMenu::Implement(MemoForm *memoForm) {
 	memoForm->page = new Page;
 	memoForm->text = new Text;
 	memoForm->row = new Row;
-	LineFeed lineFeed;
-	lineFeed.SetLineFeed(memoForm->row);
 	memoForm->text->Add(memoForm->row);
 	memoForm->page->Add(memoForm->text);
 

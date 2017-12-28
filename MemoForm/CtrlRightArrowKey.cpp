@@ -8,7 +8,6 @@
 #include "Character.h"
 #include "SingleByteCharacter.h";
 #include "DoubleByteCharacter.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 #include <string>	
 #pragma warning(disable :4996)
@@ -30,9 +29,7 @@ void CtrlRightArrowKey::Implement(MemoForm *memoForm) {
 	bool isStop =false;
 	Long firstCurrent= memoForm->row->GetCurrent();
 	Long i = memoForm->row->GetCurrent()+1;
-	RowInfo rowInfo;
-	rowInfo.GetRowInfo(memoForm->row);
-	Long lastIndex = rowInfo.GetLastIndex();
+	Long lastIndex = memoForm->row->GetLength() - 1;
 	while (i<=lastIndex && isStop==false) {
 		Character *character= dynamic_cast<Character*>(memoForm->row->GetAt(i));
 		if (dynamic_cast<SingleByteCharacter*>(character)) {

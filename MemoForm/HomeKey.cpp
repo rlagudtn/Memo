@@ -5,7 +5,6 @@
 #include "Row.h"
 #include "Caret.h"
 #include "Paper.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
 #include <afxwin.h>
 HomeKey::HomeKey() {

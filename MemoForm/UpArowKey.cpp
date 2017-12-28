@@ -7,7 +7,6 @@
 #include "Paper.h"
 #include "MoveColumnByStringLength.h"
 #include "SelectedText.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 UpArrowKey::UpArrowKey() {
 
@@ -27,16 +26,12 @@ void UpArrowKey::Implement(MemoForm *memoForm) {
 	//첫줄 아닐때
 	if (memoForm->text->GetCurrent() > 0) {
 		//현재줄의 정보를 가져온다.
-		RowInfo rowInfo;
-		rowInfo.GetRowInfo(memoForm->row);
+		Row *previousRow = memoForm->row;
 		//윗줄로 이동
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent() - 1));
 		
-		bool isLastIndex = rowInfo.GetIsLastIndex();
-		//마지막 열이라면
-		if (isLastIndex == true) {
-			rowInfo.GetRowInfo(memoForm->row);
-			memoForm->row->Move(rowInfo.GetLastIndex());
+		if (previousRow->GetCurrent()>=previousRow->GetLength()-1) {
+			memoForm->row->Move(memoForm->row->GetLength()-1);
 		}
 		else {
 			MoveColumnByStringLength moveUp;

@@ -17,9 +17,7 @@ string GetString::SubString(Row *row, Long start, Long end){
 	while (i <= end) {
 		character = dynamic_cast<Character*>(row->GetAt(i));
 		if (dynamic_cast<SingleByteCharacter*>(character)) {
-			if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() != '\r'&&dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() != '\n') {
 				str += dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet();
-			}
 		}
 		else if (dynamic_cast<DoubleByteCharacter*>(character)) {
 			str += dynamic_cast<DoubleByteCharacter*>(character)->GetAlphabet();

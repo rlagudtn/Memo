@@ -169,8 +169,8 @@ void FindReplace::ReplaceString(MemoForm *memoForm) {
 		
 		//바꿀 문자열을 받아온다.
 		CClientDC dc(memoForm);
-		CopyToMemo copyToMemo(&dc, memoForm->screenWidth, (LPCTSTR)replaceString);
-		memoForm->text->Accept(&copyToMemo);
+		CopyToMemo copyToMemo;
+		copyToMemo.WriteToMemo(memoForm,(LPCTSTR)replaceString);
 		//바꾼 문자열의 마지막위치저장
 		Long endReplaceLine = memoForm->text->GetCurrent();
 		Long endReplaceColumn = memoForm->row->GetCurrent();
@@ -178,8 +178,8 @@ void FindReplace::ReplaceString(MemoForm *memoForm) {
 		Long textCurrent = memoForm->text->GetCurrent();
 		Long rowCurrent = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()))->GetCurrent();
 		//임시저장한 텍스트를 다시 적는다.
-		CopyToMemo copyAgain(&dc, memoForm->screenWidth, (LPCTSTR)buffer);
-		memoForm->text->Accept(&copyAgain);
+		CopyToMemo copyAgain;
+		copyAgain.WriteToMemo(memoForm,(LPCTSTR)buffer);
 		//현재 위치를 원 상태로 돌린다
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 		memoForm->row->Move(rowCurrent);
@@ -268,8 +268,8 @@ void FindReplace::ReplaceAll(MemoForm *memoForm) {
 	buffer = text.Mid(start, end - start + 1);
 	changeText += buffer;
 	CClientDC dc(memoForm);
-	CopyToMemo copyToMemo(&dc, memoForm->screenWidth, (LPCTSTR)changeText);
-	memoForm->text->Accept(&copyToMemo);
+	CopyToMemo copyToMemo;
+	copyToMemo.WriteToMemo(memoForm,(LPCTSTR)changeText);
 	//맨앞으로 이동
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(0));
 	memoForm->row->Move(-1);

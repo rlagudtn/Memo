@@ -7,6 +7,7 @@
 #include "PageStack.h"
 #include "Paper.h"
 #include "SelectedText.h"
+#include "ConnectedInfo.h"
 #include "MoveConnectedText.h"
 #include <afxwin.h>
 CtrlXKey::CtrlXKey() {
@@ -55,7 +56,11 @@ void CtrlXKey::Implement(MemoForm *memoForm) {
 			// 클립보드 클로즈
 			CloseClipboard();
 		}
+		Long lastIndex = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->selectedText->GetEndLine()))->GetLength() - 1;
 		memoForm->selectedText->EraseSelectedText(memoForm);
+		if (lastIndex == memoForm->selectedText->GetEndColumn()) {
+			memoForm->row->DisConnect();
+		}
 		//현재줄 보정하기
 		MoveConnectedText moveConnectedText;
 		CClientDC dc(memoForm);

@@ -8,7 +8,6 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
 #include <afxwin.h>
 LeftArrowKey::LeftArrowKey() {
@@ -34,14 +33,7 @@ void LeftArrowKey::Implement(MemoForm *memoForm) {
 		//앞의 줄로 이동
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent() - 1));
 		//앞의줄의 끝이 개행문자인지 확인
-		LineFeed line;
-		bool isLineFeed = line.IsLineFeed(memoForm->row);
-		if (isLineFeed == true) {
-			memoForm->row->Move(memoForm->row->GetLength() - 3);
-		}
-		else {
-			memoForm->row->Move(memoForm->row->GetLength() - 1);
-		}
+		memoForm->row->Move(memoForm->row->GetLength() - 1);
 	}
 	else if (memoForm->row->GetCurrent() < -1 && memoForm->text->GetCurrent() <= 0) {
 		memoForm->row->Move(-1);

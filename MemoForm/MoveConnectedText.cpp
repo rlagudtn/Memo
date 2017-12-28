@@ -9,7 +9,6 @@
 #include "ConnectedInfo.h"
 #include "CutString.h"
 #include "CopyToMemo.h"
-#include "LineFeed.h"
 
 MoveConnectedText::MoveConnectedText(){}
 MoveConnectedText::MoveConnectedText(const MoveConnectedText& source) {}
@@ -18,28 +17,22 @@ Long MoveConnectedText::ChangeLine(MemoForm *memoForm,CDC *dc, Long textIndex,Lo
 	//현재 위치 받는다.
 	Long currentTextIndex = memoForm->text->GetCurrent();
 	Long currentRowIndex = memoForm->row->GetCurrent();
-	//if (currentTextIndex == textIndex) {
-		GetString currentString;
-		CSize size = dc->GetTextExtent(CString(currentString.SubString(memoForm->row, 0, memoForm->row->GetCurrent()).c_str()));
-		if (size.cx > memoForm->screenWidth) {
-			currentTextIndex = memoForm->text->GetCurrent() + 1;
-			currentRowIndex = 0;
-		}
-	//}
+	GetString currentString;
+	CSize size = dc->GetTextExtent(CString(currentString.SubString(memoForm->row, 0, memoForm->row->GetCurrent()).c_str()));
+	if (size.cx > memoForm->screenWidth) {
+		currentTextIndex = memoForm->text->GetCurrent() + 1;
+		currentRowIndex = 0;
+	}
 	//어디까지 이어져있는지 구한다.
 	ConnectedInfo connectedInfo;
 	Long endLine=connectedInfo.GetEndOfConnected(memoForm->text, textIndex);
 	//이어진줄까지 선택한다.
 	CutString cutString;
 	CString writeAgain = CString(cutString.CutText(memoForm,textIndex, rowIndex, endLine, dynamic_cast<Row*>(memoForm->text->GetAt(endLine))->GetLength() - 1).c_str());
-	writeAgain.Replace("\r\n", "\r");
-	CopyToMemo copyToMemo(dc, memoForm->screenWidth, (LPCTSTR)writeAgain);
-	memoForm->text->Accept(&copyToMemo);
+	CopyToMemo copyToMemo;
+	copyToMemo.WriteToMemo(memoForm,(LPCTSTR)writeAgain);
 	//마지막줄에 \n추가
-	Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
-	SingleByteCharacter *lineFeed = new SingleByteCharacter('\n');
-	row->Add(lineFeed);
-
+	memoForm->row->DisConnect();
 	//위치 이동
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(currentTextIndex));
 	memoForm->row->Move(currentRowIndex);

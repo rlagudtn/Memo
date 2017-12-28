@@ -8,7 +8,6 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
 #include <afxwin.h>
 RightArrowKey::RightArrowKey() {
@@ -29,28 +28,15 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 	Long rowIndex = memoForm->row->GetCurrent() + 1;//다음 글자로 이동
 	Long previousRowIndex;
 	//개행이 있는 줄인지 확인
-	LineFeed lineFeed;
-	bool isLineFeed = lineFeed.IsLineFeed(memoForm->row);
 	//개행있고 줄의 끝글자라면
-	if (isLineFeed == true && rowIndex > memoForm->row->GetLength() - 3) {
-		textIndex++;
-		rowIndex = -1;
-	}
-	else if (isLineFeed == false && rowIndex >= memoForm->row->GetLength()) {
+	if ( rowIndex >= memoForm->row->GetLength()) {
 		textIndex++;
 		rowIndex = -1;
 	}
 	//마지막줄을 넘었다면.
 	if (textIndex >= memoForm->text->GetLength()) {
 		textIndex = memoForm->text->GetLength() - 1;
-		bool isLineFeed = lineFeed.IsLineFeed(dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1)));
-		//개행있고 줄의 끝글자라면
-		if (isLineFeed == true) {
-			rowIndex = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1))->GetLength() - 3;
-		}
-		else if (isLineFeed == false && memoForm->row->GetCurrent() >= memoForm->row->GetLength()) {
-			rowIndex = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1))->GetLength() - 1;
-		}
+		rowIndex = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetLength() - 1))->GetLength() - 1;
 	}
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textIndex));
 	memoForm->row->Move(rowIndex);

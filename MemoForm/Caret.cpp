@@ -35,6 +35,7 @@ void Caret::MoveToCurrent(MemoForm *memoForm) {
 	this->caretY = memoForm->text->GetCurrent()*memoForm->fontSize - memoForm->paper->GetY();
 	//caretX좌표 구하기
 	GetString getStr;
+	dc.SelectObject(memoForm->font);
 	this->caretX = dc.GetTextExtent(CString(getStr.SubString(memoForm->row,0,memoForm->row->GetCurrent()).c_str())).cx;
 	//캐럿 보여주기
 	memoForm->CreateSolidCaret(1, memoForm->fontSize);

@@ -8,7 +8,6 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 CtrlLeftArrowKey::CtrlLeftArrowKey() {
 
@@ -53,9 +52,7 @@ void CtrlLeftArrowKey::Implement(MemoForm *memoForm) {
 
 	if (isStop == false && memoForm->text->GetCurrent()>0) {
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move((memoForm->text->GetCurrent() -1)));
-		RowInfo rowInfo;
-		rowInfo.GetRowInfo(memoForm->row);
-		memoForm->row->Move(rowInfo.GetLastIndex());
+		memoForm->row->Move(memoForm->row->GetLength()-1);
 	}
 	//Ä³·µÀÌµ¿
 	CClientDC dc(memoForm);

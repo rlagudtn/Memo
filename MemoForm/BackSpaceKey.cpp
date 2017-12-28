@@ -6,9 +6,7 @@
 #include "Caret.h"
 #include "Paper.h"
 #include "PageStack.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
-#include "RowInfo.h"
 #include "MoveConnectedText.h"
 #include <afxwin.h>
 BackSpaceKey::BackSpaceKey() {
@@ -53,11 +51,9 @@ void BackSpaceKey::Implement(MemoForm *memoForm) {
 			}
 			//행의 맨 처음일때
 			else {
-				//이전줄의 \r\n을 지운다.
 				memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(memoForm->text->GetCurrent() - 1));
-				memoForm->row->Delete(memoForm->row->GetLength() - 1);
-				memoForm->row->Delete(memoForm->row->GetLength() - 1);
-
+				memoForm->row->Move(memoForm->row->GetLength() - 1);
+				memoForm->row->Connect();
 			}
 			currentText = memoForm->text->GetCurrent();
 			currentRow = memoForm->row->GetCurrent();

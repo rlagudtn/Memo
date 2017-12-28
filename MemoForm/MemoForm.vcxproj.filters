@@ -87,9 +87,6 @@
     <ClInclude Include="LineController.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="MoveConnectedText.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="CutString.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -114,13 +111,7 @@
     <ClInclude Include="DownArrowKey.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="LineFeed.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="HomeKey.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="RowInfo.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="EndKey.h">
@@ -273,6 +264,9 @@
     <ClInclude Include="CtrlYKey.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MoveConnectedText.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -335,16 +329,10 @@
     <ClCompile Include="MoveColumnByStringLength.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="ConnectedInfo.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="LineInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="LineController.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MoveConnectedText.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CutString.cpp">
@@ -371,13 +359,7 @@
     <ClCompile Include="UpArowKey.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="LineFeed.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="HomeKey.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="RowInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="EndKey.cpp">
@@ -426,12 +408,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="Save.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="Mouse.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="MouseLButton.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="WriteKorean.cpp">
@@ -525,6 +501,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CtrlYKey.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MoveConnectedText.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ConnectedInfo.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

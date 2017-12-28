@@ -7,12 +7,10 @@
 #include "Paper.h"
 #include "PageStack.h"
 #include "ConnectedInfo.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
 #include "CutString.h"
 #include "LineController.h"
 #include "CopyToMemo.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 EnterKey::EnterKey() {
 
@@ -48,9 +46,6 @@ void EnterKey::Implement(MemoForm *memoForm) {
 	//자른다.
 	CutString cutString;
 	CString cuttedText = CString(cutString.CutText(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, endLine, dynamic_cast<Row*>(memoForm->text->GetAt(endLine))->GetLength() - 1).c_str());
-	//개행문자 추가
-	LineFeed lineFeed;
-	lineFeed.SetLineFeed(memoForm->row);
 	//새로운 줄 생성
 	LineController lineController;
 	lineController.MakeNewLine(memoForm, memoForm->text->GetCurrent() + 1);
@@ -59,11 +54,9 @@ void EnterKey::Implement(MemoForm *memoForm) {
 	Long rowCurrent = memoForm->row->GetCurrent();
 	//삭제했던 텍스트를 다시 적는다.
 	CClientDC dc(memoForm);
-	cuttedText.Replace("\r\n", "");
-	CopyToMemo copyToMemo(&dc, memoForm->screenWidth, (LPCTSTR)cuttedText);
-	memoForm->text->Accept(&copyToMemo);
-	//개행추가
-	lineFeed.SetLineFeed(dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent())));
+	//cuttedText.Replace("\r\n", "");
+	CopyToMemo copyToMemo;
+	copyToMemo.WriteToMemo(memoForm, (LPCTSTR)cuttedText);
 	//현재위치 변경
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 	memoForm->row->Move(rowCurrent);

@@ -6,8 +6,8 @@
 #include "Row.h"
 #include "SingleByteCharacter.h"
 #include "GetString.h"
-#include "ConnectedInfo.h"
 #include "SelectedText.h"
+#include "ConnectedInfo.h"
 #include "CopyToMemo.h"
 #include "MoveConnectedText.h"
 #include "CutString.h"
@@ -18,7 +18,7 @@ LineController::~LineController(){}
 
 void LineController::MakeNewLine(MemoForm *memoForm, Long index) {
 	Row *newRow = new Row;
-	if (index < memoForm->text->GetLength() - 1) {
+	if (index < memoForm->text->GetLength() ) {
 		memoForm->text->TakeIn(index, newRow);
 	}
 	else {

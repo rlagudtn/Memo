@@ -9,12 +9,12 @@ class SingleByteCharacter;
 class DoubleByteCharacter;
 class Row;
 class Text;
-class CDC;
+class MemoForm;
 typedef signed long int Long;
 class PaintVisitor :public Visitor {
 public:
 	PaintVisitor();
-	PaintVisitor(CDC *pdc,Long screenHeight,Long paperPosY);
+	PaintVisitor(MemoForm *memoForm,Long screenHeight,Long paperPosY);
 	//PaintVisitor(Long start, Long end);
 	~PaintVisitor();
 	void Visit(Text *text);
@@ -27,7 +27,7 @@ private:
 	string str;
 	//Long start;
 	//Long end;
-	CDC *pdc;
+	MemoForm *memoForm;
 	Long screenHeight;
 	Long paperPosY;
 	Long fontSize;

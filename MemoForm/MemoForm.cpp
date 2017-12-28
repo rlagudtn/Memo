@@ -25,7 +25,6 @@
 #include "ConnectedInfo.h"
 #include "CutString.h"
 #include "LineController.h"
-#include "LineFeed.h"
 #include "KeyBoard.h"
 #include "FindReplace.h"
 #include "Save.h"
@@ -168,11 +167,6 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	
 	if (this->text->GetLength() == 0) {
 		this->row = new Row;
-		SingleByteCharacter *singleByteCharacter = new SingleByteCharacter('\r');
-		SingleByteCharacter *singleBytecharacter_ = new SingleByteCharacter('\n');
-		this->row->Add(singleByteCharacter);
-		this->row->Add(singleBytecharacter_);
-		this->row->Move(-1);
 		this->text->Add(this->row);
 	}
 	//스크롤 포지션 초기화
@@ -229,13 +223,15 @@ void MemoForm::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) {
 		InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
 		//화면 넘는지.
 		GetString getString;
-		
+		//dc.SelectObject(this->font);
+
 		CSize size = dc.GetTextExtent(CString(getString.SubString(this->row, 0, this->row->GetLength() - 1).c_str()));
 		//넘는다면 자동줄바꿈 시켜준다.
 		if (size.cx > this->screenWidth) {
+			Row *row = this->row;
 			MoveConnectedText moveConnectedText;
 			moveConnectedText.ChangeLine(this, &dc, this->text->GetCurrent());
-			
+			row->Connect();
 		}
 		
 	}
@@ -325,10 +321,9 @@ void MemoForm::OnPaint()
 	
 	CString str;
 	CPaintDC dc(this);
-	dc.SelectObject(this->font);
 
 	//화면에 적는다.
-	PaintVisitor paintVisitor(&dc,this->screenHeight,this->paper->GetY());
+	PaintVisitor paintVisitor(this,this->screenHeight,this->paper->GetY());
 	this->text->Accept(&paintVisitor);
 	this->fontSize = paintVisitor.GetFontSize();
 

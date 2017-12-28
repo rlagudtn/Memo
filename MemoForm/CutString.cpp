@@ -12,8 +12,6 @@ string CutString::CutText(MemoForm *memoForm, Long startLine, Long startColumn, 
 	selectedText.Select(memoForm,startLine,startColumn, endLine, endColumn);//
 	//뒤의 텍스트를 지운다.
 	selectedText.EraseSelectedText(memoForm);
-	//EraseSelectedText eraseSelectedText(startLine, startColumn, endLine, endColumn);
-	//memoForm->text->Accept(&eraseSelectedText);
 	string buffer=selectedText.GetBuffer();
 	return buffer;
 }

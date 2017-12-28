@@ -4,7 +4,6 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "GetString.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 MoveColumnByStringLength::MoveColumnByStringLength(){}
 MoveColumnByStringLength::MoveColumnByStringLength(const MoveColumnByStringLength& source){}
@@ -15,9 +14,7 @@ void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
 	CSize size;
 	Long stringLength = 0;
 	row->Move(-1);
-	RowInfo rowInfo;
-	rowInfo.GetRowInfo(row);
-	Long lastIndex = rowInfo.GetLastIndex();
+	Long lastIndex = row->GetLength() - 1;
 	while (i <=lastIndex&&stringLength<pointX) {
 		row->Move(i);
 		GetString getString;
@@ -26,19 +23,7 @@ void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
 		stringLength = size.cx;
 		i++;
 	}
-	//마지막문자가 개행문자라면 row이동시킨다.
-	bool isLineFeed=false;
-	if (stringLength > 0) {
-		Character *character = dynamic_cast<Character*>(row->GetAt(row->GetCurrent()));
-		if (dynamic_cast<SingleByteCharacter*>(character)) {
-			if (dynamic_cast<SingleByteCharacter*>(character)->GetAlphabet() == '\n') {
-				isLineFeed = true;
-			}
-		}
-	}
-	if (isLineFeed == true) {
-		row->Move(row->GetLength() - 3);
-	}
+	
 	//현재 글자의 중간 위치를 구한다.
 	float mid = (previous + stringLength) / 2.0F;
 	if (pointX < mid) {

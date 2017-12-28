@@ -14,6 +14,13 @@ public:
 	virtual ~Row();
 	virtual Glyph* Clone();
 	void Accept(Visitor *visitor);
+	void Connect();
+	void DisConnect();
+	bool GetIsConnected() const;
+private:
+	bool isConnected;
 };
-
+inline bool Row::GetIsConnected() const {
+	return this->isConnected;
+}
 #endif // _ROW_H

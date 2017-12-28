@@ -5,9 +5,7 @@
 #include "Row.h"
 #include "Caret.h"
 #include "Paper.h"
-#include "LineFeed.h"
 #include "SelectedText.h"
-#include "RowInfo.h"
 #include <afxwin.h>
 EndKey::EndKey() {
 
@@ -27,9 +25,7 @@ void EndKey::Implement(MemoForm *memoForm) {
 		memoForm->paper->MoveToY(memoForm->paper->GetHeight()-memoForm->screenHeight/memoForm->fontSize*memoForm->fontSize);
 		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
-	RowInfo rowInfo;
-	rowInfo.GetRowInfo(memoForm->row);
-	memoForm->row->Move(rowInfo.GetLastIndex());
+	memoForm->row->Move(memoForm->row->GetLength()-1);
 
 	//Ä³·µÀÌµ¿
 	CClientDC dc(memoForm);
