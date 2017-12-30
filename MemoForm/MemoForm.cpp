@@ -136,7 +136,7 @@ int MemoForm::OnCreate(LPCREATESTRUCT lpCreateStruct)
 	this->restoreToRearStack = new PageStack;
 	this->isChanged = false;
 	this->font = new CFont;
-	this->font->CreatePointFont(180, "ÈÞ¸ÕÆíÁöÃ¼", NULL);
+	this->font->CreatePointFont(120, "ÈÞ¸ÕÆíÁöÃ¼", NULL);
 	
 	CClientDC dc(this);
 	dc.SelectObject(this->font);

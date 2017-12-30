@@ -80,6 +80,8 @@ string SelectedText::Select(MemoForm *memoForm, Long startLine, Long startColumn
 	return this->buffer;
 }
 void SelectedText::EraseSelectedText(MemoForm *memoForm) {
+	Long lastIndex = dynamic_cast<Row*>(memoForm->text->GetAt(this->endLine))->GetLength() - 1;
+
 	Long i = this->endLine;
 	while (i >= this->startLine) {
 		Row *row = dynamic_cast<Row*>(memoForm->text->Move(i));
@@ -116,6 +118,13 @@ void SelectedText::EraseSelectedText(MemoForm *memoForm) {
 		i--;
 	}
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
+
+	if (lastIndex == this->endColumn) {
+		memoForm->row->DisConnect();
+	}
+	else {
+		memoForm->row->Connect();
+	}
 
 }
 bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn) {
