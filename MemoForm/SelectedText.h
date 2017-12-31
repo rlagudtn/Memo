@@ -10,6 +10,7 @@ class Text;
 class Row;
 class SingleByteCharacter;
 class DoubleByteCharacter;
+class CDC;
 class SelectedText {
 public:
 	SelectedText();
@@ -20,7 +21,7 @@ public:
 	bool SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn);
 	SelectedText& operator=(const SelectedText& source);
 
-	void DrawUnderLine(MemoForm *memoForm);
+	void DrawUnderLine(MemoForm *memoForm,CDC *dc);
 	Long GetStartLine() const;
 	Long GetStartColumn() const;
 	Long GetEndLine() const;

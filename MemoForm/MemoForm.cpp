@@ -20,7 +20,8 @@
 #include <afxdlgs.h>//CDialog
 #include "Load.h"
 #include "CopyToMemo.h"
-#include "PaintVisitor.h"
+#include "PaintVisitor.h"//
+#include "DoubleBuffer.h"
 #include "MoveConnectedText.h"
 #include "ConnectedInfo.h"
 #include "CutString.h"
@@ -293,36 +294,18 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 	this->caret->MoveToCurrent(this);
 	//SetScrollPos(SB_VERT, this->scrollInfo.nPos);
 	SetCaretPos(CPoint(this->caret->GetX(), this->caret->GetY()));
-	InvalidateRect(CRect(0, 0, this->screenWidth, this->screenHeight), true);
+	ScrollWindow(0, -yInc);
 
 }
 void MemoForm::OnPaint()
 {
 	
 	CString str;
-	CPaintDC dc(this);
 
 	//화면에 적는다.
-	PaintVisitor paintVisitor(this,this->screenHeight,this->paper->GetY());
-	this->text->Accept(&paintVisitor);
+	DoubleBuffer doubleBuffer;
+	doubleBuffer.Paint(this);
 	
-	if (this->text->GetLength()*this->fontSize > (this->screenHeight/this->fontSize)*this->fontSize) {
-		this->paper->ModifyHeight(this->text->GetLength()*this->fontSize);
-
-	}
-	else {
-		this->paper->ModifyPaper(this->screenWidth,this->screenHeight / this->fontSize *this->fontSize);
-	}
-	this->scrollInfo.nMax = this->paper->GetHeight()+this->screenHeight%this->fontSize;
-	SetScrollInfo(SB_VERT, &this->scrollInfo);
-	SetScrollPos(SB_VERT, this->scrollInfo.nPos);
-	
-	//스크롤 위치 저장
-	this->scrollPositions[this->page->GetCurrent()] = this->scrollInfo.nPos;
-	//선택하기있으면 출력
-	if (this->selectedText != NULL) {
-		this->selectedText->DrawUnderLine(this);
-	}
 }
 
 //마우스 클릭 캐럿 이동

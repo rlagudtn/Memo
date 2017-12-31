@@ -10,11 +10,12 @@ class DoubleByteCharacter;
 class Row;
 class Text;
 class MemoForm;
+class CDC;
 typedef signed long int Long;
 class PaintVisitor :public Visitor {
 public:
 	PaintVisitor();
-	PaintVisitor(MemoForm *memoForm,Long screenHeight,Long paperPosY);
+	PaintVisitor(MemoForm *memoForm,CDC *dc);
 	//PaintVisitor(Long start, Long end);
 	~PaintVisitor();
 	void Visit(Text *text);
@@ -27,8 +28,7 @@ private:
 	//Long start;
 	//Long end;
 	MemoForm *memoForm;
-	Long screenHeight;
-	Long paperPosY;
+	CDC *dc;
 };
 inline string& PaintVisitor::GetStr() const {
 	return const_cast<string&>(this->str);

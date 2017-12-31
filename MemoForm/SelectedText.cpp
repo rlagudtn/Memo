@@ -164,7 +164,7 @@ bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long curr
 	return isSelectedSection;
 }
 
-void SelectedText::DrawUnderLine(MemoForm *memoForm) {
+void SelectedText::DrawUnderLine(MemoForm *memoForm,CDC *dc) {
 
 	if (this->startLine < this->endLine || this->startColumn <= this->endColumn) {
 		Long i = this->startLine;
@@ -174,8 +174,7 @@ void SelectedText::DrawUnderLine(MemoForm *memoForm) {
 		Long right;
 		Long top= memoForm->fontSize*this->startLine - memoForm->paper->GetY();
 		GetString getString;
-		CClientDC dc(memoForm);
-		dc.SelectObject(memoForm->font);
+		dc->SelectObject(memoForm->font);
 		while (i <= this->endLine) {
 			Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(i));
 			if (i > this->startLine&&i < this->endLine) {
@@ -183,31 +182,31 @@ void SelectedText::DrawUnderLine(MemoForm *memoForm) {
 				endRowIndex = row->GetLength() - 1;
 				//화면상 위치
 				left= 0;
-				right = dc.GetTextExtent(CString(getString.SubString(row, 0, row->GetLength() - 1).c_str())).cx;
+				right = dc->GetTextExtent(CString(getString.SubString(row, 0, row->GetLength() - 1).c_str())).cx;
 			}
 			else if (i == this->startLine&&i == this->endLine) {
 				startRowIndex = this->startColumn;
 				endRowIndex = this->endColumn;
 			
-				left= dc.GetTextExtent(CString(getString.SubString(row, 0,this->startColumn-1).c_str())).cx;
-				right=dc.GetTextExtent(CString(getString.SubString(row, 0, this->endColumn).c_str())).cx;
+				left= dc->GetTextExtent(CString(getString.SubString(row, 0,this->startColumn-1).c_str())).cx;
+				right=dc->GetTextExtent(CString(getString.SubString(row, 0, this->endColumn).c_str())).cx;
 			}
 			else if (i == this->startLine&&i != this->endLine) {
 				startRowIndex = this->startColumn;
 				endRowIndex = row->GetLength() - 1;
-				left = dc.GetTextExtent(CString(getString.SubString(row, 0, this->startColumn - 1).c_str())).cx;
-				right = dc.GetTextExtent(CString(getString.SubString(row, 0, row->GetLength()-1).c_str())).cx;
+				left = dc->GetTextExtent(CString(getString.SubString(row, 0, this->startColumn - 1).c_str())).cx;
+				right = dc->GetTextExtent(CString(getString.SubString(row, 0, row->GetLength()-1).c_str())).cx;
 			}
 			else if (i == this->endLine&&i != this->startLine) {
 				startRowIndex = 0;
 				endRowIndex = this->endColumn;
 				left = 0;
-				right = dc.GetTextExtent(CString(getString.SubString(row, 0, this->endColumn).c_str())).cx;
+				right = dc->GetTextExtent(CString(getString.SubString(row, 0, this->endColumn).c_str())).cx;
 			}
 			CRect rect(left, top, right, top+memoForm->fontSize);
-			dc.FillSolidRect(&rect, RGB(0, 0, 255));
-			dc.SetTextColor(RGB(255, 255, 255));
-			dc.DrawText(CString(getString.SubString(row, startRowIndex,endRowIndex).c_str()), rect, DT_VCENTER);
+			dc->FillSolidRect(&rect, RGB(0, 0, 255));
+			dc->SetTextColor(RGB(255, 255, 255));
+			dc->DrawText(CString(getString.SubString(row, startRowIndex,endRowIndex).c_str()), rect, DT_VCENTER);
 
 			top += memoForm->fontSize;
 			i++;
