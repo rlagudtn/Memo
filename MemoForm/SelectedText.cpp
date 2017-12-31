@@ -119,12 +119,10 @@ void SelectedText::EraseSelectedText(MemoForm *memoForm) {
 	}
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->GetAt(memoForm->text->GetCurrent()));
 
-	if (lastIndex == this->endColumn) {
-		memoForm->row->DisConnect();
-	}
-	else {
+	if (lastIndex != this->endColumn&&this->startLine!=this->endLine) {
 		memoForm->row->Connect();
 	}
+
 
 }
 bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long currentLine, Long currentColumn) {
