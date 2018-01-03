@@ -40,7 +40,7 @@ void Save::SaveMemo(MemoForm *memoForm,string pathName) {
 					file.WriteString(saveString + "\n");
 					j = lastConnectedLine + 1;
 				}
-				//해당 페이지의 텍스트를 다 저장하고,,
+				//해당 페이지의 텍스트를 다 저장하고 마지막페이지 전까지 \f를 넣어준다.
 				if (i < memoForm->page->GetLength() - 1) {
 					file.WriteString("\f\n");
 				}

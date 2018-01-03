@@ -1,95 +1,84 @@
-//Load.cpp
 #include "Load.h"
+#include "MemoForm.h"
 #include "Page.h"
 #include "Text.h"
 #include "Row.h"
-#include "DoubleByteCharacter.h"
+#include "Character.h"
 #include "SingleByteCharacter.h"
-#include <afxwin.h>
-#pragma warning(disable:4996)
-Load::Load():str(""){
-}
-Load::Load(CDC *pdc,Long screenWidth,string str):str(str),temp(""){
-	this->pdc = pdc;
-	this->screenWidth = screenWidth;
-}
-Load::~Load(){}
-void Load::Visit(Page *page) {
-	//if(str=='\f')
-}
-void Load::Visit(Text *text) {
-	Long index;
-	Row *row = new Row;
-	index=text->Add(row);
-	this->ifChangeLine = false;
-	this->i = 0;
-	dynamic_cast<Row*>(text->GetAt(index))->Accept(this);
-	while(this->ifChangeLine == true) {
-		char alpha[3] = { 0, };
-		char alphabet;
-		Row *changedLine = new Row;
-		if (this->deleteChar[0]& 0x80) {
-			strcpy(alpha,this->deleteChar.c_str());
-			DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter(alpha);
-			changedLine->Add(doubleByteCharacter);
+#include "DoubleByteCharacter.h"
+Load::Load() {}
+Load::~Load() {}
+void Load::WriteToMemo(MemoForm *memoForm) {
+	//불러오기
+	CFileDialog dlg(true, "*.txt", NULL, OFN_FILEMUSTEXIST, "text Files(*.txt)|*.txt|", NULL);
+	if (dlg.DoModal() == IDOK) {
+		if (memoForm->page != NULL) {
+			delete memoForm->page;
 		}
-		else {
-			alphabet = *this->deleteChar.c_str();
-			SingleByteCharacter *singleByteCharacter = new SingleByteCharacter(alphabet);
-			changedLine->Add(singleByteCharacter);
-		}
-		text->Add(changedLine);
-		this->temp = this->deleteChar;
-		this->ifChangeLine = false;
-		dynamic_cast<Row*>(text->GetAt(text->GetCurrent()))->Accept(this);
-	}
+		memoForm->page = new Page;
+		memoForm->text = new Text;
+		memoForm->page->Add(memoForm->text);
 	
-}
-void Load::Visit(Row *row) {
-	string str_;
-	char temp[3] = { 0, };
-	char alphabet;
-	Long stringLength = 0;
-	CSize size;
-	while (this->i < this->str.length()&&stringLength<=this->screenWidth) {
-		if (str[i] & 0x80) {
-			str_ = this->str.substr(i, 2);
-			this->temp += str_;
-			strcpy(temp, str_.c_str());
-			DoubleByteCharacter *doubleByteCharacter = new DoubleByteCharacter(temp);
-			row->Add(doubleByteCharacter);
-			this->i += 2;
-		}
-		else {
-			str_ = this->str.substr(i, 1);
-			this->temp += str_;
-			alphabet=*str_.c_str();
-			SingleByteCharacter *singleByteCharacter = new SingleByteCharacter(alphabet);
-			row->Add(singleByteCharacter);
-			this->i++;
-		}
-		size = this->pdc->GetTextExtent(CString(this->temp.c_str()));
-		stringLength = size.cx;
-	}
-	//화면의 길이를 넘어선다면
-	if (this->i < this->str.length()) {
-		this->ifChangeLine = true;
-		this->deleteChar = str_;
-		row->Delete(row->GetCurrent());
-	}
-	else {
-		SingleByteCharacter *singleByteCharacterCR = new SingleByteCharacter('\r');
-		SingleByteCharacter *singleByteCharacterLF = new SingleByteCharacter('\n');
-		row->Add(singleByteCharacterCR);
-		row->Add(singleByteCharacterLF);
-	}
-	row->Move(-1);
-	
-}
+		CStdioFile file;
+		CString line;
+		CClientDC dc(memoForm);
+		dc.SelectObject(memoForm->font);
+		if (file.Open(dlg.GetPathName(), CFile::modeRead)) {
+			//파일의 끝이 아닌 동안 반복한다.
+			//한줄씩 읽는다.
+			while (file.ReadString(line)) {
+				if (line != '\f') {
+					memoForm->row = new Row;
+					memoForm->text->Add(memoForm->row);
+					Long i = 0;
+					CString useChechScreenOver="";
+					CString temp;
+					Character *character;
+					char alpha[3] = { 0, };
+					char alphabet;
+					while (i < line.GetLength()) {
+						//한글이라면
+						if (IsDBCSLeadByte(line.GetAt(i))) {
+							temp = line.Mid(i, 2);
+							strcpy(alpha, (LPCTSTR)temp);
+							character=new DoubleByteCharacter(alpha);
+							i += 2;
+						}
+						else {
+							temp = line.Mid(i, 1);
+							alphabet = *temp;
+							character = new SingleByteCharacter(alphabet);
+							i++;
+						}
+						useChechScreenOver += temp;
+						//문자열의 길이를 구해 화면을 넘는지 확인한다
+						Long stringLength = dc.GetTextExtent(useChechScreenOver).cx;
+						if (stringLength > memoForm->screenWidth) {
+							//연결되어져 있는 상태로 만든다.
+							memoForm->row->Connect();
+							//줄을 생성한다.
+							memoForm->row = new Row;
+							memoForm->text->Add(memoForm->row);
+							//화면 넘는지 여부에 관한 문자열을 초기화 한다.
+							useChechScreenOver = "";
+						}
+						memoForm->row->Add(character);
 
-void Load::Visit(SingleByteCharacter *singleByteCharacter) {
-	Long i;
-}
-void Load::Visit(DoubleByteCharacter *doubleByteCharacter) {
-	Long i;
+					}
+				}
+				else {
+					memoForm->text = new Text;
+					memoForm->page->Add(memoForm->text);
+					
+				}
+			}
+			file.Close();
+		}
+		memoForm->text = dynamic_cast<Text*>(memoForm->page->Move(0));
+		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(0));
+		memoForm->row->Move(-1);
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+		//경오를 바꾼다.
+		memoForm->originalPathName = dlg.GetPathName();
+	}
 }

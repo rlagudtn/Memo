@@ -46,9 +46,8 @@ void DeleteKey::Implement(MemoForm *memoForm) {
 		if (isLastIndex == false) {
 			memoForm->row->Delete(memoForm->row->GetCurrent() + 1);
 		}
-		else {
-			memoForm->row->Delete(memoForm->row->GetCurrent() + 1);
-			memoForm->row->Delete(memoForm->row->GetCurrent() + 1);
+		else if(isLastIndex==true&& memoForm->text->GetCurrent()<memoForm->text->GetLength()-1){
+			memoForm->row->Connect();
 			//다음 줄이랑 합친다
 			MoveConnectedText connectText;
 			CClientDC dc(memoForm);
