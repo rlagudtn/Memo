@@ -7,7 +7,7 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "DoubleByteCharacter.h"
-
+#include "ConnectedInfo.h"
 #include "GetString.h"
 
 Save::Save() {
@@ -18,22 +18,29 @@ Save::~Save(){}
 void Save::SaveMemo(MemoForm *memoForm,string pathName) {
 	
 	CStdioFile file;
-	CString str;
-	if (file.Open(CString(pathName.c_str()), CFile::modeCreate | CFile::modeWrite | CFile::typeText)) {
+	CString saveString;
+	if (file.Open(CString(pathName.c_str()), CFile::modeCreate | CFile::modeWrite )) {
 			Long i = 0;
-			Text *text;
-			Row *row;
-			CString str;
+			CString saveString;
 			while (i < memoForm->page->GetLength()) {
-				text = dynamic_cast<Text*>(memoForm->page->GetAt(i));
+				Text *text = dynamic_cast<Text*>(memoForm->page->GetAt(i));
 				Long j = 0;
 				while (j < text->GetLength()) {
-					row = dynamic_cast<Row*>(text->GetAt(j));
-					GetString getString;
-					str = CString(getString.SubString(row, 0, row->GetLength() - 1).c_str());
-					file.WriteString(str + "\n");
-					j++;
+					Row *row = dynamic_cast<Row*>(text->GetAt(j));
+					ConnectedInfo connectedInfo;
+					Long lastConnectedLine = connectedInfo.GetEndOfConnected(text, j);
+					Long k = j;
+					saveString = "";
+					while (k <= lastConnectedLine) {
+						Row *connectedRow = dynamic_cast<Row*>(text->GetAt(k));
+						GetString getString;
+						saveString += CString(getString.SubString(connectedRow, 0, connectedRow->GetLength() - 1).c_str());
+						k++;
+					}
+					file.WriteString(saveString + "\n");
+					j = lastConnectedLine + 1;
 				}
+				//해당 페이지의 텍스트를 다 저장하고,,
 				if (i < memoForm->page->GetLength() - 1) {
 					file.WriteString("\f\n");
 				}
