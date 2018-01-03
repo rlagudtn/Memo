@@ -90,9 +90,6 @@
     <ClInclude Include="CutString.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="FindCurrentByString.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="KeyBoard.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -267,6 +264,9 @@
     <ClInclude Include="DoubleBuffer.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="CurrentPosition.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -336,9 +336,6 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CutString.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="FindCurrentByString.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="KeyBoard.cpp">
@@ -507,6 +504,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="DoubleBuffer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="CurrentPosition.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

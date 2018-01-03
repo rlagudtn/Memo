@@ -11,7 +11,7 @@
 #include "CopyToMemo.h"
 #include "MoveConnectedText.h"
 #include "CutString.h"
-#include "FindCurrentByString.h"
+#include "CurrentPosition.h"
 #include "Caret.h"
 LineController::LineController(){}
 LineController::LineController(const LineController& source) {}
@@ -59,8 +59,9 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		}
 	}
 	//현재위치ㅣ 저장
-	SelectedText selectedText;
-	CString buffer=CString(selectedText.Select(memoForm,0, 0, memoForm->text->GetCurrent(), memoForm->row->GetCurrent()).c_str());
+	CurrentPosition currentPosition;
+	currentPosition.SaveCurrent(memoForm);
+
 	//lineInfo에 해당하는 줄만 바꿔준다.
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {
@@ -70,10 +71,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		i--;
 	}
 	//현재위치구하기.
-	FindCurrentByString findCurrent;
-	findCurrent.MoveToCurrent(dc, (LPCTSTR)buffer, memoForm->screenWidth);
-	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(findCurrent.GetTextIndex()));
-	memoForm->row->Move(findCurrent.GetRowIndex());
+	currentPosition.MoveToCurrent(memoForm);
 	//캐럿이동
 	memoForm->caret->MoveToCurrent(memoForm);
 }
