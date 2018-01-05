@@ -41,22 +41,14 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	while (i<textLength) {
 		Row* temp = dynamic_cast<Row*>(memoForm->text->GetAt(i));
 		
-		GetString getString;
-		//라인의 길이를 구한다.
-		dc->SelectObject(memoForm->font);
-		Long stringLength = (dc->GetTextExtent(CString(getString.SubString(temp, 0, temp->GetLength() - 1).c_str()))).cx;
 		//해당줄이 연결되어져 있는지 확인한다.
 		ConnectedInfo connectedInfo;
 		Long endLine=connectedInfo.GetEndOfConnected(memoForm->text, i);
 		bool isConnected = temp->GetIsConnected();
-		if (stringLength > memoForm->screenWidth || isConnected == true) {
+		if (isConnected == true) {
 			this->lineInfo->Add(i);
-			
-			i = endLine + 1;
 		}
-		else {
-			i++;
-		}
+		i = endLine + 1;
 	}
 	//현재위치ㅣ 저장
 	CurrentPosition currentPosition;
@@ -66,6 +58,7 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {
 		memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(this->lineInfo->GetAt(i)));
+		memoForm->row->Move(-1);
 		MoveConnectedText moveConnectedText;
 		moveConnectedText.ChangeLine(memoForm, dc, this->lineInfo->GetAt(i));
 		i--;

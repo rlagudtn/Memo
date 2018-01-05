@@ -5,6 +5,7 @@
 #include "Text.h"
 #include "Paper.h"
 #include "Page.h"
+#include "Caret.h"
 #include "SelectedText.h"
 DoubleBuffer::DoubleBuffer(){}
 
@@ -45,6 +46,8 @@ void DoubleBuffer::Paint(MemoForm *memoForm) {
 	dc.BitBlt(0, 0, memoForm->screenWidth, memoForm->screenHeight, &memDC, 0, 0, SRCCOPY);
 
 	dc.SelectObject(pOldBitmap);
+	//Ä³·µ
+	memoForm->caret->MoveToCurrent(memoForm);
 	myBitmap.DeleteObject();
 	ReleaseDC(memoForm->GetSafeHwnd(), memDC);
 	DeleteDC(memDC);

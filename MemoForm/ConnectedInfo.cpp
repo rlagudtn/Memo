@@ -21,7 +21,7 @@ Long ConnectedInfo::GetEndOfConnected(Text *text,Long index) {
 	Row *currentLine = dynamic_cast<Row*>(text->GetAt(index));
 	this->isConnected = currentLine->GetIsConnected();
 	Long i = index+1;
-	while (this->isConnected == true) {
+	while (i<text->GetLength()&&this->isConnected == true) {
 		Row *row= dynamic_cast<Row*>(text->GetAt(i));
 		this->isConnected = row->GetIsConnected();
 		i++;
