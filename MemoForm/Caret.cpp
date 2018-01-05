@@ -58,7 +58,7 @@ void Caret::MoveToPoint(MemoForm *memoForm, CDC *dc, CPoint point) {
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(textCurrent));
 	//x축이동
 	MoveColumnByStringLength temp;
-	temp.MoveColumn(memoForm->row, dc, point.x);
+	temp.MoveColumn(memoForm,memoForm->row, point.x);
 	//caretX좌표 구하기
 	GetString getStr;
 	this->caretX = dc->GetTextExtent(CString(getStr.SubString(memoForm->row, 0, memoForm->row->GetCurrent()).c_str())).cx;

@@ -36,14 +36,16 @@ void EndKey::Implement(MemoForm *memoForm) {
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
 			bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			if (isSelected == false && memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
+			if (isSelected == false) {
 				delete memoForm->selectedText;
 				memoForm->selectedText = NULL;
 			}
 		}
 		else {
 			memoForm->selectedText = new SelectedText;
-			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), 0, memoForm->text->GetCurrent(), currentColumn);
+			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), currentColumn+1, memoForm->text->GetCurrent(),memoForm->row->GetCurrent());
 		}
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+
 	}
 }

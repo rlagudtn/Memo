@@ -148,7 +148,7 @@ bool SelectedText::SetAgainPos(Long previousLine, Long previousColumn, Long curr
 			this->startLine = currentLine;
 			this->startColumn = currentColumn+1;
 		}
-		else if (currentLine > this->startLine || (currentLine == this->startLine-1&&currentColumn > this->startColumn-1)) {
+		else if (currentLine > this->startLine || (currentLine == this->startLine&&currentColumn > this->startColumn-1)) {
 			this->endLine = currentLine;
 			this->endColumn = currentColumn;
 		}

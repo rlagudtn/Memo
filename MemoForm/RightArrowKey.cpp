@@ -52,7 +52,7 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
 			bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			if (isSelected == false && memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
+			if (isSelected == false ) {
 				delete memoForm->selectedText;
 				memoForm->selectedText = NULL;
 			}
@@ -63,6 +63,6 @@ void RightArrowKey::Implement(MemoForm *memoForm) {
 			memoForm->selectedText = new SelectedText;
 			memoForm->selectedText->Select(memoForm, currentLine, currentColumn + 1, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
 		}
-
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 }

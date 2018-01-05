@@ -37,7 +37,7 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 		
 			MoveColumnByStringLength moveUp;
 			CClientDC dc(memoForm);
-			moveUp.MoveColumn(memoForm->row, &dc, caretPosX);
+			moveUp.MoveColumn(memoForm,memoForm->row, caretPosX);
 		}
 	}
 
@@ -54,7 +54,7 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 	if (GetKeyState(VK_SHIFT) < 0) {
 			if (memoForm->selectedText != NULL) {
 				bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-				if (isSelected == false && memoForm->text->GetCurrent() < memoForm->text->GetLength() - 1) {
+				if (isSelected == false) {
 					delete memoForm->selectedText;
 					memoForm->selectedText = NULL;
 				}
@@ -63,5 +63,7 @@ void DownArrowKey::Implement(MemoForm *memoForm) {
 				memoForm->selectedText = new SelectedText;
 				memoForm->selectedText->Select(memoForm, currentLine, currentColumn + 1, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
 			}
+			memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+
 	}
 }		

@@ -51,7 +51,7 @@ void LeftArrowKey::Implement(MemoForm *memoForm) {
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
 			bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			if (isSelected == false && memoForm->text->GetCurrent() > 0) {
+			if (isSelected == false) {
 				delete memoForm->selectedText;
 				memoForm->selectedText = NULL;
 			}

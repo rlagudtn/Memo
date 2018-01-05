@@ -4,21 +4,23 @@
 #include "Character.h"
 #include "SingleByteCharacter.h"
 #include "GetString.h"
-#include <afxwin.h>
+#include "MemoForm.h"
 MoveColumnByStringLength::MoveColumnByStringLength(){}
 MoveColumnByStringLength::MoveColumnByStringLength(const MoveColumnByStringLength& source){}
 MoveColumnByStringLength::~MoveColumnByStringLength(){}
-void MoveColumnByStringLength::MoveColumn(Row *row,CDC *pdc, Long pointX) {
+void MoveColumnByStringLength::MoveColumn(MemoForm *memoForm,Row *row, Long pointX) {
 	Long i = 0;
 	Long previous=0;
 	CSize size;
 	Long stringLength = 0;
 	row->Move(-1);
+	CClientDC dc(memoForm);
+	dc.SelectObject(memoForm->font);
 	Long lastIndex = row->GetLength() - 1;
 	while (i <=lastIndex&&stringLength<pointX) {
 		row->Move(i);
 		GetString getString;
-		size = pdc->GetTextExtent(CString(getString.SubString(row, 0, i).c_str()));
+		size = dc.GetTextExtent(CString(getString.SubString(row, 0, i).c_str()));
 		previous = stringLength;
 		stringLength = size.cx;
 		i++;

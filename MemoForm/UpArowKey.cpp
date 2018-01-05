@@ -36,11 +36,11 @@ void UpArrowKey::Implement(MemoForm *memoForm) {
 		else {
 			MoveColumnByStringLength moveUp;
 			CClientDC dc(memoForm);
-			moveUp.MoveColumn(memoForm->row, &dc, caretPosX);
+			moveUp.MoveColumn(memoForm,memoForm->row, caretPosX);
 		}
 	}
 	//캐럿이동
-	CClientDC dc(memoForm);
+	//CClientDC dc(memoForm);
 	memoForm->caret->MoveToCurrent(memoForm);
 	//캐럿이 화면영역위쪽이라면
 	if (memoForm->caret->GetY() < 0) {
@@ -50,9 +50,8 @@ void UpArrowKey::Implement(MemoForm *memoForm) {
 	//Shift+up
 	if (GetKeyState(VK_SHIFT) < 0) {
 		if (memoForm->selectedText != NULL) {
-
 			bool isSelected = memoForm->selectedText->SetAgainPos(currentLine, currentColumn, memoForm->text->GetCurrent(), memoForm->row->GetCurrent());
-			if (isSelected == false && memoForm->text->GetCurrent() > 0) {
+			if (isSelected == false) {
 				delete memoForm->selectedText;
 				memoForm->selectedText = NULL;
 			}
@@ -62,6 +61,8 @@ void UpArrowKey::Implement(MemoForm *memoForm) {
 			memoForm->selectedText = new SelectedText;
 			memoForm->selectedText->Select(memoForm, memoForm->text->GetCurrent(), memoForm->row->GetCurrent() + 1, currentLine, currentColumn);
 		}
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
+
 	}
 
 }
