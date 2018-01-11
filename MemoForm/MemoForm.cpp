@@ -282,7 +282,7 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 		yInc = -this->scrollInfo.nPos;
 		this->paper->MoveToY(0);
 	}
-	if (this->scrollInfo.nPos + yInc > this->scrollInfo.nMax) {
+	if (this->scrollInfo.nPos + yInc > this->scrollInfo.nMax|| this->paper->GetY() + this->screenHeight > this->paper->GetHeight()) {
 		yInc = (this->scrollInfo.nMax - this->scrollInfo.nPos-this->scrollInfo.nPage) / this->fontSize*this->fontSize;
 		this->paper->MoveToY(this->paper->GetHeight()-this->screenHeight / this->fontSize*this->fontSize);
 	}

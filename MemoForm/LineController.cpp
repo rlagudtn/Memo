@@ -33,27 +33,35 @@ void LineController::AutomaticLineChange(MemoForm *memoForm,CDC *dc) {
 		delete this->lineInfo;
 		this->lineInfo=NULL;
 	}
-	this->lineInfo = new LineInfo;
-	
-	//lineInfo에 length만큼 반복하낟.
-	Long i =0;
-	Long textLength = memoForm->text->GetLength();
-	while (i<textLength) {
-		Row* temp = dynamic_cast<Row*>(memoForm->text->GetAt(i));
-		
-		//해당줄이 연결되어져 있는지 확인한다.
-		ConnectedInfo connectedInfo;
-		Long endLine=connectedInfo.GetEndOfConnected(memoForm->text, i);
-		bool isConnected = temp->GetIsConnected();
-		if (isConnected == true) {
-			this->lineInfo->Add(i);
-		}
-		i = endLine + 1;
-	}
 	//현재위치ㅣ 저장
 	CurrentPosition currentPosition;
 	currentPosition.SaveCurrent(memoForm);
 
+	this->lineInfo = new LineInfo;
+	dc->SelectObject(memoForm->font);
+	//lineInfo에 length만큼 반복하낟.
+	Long i =0;
+	Long textLength = memoForm->text->GetLength();
+	while (i < textLength) {
+		Row* temp = dynamic_cast<Row*>(memoForm->text->GetAt(i));
+		//화면을 넘어서는지 확인.
+		GetString getString;
+		Long stringLength = dc->GetTextExtent(CString(getString.SubString(temp, 0, temp->GetLength() - 1).c_str())).cx;
+		bool isOverScreen=false;
+		if (stringLength > memoForm->screenWidth) {
+			isOverScreen = true;
+		}
+		//해당줄이 연결되어져 있는지 확인한다.
+		ConnectedInfo connectedInfo;
+		Long endLine = connectedInfo.GetEndOfConnected(memoForm->text, i);
+		bool isConnected = temp->GetIsConnected();
+		//연결되어져 있는줄이 있거나 화면을 넘었다면
+		if (isConnected == true || isOverScreen) {
+			this->lineInfo->Add(i);
+		}
+		i = endLine + 1;
+	}
+	
 	//lineInfo에 해당하는 줄만 바꿔준다.
 	i = this->lineInfo->GetLength() - 1;
 	while (i >= 0) {

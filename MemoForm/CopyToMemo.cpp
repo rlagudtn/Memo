@@ -9,7 +9,7 @@
 CopyToMemo::CopyToMemo(){}
 CopyToMemo::~CopyToMemo(){}
 void CopyToMemo::WriteToMemo(MemoForm *memoForm, string str) {
-	//1.현재 줄의 텍스트를 받아온다.-->화면 넘는지 안넘는지 나중에 확인하려고.
+	//1.현재 줄의 텍스트를 받아온다.->화면 넘는지 안넘는지 나중에 확인하려고.
 	GetString getString;
 	string currentString = getString.SubString(memoForm->row, 0, memoForm->row->GetLength() - 1);
 	//2.문자열 길이만큼 반복한다

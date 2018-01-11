@@ -47,14 +47,20 @@ void CurrentPosition::MoveToCurrent(MemoForm *memoForm) {
 	//열을 찾는다.
 	Long stringLength = 0;
 	Long previousLength = 0;
+	
 	while (stringLength<= this->rowIndex) {
 		Row *row = dynamic_cast<Row*>(memoForm->text->GetAt(j));
 		previousLength = stringLength;
 		stringLength+= row->GetLength();
 		j++;
 	}
-	Long currentLine = j-1;
-
+	Long currentLine; 
+	if (this->rowIndex != -1) {
+		currentLine = j - 1;
+	}
+	else {
+		currentLine = j;
+	}
 	currentColumn = this->rowIndex - previousLength;
 	memoForm->row = dynamic_cast<Row*>(memoForm->text->Move(currentLine));
 	memoForm->row->Move(currentColumn);
