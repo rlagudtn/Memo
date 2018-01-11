@@ -69,7 +69,7 @@ void CopyToMemo::WriteToMemo(MemoForm *memoForm, string str) {
 		else {
 			str_ = str.substr(i, 1);
 			alphabet = *str_.c_str();
-			if (alphabet != '\r'&&alphabet != '\r') {
+			if (alphabet != '\r'&&alphabet != '\n') {
 				singleByteCharacter = new SingleByteCharacter(alphabet);
 				memoForm->row->Add(singleByteCharacter);
 			}

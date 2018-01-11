@@ -282,11 +282,9 @@ void MemoForm::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar *pScrollBar) {
 		yInc = -this->scrollInfo.nPos;
 		this->paper->MoveToY(0);
 	}
-	if (this->scrollInfo.nPos + yInc > this->scrollInfo.nMax||this->paper->GetY()+this->screenHeight>this->paper->GetHeight()) {
-		Long previous = this->paper->GetY();
+	if (this->scrollInfo.nPos + yInc > this->scrollInfo.nMax) {
 		yInc = (this->scrollInfo.nMax - this->scrollInfo.nPos-this->scrollInfo.nPage) / this->fontSize*this->fontSize;
 		this->paper->MoveToY(this->paper->GetHeight()-this->screenHeight / this->fontSize*this->fontSize);
-		Long distance = previous - this->paper->GetY();
 	}
  	//새로운 위치 설정
 	this->scrollInfo.nPos = this->scrollInfo.nPos + yInc;
