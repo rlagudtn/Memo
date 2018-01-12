@@ -166,6 +166,7 @@
     <ClInclude Include="InformationMenu.h" />
     <ClInclude Include="MakeNewFileMenu.h" />
     <ClInclude Include="MakeNewPageMenu.h" />
+    <ClInclude Include="MemoApp.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="CtrlPrintKey.h" />
     <ClInclude Include="Array.h" />
@@ -256,6 +257,7 @@
     <ClCompile Include="InformationMenu.cpp" />
     <ClCompile Include="MakeNewFileMenu.cpp" />
     <ClCompile Include="MakeNewPageMenu.cpp" />
+    <ClCompile Include="MemoApp.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="CtrlPrintKey.cpp" />
     <ClCompile Include="BackSpaceKey.cpp" />

@@ -267,6 +267,9 @@
     <ClInclude Include="CurrentPosition.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="MemoApp.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="MemoForm.cpp">
@@ -507,6 +510,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="CurrentPosition.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MemoApp.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

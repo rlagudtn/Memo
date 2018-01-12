@@ -19,19 +19,11 @@ class Menu;
 //class GetString;
 class SelectedText;
 typedef signed long int Long;
-class CControlApp : public CWinApp
-{
-public:
-	//CControlApp();
-	BOOL InitInstance();
 
-
-};
 class MemoForm : public CFrameWnd
 {
 public:
-	MemoForm();
-	//virtual BOOL PreTranslateMessage(MSG* pMsg);
+	MemoForm(CWnd *parent=NULL);
 	
 protected:
 	afx_msg int OnCreate(LPCREATESTRUCT lpCreateStruct);

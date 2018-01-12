@@ -34,22 +34,9 @@
 #include <afxcmn.h>	//cstatusbarctrl
 #include < afxstatusbar.h>
 #pragma warning(disable:4996)
-//#define ID_INDICATOR 0
-CControlApp the;
-static UINT WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);
-//static UINT BASED_CODE indicators[] {ID_INDICATOR};
-BOOL CControlApp::InitInstance()
-{
-	MemoForm *memoForm = new MemoForm;
-	CRect rect(300, 300,1000, 816);
-	this->m_pMainWnd = memoForm;
-	memoForm->Create(NULL, "¸Þ¸ðÀå", WS_OVERLAPPEDWINDOW| WS_VSCROLL, rect);
-	this->m_pMainWnd->ShowWindow(SW_SHOW);
-	this->m_pMainWnd->UpdateWindow();
 
-	return TRUE;
-	
-}
+static UINT WM_FINDREPLACE = ::RegisterWindowMessage(FINDMSGSTRING);
+
 BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	ON_WM_CREATE()
 	ON_WM_KEYDOWN()
@@ -71,7 +58,7 @@ BEGIN_MESSAGE_MAP(MemoForm, CFrameWnd)
 	ON_WM_SIZE()
 	ON_WM_CLOSE()
 END_MESSAGE_MAP()
-MemoForm::MemoForm() {
+MemoForm::MemoForm(CWnd *parent) {
 	this->page = NULL;
 	this->text = NULL;
 	this->row = NULL;
