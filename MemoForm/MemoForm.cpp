@@ -498,16 +498,12 @@ void MemoForm::OnClose() {
 				}
 				CFrameWnd::OnClose();
 			}
-			if (this->pageSetUpDialog != NULL) {
-				delete this->pageSetUpDialog;
-				this->pageSetUpDialog = NULL;
-			}
+			
 		}
 	}
 	else {
 		CFrameWnd::OnClose();
 	}
-	CWnd::EnableWindow(true);
 }
 
 

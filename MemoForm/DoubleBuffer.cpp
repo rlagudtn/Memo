@@ -13,6 +13,10 @@ DoubleBuffer::~DoubleBuffer(){}
 
 void DoubleBuffer::Paint(MemoForm *memoForm) {
 	CPaintDC dc(memoForm);
+	dc.SelectObject(memoForm->font);
+	//폰트 설정
+	memoForm->fontSize = dc.GetTextExtent("T").cy;
+	memoForm->CreateSolidCaret(1, memoForm->fontSize);
 	CDC memDC;
 	CBitmap myBitmap;
 	CBitmap *pOldBitmap;
@@ -33,7 +37,6 @@ void DoubleBuffer::Paint(MemoForm *memoForm) {
 	//종이 마지막부분을 맞춘다.
 	if (memoForm->paper->GetY() + memoForm->screenHeight > memoForm->paper->GetHeight()) {
 		memoForm->paper->MoveToY(memoForm->paper->GetHeight() - memoForm->screenHeight / memoForm->fontSize*memoForm->fontSize);
-
 	}
 	//두번째 화면에 그린다.
 	PaintVisitor paintVisitor(memoForm, &memDC);

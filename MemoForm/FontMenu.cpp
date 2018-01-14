@@ -11,7 +11,12 @@ void FontMenu::Implement(MemoForm *memoForm) {
 	}
 	if (memoForm->fontDlg->DoModal() == IDOK)
 	{
-
+		LOGFONT lf;
+		memoForm->fontDlg->GetCurrentFont(&lf);
+		memoForm->font->DeleteObject();
+		memoForm->font->CreateFontIndirectA(&lf);
+		memoForm->SetFont(memoForm->font, 1);
+		memoForm->InvalidateRect(CRect(0, 0, memoForm->screenWidth, memoForm->screenHeight), true);
 	}
 
 }
